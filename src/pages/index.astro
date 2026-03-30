@@ -41,7 +41,7 @@ const projects = [
   <!-- Hero -->
   <section class="hero">
     <div class="container">
-      <p class="hero__label">Vlady Yakovenko &nbsp;·&nbsp; Bologna, Italy</p>
+      <p class="hero__label">Bologna, Italy</p>
       <h1 class="hero__title">UX Engineer.<br />Visual Artist.<br />Electronic Musician.</h1>
       <p class="hero__bio">
         Medium-agnostic creative at the intersection of software, generative art, and modular synthesis.
@@ -53,8 +53,6 @@ const projects = [
       </ul>
     </div>
   </section>
-
-  <hr class="divider" />
 
   <!-- Patcher -->
   <section class="section" id="patcher">
@@ -77,9 +75,9 @@ const projects = [
               and community module database in one place.
             </p>
             <ul class="featured__bullets">
-              <li>Auto-save patch editor with instance-aware connection flow</li>
-              <li>Drag-and-drop rack planner, FA2 signal graph, tag-filtered module browser</li>
-              <li>Public database — no account needed to browse</li>
+              <li>Plan and document your patches — never lose a setup again</li>
+              <li>Drag-and-drop rack builder with a searchable module database</li>
+              <li>Browse the community database without creating an account</li>
             </ul>
             <div class="featured__actions">
               <a class="btn" href="https://patcher.xyz" target="_blank" rel="noopener">Open app →</a>
@@ -88,20 +86,7 @@ const projects = [
             </div>
           </div>
 
-          <div class="featured__stats">
-            <div class="stat">
-              <span class="stat__number">35</span>
-              <span class="stat__label">Stars</span>
-            </div>
-            <div class="stat">
-              <span class="stat__number">5+</span>
-              <span class="stat__label">Years</span>
-            </div>
-            <div class="stat">
-              <span class="stat__number">∞</span>
-              <span class="stat__label">Free</span>
-            </div>
-          </div>
+          <p class="featured__meta">35★ &nbsp;·&nbsp; active since 2021 &nbsp;·&nbsp; free &amp; open source</p>
         </div>
       </div>
     </div>
@@ -114,7 +99,7 @@ const projects = [
     <div class="container">
       <header class="section-header">
         <span class="tag">Code</span>
-        <h2>Other projects</h2>
+        <h2>Projects</h2>
       </header>
       <ul class="project-grid">
         {projects.map(p => <li><ProjectCard {...p} /></li>)}
@@ -140,6 +125,7 @@ const projects = [
             slug={post.id}
             description={post.data.description}
             tags={post.data.tags}
+            compact={true}
           />
         ))}
         <a href="/blog" class="more-link">All posts →</a>
@@ -236,8 +222,8 @@ const projects = [
   }
   .featured__body {
     display: flex;
-    gap: var(--space-12);
-    align-items: flex-start;
+    flex-direction: column;
+    gap: var(--space-4);
   }
   .featured__text {
     flex: 1;
@@ -275,43 +261,14 @@ const projects = [
     flex-wrap: wrap;
     gap: var(--space-3);
   }
-  .featured__stats {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-3);
-    flex-shrink: 0;
-  }
-  .stat {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-md);
-    padding: var(--space-3) var(--space-4);
-    min-width: 72px;
-    text-align: center;
-  }
-  .stat__number {
-    font-size: 1.4rem;
-    font-weight: 600;
-    letter-spacing: -0.02em;
-    line-height: 1;
-  }
-  .stat__label {
-    font-size: 0.65rem;
-    color: var(--color-muted);
+  .featured__meta {
     font-family: var(--font-mono);
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    margin-top: var(--space-1);
+    font-size: 0.75rem;
+    color: var(--color-muted);
+    letter-spacing: 0.02em;
   }
   @media (max-width: 600px) {
     .featured { padding: var(--space-6); }
-    .featured__body { flex-direction: column; }
-    .featured__stats {
-      flex-direction: row;
-      gap: var(--space-3);
-    }
   }
 
   /* Buttons */

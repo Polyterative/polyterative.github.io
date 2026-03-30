@@ -2,14 +2,12 @@
 export interface Props {
   title?: string;
   description?: string;
-  ogImage?: string;
   isHome?: boolean;
 }
 
 const {
   title = 'Vlady Yakovenko — UX Engineer, Artist, Musician',
   description = 'Portfolio of Vlady Yakovenko (polyterative) — UX engineer, generative visual artist, and electronic musician based in Bologna, Italy.',
-  ogImage = '/og-default.png',
   isHome = false,
 } = Astro.props;
 
@@ -17,7 +15,6 @@ const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
 const currentPath = Astro.url.pathname;
 
 const navLinks = [
-  { href: '/#patcher', label: 'Patcher', match: null },
   { href: '/projects', label: 'Projects', match: '/projects' },
   { href: '/blog', label: 'Writing', match: '/blog' },
   { href: '/about', label: 'About', match: '/about' },
@@ -55,7 +52,6 @@ const personSchema = {
   <meta property="og:description" content={description} />
   <meta property="og:url" content={canonicalUrl} />
   <meta property="og:type" content="website" />
-  <meta property="og:image" content={new URL(ogImage, Astro.site)} />
   <meta property="og:locale" content="en_US" />
   <meta property="og:site_name" content="polyterative" />
 
@@ -63,6 +59,10 @@ const personSchema = {
   <meta name="twitter:card" content="summary" />
   <meta name="twitter:title" content={title} />
   <meta name="twitter:description" content={description} />
+
+  <!-- Theme color -->
+  <meta name="theme-color" content="#f9f9f7" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#111110" media="(prefers-color-scheme: dark)" />
 
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 
@@ -109,17 +109,16 @@ const personSchema = {
   <footer class="site-footer">
     <div class="container">
       <div class="footer-inner">
-        <div class="footer-left">
-          <p class="footer-copy">Vlady Yakovenko</p>
-          <p class="footer-sub">Bologna, Italy &nbsp;·&nbsp; <a href="mailto:polyterative@outlook.com">polyterative@outlook.com</a></p>
-          <p class="footer-year">&copy; {new Date().getFullYear()}</p>
-        </div>
+        <p class="footer-copy">
+          polyterative &nbsp;·&nbsp; Bologna &nbsp;·&nbsp;
+          <a href="mailto:polyterative@outlook.com">polyterative@outlook.com</a>
+          &nbsp;·&nbsp; &copy; {new Date().getFullYear()}
+        </p>
         <ul class="footer-links">
-          <li><a href="https://github.com/polyterative" target="_blank" rel="noopener" aria-label="GitHub profile">GitHub</a></li>
-          <li><a href="https://polyterative.bandcamp.com" target="_blank" rel="noopener" aria-label="Bandcamp music page">Bandcamp</a></li>
-          <li><a href="https://www.instagram.com/politerative/" target="_blank" rel="noopener" aria-label="Instagram profile">Instagram</a></li>
-          <li><a href="https://patcher.xyz" target="_blank" rel="noopener" aria-label="Patcher app">patcher.xyz</a></li>
-          <li><a href="/about">About</a></li>
+          <li><a href="https://github.com/polyterative" target="_blank" rel="noopener" aria-label="GitHub">GitHub</a></li>
+          <li><a href="https://polyterative.bandcamp.com" target="_blank" rel="noopener" aria-label="Bandcamp">Bandcamp</a></li>
+          <li><a href="https://www.instagram.com/politerative/" target="_blank" rel="noopener" aria-label="Instagram">Instagram</a></li>
+          <li><a href="https://patcher.xyz" target="_blank" rel="noopener" aria-label="Patcher">patcher.xyz</a></li>
         </ul>
       </div>
     </div>
@@ -175,14 +174,17 @@ const personSchema = {
   .nav__link--active {
     color: var(--color-text);
     font-weight: 500;
+    text-decoration: underline;
+    text-underline-offset: 4px;
+    text-decoration-color: var(--color-text);
   }
 
   .site-main { flex: 1; }
 
   .site-footer {
     border-top: 1px solid var(--color-border);
-    padding-block: var(--space-8);
-    margin-top: var(--space-24);
+    padding-block: var(--space-6);
+    margin-top: var(--space-16);
   }
 
   .footer-inner {
@@ -194,9 +196,16 @@ const personSchema = {
   }
 
   .footer-copy {
-    font-size: 0.875rem;
+    font-size: 0.8rem;
     color: var(--color-muted);
   }
+  .footer-copy a {
+    color: var(--color-muted);
+    text-decoration: underline;
+    text-decoration-color: transparent;
+    transition: text-decoration-color var(--transition);
+  }
+  .footer-copy a:hover { text-decoration-color: var(--color-muted); }
 
   .footer-links {
     display: flex;
@@ -205,35 +214,12 @@ const personSchema = {
   }
 
   .footer-links a {
-    font-size: 0.875rem;
+    font-size: 0.8rem;
     color: var(--color-muted);
     text-decoration: none;
     transition: color var(--transition);
   }
   .footer-links a:hover { color: var(--color-text); }
-
-  .footer-left {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-1);
-  }
-  .footer-sub {
-    font-size: 0.8rem;
-    color: var(--color-muted);
-  }
-  .footer-sub a {
-    color: var(--color-muted);
-    text-decoration: underline;
-    text-decoration-color: transparent;
-    transition: text-decoration-color var(--transition);
-  }
-  .footer-sub a:hover { text-decoration-color: var(--color-muted); }
-  .footer-year {
-    font-size: 0.75rem;
-    color: var(--color-muted);
-    opacity: 0.6;
-    margin-top: var(--space-1);
-  }
 
   /* Skip link */
   .skip-link {
@@ -282,5 +268,4 @@ const personSchema = {
       flex-wrap: wrap;
       gap: var(--space-4);
     }
-  }
-</style>
+  }</style>

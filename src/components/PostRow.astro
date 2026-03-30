@@ -5,9 +5,10 @@ export interface Props {
   slug: string;
   description?: string;
   tags?: string[];
+  compact?: boolean;
 }
 
-const { title, date, slug, description, tags = [] } = Astro.props;
+const { title, date, slug, description, tags = [], compact = false } = Astro.props;
 const dateObj = new Date(date);
 // Compact: "Apr 2024"
 const formatted = dateObj.toLocaleDateString('en-US', { year: 'numeric', month: 'short' });
@@ -19,8 +20,8 @@ const formatted = dateObj.toLocaleDateString('en-US', { year: 'numeric', month: 
     <h2 class="post-row__title">
       <a href={`/blog/${slug}`}>{title}</a>
     </h2>
-    {description && <p class="post-row__desc">{description}</p>}
-    {tags.length > 0 && (
+    {!compact && description && <p class="post-row__desc">{description}</p>}
+    {!compact && tags.length > 0 && (
       <ul class="post-row__tags">
         {tags.map(t => <li><span class="tag">{t}</span></li>)}
       </ul>
