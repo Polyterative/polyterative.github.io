@@ -97,6 +97,7 @@ const personSchema = {
         <div class="footer-left">
           <p class="footer-copy">Vlady Yakovenko</p>
           <p class="footer-sub">Bologna, Italy &nbsp;·&nbsp; <a href="mailto:polyterative@outlook.com">polyterative@outlook.com</a></p>
+          <p class="footer-year">&copy; {new Date().getFullYear()}</p>
         </div>
         <ul class="footer-links">
           <li><a href="https://github.com/polyterative" target="_blank" rel="noopener" aria-label="GitHub profile">GitHub</a></li>
@@ -207,6 +208,12 @@ const personSchema = {
     transition: text-decoration-color var(--transition);
   }
   .footer-sub a:hover { text-decoration-color: var(--color-muted); }
+  .footer-year {
+    font-size: 0.75rem;
+    color: var(--color-muted);
+    opacity: 0.6;
+    margin-top: var(--space-1);
+  }
 
   /* Skip link */
   .skip-link {

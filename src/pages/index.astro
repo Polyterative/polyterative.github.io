@@ -47,6 +47,13 @@ const codeProjects = [
     repo: 'https://github.com/polyterative/nodemcu-sensor',
     tags: ['Arduino', 'IoT', 'C++'],
   },
+  {
+    name: 'Zulu',
+    description: 'UI experiment exploring layout and interaction patterns. Built with Angular and TypeScript, deployed on Vercel.',
+    url: 'https://zulu-3506inbrr-polyterative.vercel.app/',
+    repo: 'https://github.com/polyterative/Zulu',
+    tags: ['Angular', 'TypeScript', 'UI Experiment'],
+  },
 ];
 
 const soundProjects = [
@@ -105,7 +112,7 @@ const skills = [
   <section class="hero section">
     <div class="container">
       <div class="hero__inner">
-        <p class="hero__label">Vlady Yakovenko &nbsp;·&nbsp; Bologna, Italy &nbsp;·&nbsp; Since 2015</p>
+        <p class="hero__label">Vlady Yakovenko &nbsp;·&nbsp; Bologna, Italy</p>
         <h1 class="hero__title">UX Engineer.<br />Visual Artist.<br />Electronic Musician.</h1>
         <p class="hero__bio">
           A medium-agnostic creative exploring the intersections of arts, design and code.
@@ -117,6 +124,7 @@ const skills = [
           <li><a href="https://polyterative.bandcamp.com" target="_blank" rel="noopener">Bandcamp</a></li>
           <li><a href="https://www.instagram.com/politerative/" target="_blank" rel="noopener">Instagram</a></li>
           <li><a href="/blog">Writing →</a></li>
+          <li><a href="/about">About →</a></li>
         </ul>
       </div>
     </div>
@@ -306,6 +314,43 @@ const skills = [
           </div>
         </article>
       </div>
+    </div>
+  </section>
+
+  <hr class="divider" />
+
+  <!-- Community -->
+  <section class="section" id="community">
+    <div class="container">
+      <header class="section-header">
+        <span class="tag">Community</span>
+        <h2 class="section-title">Open & Collaborative</h2>
+        <p class="section-desc">Most of what I make is free, open-source, and built in public.</p>
+      </header>
+      <ul class="community-list">
+        <li class="community-item">
+          <h3 class="community-item__title">
+            <a href="https://discord.gg/N6Z32xJR" target="_blank" rel="noopener">Patcher Discord</a>
+          </h3>
+          <p class="community-item__desc">The home for Patcher users and Eurorack musicians. Bugs, features, patch discussions, and module questions.</p>
+        </li>
+        <li class="community-item">
+          <h3 class="community-item__title">Bologna Modulare</h3>
+          <p class="community-item__desc">Local meetup community for modular synthesis in Bologna. Events, jams, and gear exchange.</p>
+        </li>
+        <li class="community-item">
+          <h3 class="community-item__title">
+            <a href="https://www.facebook.com/groups/eurorack.italia" target="_blank" rel="noopener">Eurorack Italy</a>
+          </h3>
+          <p class="community-item__desc">Largest Italian-language Eurorack community. Module trading, help threads, and performance sharing.</p>
+        </li>
+        <li class="community-item">
+          <h3 class="community-item__title">
+            <a href="https://github.com/polyterative" target="_blank" rel="noopener">GitHub — Open Source</a>
+          </h3>
+          <p class="community-item__desc">All major projects are open source. Pull requests, issues, and forks welcome across all repos.</p>
+        </li>
+      </ul>
     </div>
   </section>
 
@@ -649,4 +694,34 @@ const skills = [
     transition: color var(--transition);
   }
   .all-posts-link:hover { color: var(--color-text); }
+
+  /* ── Community ── */
+  .community-list {
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
+    gap: var(--space-4);
+  }
+  .community-item {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-5);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+  .community-item__title {
+    font-size: 1rem;
+    font-weight: 600;
+  }
+  .community-item__title a {
+    text-decoration: none;
+  }
+  .community-item__title a:hover { text-decoration: underline; }
+  .community-item__desc {
+    font-size: 0.875rem;
+    color: var(--color-muted);
+    line-height: 1.55;
+    max-width: none;
+  }
 </style>

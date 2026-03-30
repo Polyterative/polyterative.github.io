@@ -16,23 +16,26 @@ const posts = (await getCollection('blog', ({ data }) => !data.draft))
       <header class="page-header">
         <span class="tag">Writing</span>
         <h1>Posts</h1>
-        <p class="page-desc">Notes on code, sound, and making things.</p>
+        <p class="page-desc">
+          Notes on code, sound, and making things.
+          {posts.length > 0 && <span class="post-count">{posts.length} posts</span>}
+        </p>
       </header>
 
-      <div class="posts-list">
-        {posts.map(post => (
-          <PostRow
-            title={post.data.title}
-            date={post.data.date}
-            slug={post.id}
-            description={post.data.description}
-            tags={post.data.tags}
-          />
-        ))}
-      </div>
-
-      {posts.length === 0 && (
-        <p class="empty">No posts yet — check back soon.</p>
+      {posts.length > 0 ? (
+        <div class="posts-list">
+          {posts.map(post => (
+            <PostRow
+              title={post.data.title}
+              date={post.data.date}
+              slug={post.id}
+              description={post.data.description}
+              tags={post.data.tags}
+            />
+          ))}
+        </div>
+      ) : (
+        <p class="empty">Nothing published yet — check back soon.</p>
       )}
     </div>
   </section>
@@ -49,6 +52,17 @@ const posts = (await getCollection('blog', ({ data }) => !data.draft))
   .page-desc {
     color: var(--color-muted);
     font-size: 0.95rem;
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+  }
+  .post-count {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    background: var(--color-tag-bg);
+    border-radius: var(--radius-sm);
+    padding: 2px 8px;
+    color: var(--color-muted);
   }
   .posts-list { display: flex; flex-direction: column; }
   .empty { color: var(--color-muted); font-style: italic; }
