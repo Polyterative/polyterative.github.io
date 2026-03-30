@@ -9,7 +9,8 @@ export interface Props {
 
 const { title, date, slug, description, tags = [] } = Astro.props;
 const dateObj = new Date(date);
-const formatted = dateObj.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+// Compact: "Apr 2024"
+const formatted = dateObj.toLocaleDateString('en-US', { year: 'numeric', month: 'short' });
 ---
 
 <article class="post-row">
