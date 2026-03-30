@@ -3,8 +3,18 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import PostRow from '../../components/PostRow.astro';
 import { getCollection } from 'astro:content';
 
-const posts = (await getCollection('blog', ({ data }) => !data.draft))
+const allPosts = (await getCollection('blog', ({ data }) => !data.draft))
   .sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime());
+
+// Group by year
+const byYear = allPosts.reduce<Record<string, typeof allPosts>>((acc, post) => {
+  const year = new Date(post.data.date).getFullYear().toString();
+  if (!acc[year]) acc[year] = [];
+  acc[year].push(post);
+  return acc;
+}, {});
+
+const years = Object.keys(byYear).sort((a, b) => Number(b) - Number(a));
 ---
 
 <BaseLayout
@@ -18,20 +28,27 @@ const posts = (await getCollection('blog', ({ data }) => !data.draft))
         <h1>Posts</h1>
         <p class="page-desc">
           Notes on code, sound, and making things.
-          {posts.length > 0 && <span class="post-count">{posts.length} posts</span>}
+          {allPosts.length > 0 && <span class="post-count">{allPosts.length} posts</span>}
         </p>
       </header>
 
-      {posts.length > 0 ? (
-        <div class="posts-list">
-          {posts.map(post => (
-            <PostRow
-              title={post.data.title}
-              date={post.data.date}
-              slug={post.id}
-              description={post.data.description}
-              tags={post.data.tags}
-            />
+      {allPosts.length > 0 ? (
+        <div class="posts-by-year">
+          {years.map(year => (
+            <div class="year-group">
+              <h2 class="year-label">{year}</h2>
+              <div class="posts-list">
+                {byYear[year].map(post => (
+                  <PostRow
+                    title={post.data.title}
+                    date={post.data.date}
+                    slug={post.id}
+                    description={post.data.description}
+                    tags={post.data.tags}
+                  />
+                ))}
+              </div>
+            </div>
           ))}
         </div>
       ) : (
@@ -46,6 +63,7 @@ const posts = (await getCollection('blog', ({ data }) => !data.draft))
     display: flex;
     flex-direction: column;
     gap: var(--space-3);
+    padding-top: var(--space-8);
     margin-bottom: var(--space-12);
   }
   .page-header h1 { font-size: clamp(2rem, 5vw, 3rem); }
@@ -64,6 +82,30 @@ const posts = (await getCollection('blog', ({ data }) => !data.draft))
     padding: 2px 8px;
     color: var(--color-muted);
   }
+
+  .posts-by-year {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-12);
+  }
+
+  .year-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .year-label {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-muted);
+    padding-bottom: var(--space-3);
+    border-bottom: 1px solid var(--color-border);
+    font-weight: 400;
+  }
+
   .posts-list { display: flex; flex-direction: column; }
   .empty { color: var(--color-muted); font-style: italic; }
 </style>
