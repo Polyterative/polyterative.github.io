@@ -7,7 +7,7 @@ const sections = [
     id: 'code',
     label: 'Code',
     title: 'Engineering & Tools',
-    desc: 'Software projects, open-source tools, and developer utilities.',
+    icon: `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="5,4 1,8 5,12"/><polyline points="11,4 15,8 11,12"/></svg>`,
     projects: [
       {
         name: 'Patcher',
@@ -68,7 +68,7 @@ const sections = [
     id: 'sound',
     label: 'Sound',
     title: 'Music & Synthesis',
-    desc: 'Electronic music through modular synthesis, Ableton Live, and live performance.',
+    icon: `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M2 10 Q4 6 6 10 Q8 14 10 10 Q12 6 14 10"/></svg>`,
     projects: [
       {
         name: 'Polyterative on Bandcamp',
@@ -98,7 +98,7 @@ const sections = [
     id: 'visuals',
     label: 'Visuals',
     title: 'Generative Art',
-    desc: 'Audio-reactive visuals, generative art, and live visual performance.',
+    icon: `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="5"/><circle cx="8" cy="8" r="2"/></svg>`,
     projects: [
       {
         name: 'POLY_REACTIVE_VISUALS',
@@ -125,7 +125,7 @@ const sections = [
     id: 'talks',
     label: 'Talks',
     title: 'Public Talks',
-    desc: 'Workshops and presentations.',
+    icon: `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><polygon points="4,3 13,8 4,13"/></svg>`,
     projects: [
       {
         name: 'Angular Flex: Building with Style (2022)',
@@ -157,8 +157,11 @@ const sections = [
 
       {sections.map(section => (
         <div class="domain-section" id={section.id}>
-          <header class="domain-header">
-            <span class="tag">{section.label}</span>
+          <header class="domain-header" data-domain={section.id}>
+            <div class="domain-label-row">
+              <span class="domain-icon" set:html={section.icon}/>
+              <span class="tag">{section.label}</span>
+            </div>
             <h2>{section.title}</h2>
           </header>
           <ul class="project-grid">
@@ -222,10 +225,26 @@ const sections = [
     flex-direction: column;
     gap: var(--space-2);
     margin-bottom: var(--space-6);
+    padding-left: var(--space-4);
+    border-left: 3px solid var(--color-border);
   }
-  .domain-header h2 {
-    font-size: clamp(1.3rem, 2.5vw, 1.8rem);
+  .domain-label-row {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
   }
+  .domain-icon {
+    display: flex;
+    align-items: center;
+    color: var(--domain-color, var(--color-muted));
+    opacity: 0.8;
+  }
+
+  /* Color accents per domain */
+  .domain-header[data-domain="code"]    { --domain-color: #14b8a6; border-left-color: #14b8a6; }
+  .domain-header[data-domain="sound"]   { --domain-color: #f59e0b; border-left-color: #f59e0b; }
+  .domain-header[data-domain="visuals"] { --domain-color: #8b5cf6; border-left-color: #8b5cf6; }
+  .domain-header[data-domain="talks"]   { --domain-color: var(--color-muted); }
   .domain-desc {
     font-size: 0.875rem;
     color: var(--color-muted);

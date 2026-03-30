@@ -173,6 +173,16 @@ const articleSchema = {
     color: var(--color-text);
     max-width: 68ch;
   }
+  .prose :global(p:first-of-type::first-letter) {
+    float: left;
+    font-size: 3.2em;
+    line-height: 0.85;
+    font-weight: 700;
+    margin-right: 0.08em;
+    margin-top: 0.05em;
+    letter-spacing: -0.02em;
+    color: var(--color-text);
+  }
   .prose :global(ul), .prose :global(ol) {
     padding-left: var(--space-6);
     display: flex;
