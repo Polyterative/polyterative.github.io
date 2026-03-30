@@ -2,7 +2,7 @@
 title: "Poly Highlights — Designing a Luminance-Corrected IDE Theme"
 description: "Why most syntax themes fail readability, and how perceptual luminance fixes it."
 date: "2024-04-15"
-tags: ["design", "tooling", "color", "jetbrains"]
+tags: ["Design", "Tooling", "Color Theory", "JetBrains"]
 ---
 
 Most IDE color themes are designed by eye in isolation: pick colors that look good together, assign them to token types, ship. The result is usually a theme where comments are so dim you skip them, strings are so bright they dominate, and after two hours your eyes ache in ways you can't explain.

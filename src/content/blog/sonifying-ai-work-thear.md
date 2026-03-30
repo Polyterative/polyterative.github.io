@@ -2,7 +2,7 @@
 title: "Sonifying AI Work — thear"
 description: "A small Python tool that turns Claude Code's activity into sound, using Ableton and OSC."
 date: "2025-06-01"
-tags: ["python", "ableton", "osc", "ai", "tooling"]
+tags: ["Python", "Ableton", "OSC", "AI", "Tooling"]
 ---
 
 I spend a lot of time with AI coding assistants. The experience is largely visual — you watch tokens appear. I wanted to *hear* the work happening.

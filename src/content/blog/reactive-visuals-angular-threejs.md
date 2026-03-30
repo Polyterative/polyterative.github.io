@@ -2,7 +2,7 @@
 title: "Reactive Visuals — Angular Meets Three.js"
 description: "How RxJS makes real-time generative visuals more composable and easier to reason about."
 date: "2024-08-22"
-tags: ["creative-coding", "threejs", "rxjs", "angular", "osc"]
+tags: ["Creative Coding", "Three.js", "RxJS", "Angular", "OSC"]
 ---
 
 Most creative coding tutorials use `setInterval` or `requestAnimationFrame` callbacks directly. That works for demos. It doesn't scale when you add audio reactivity, OSC input from a modular synth, and UI controls simultaneously.

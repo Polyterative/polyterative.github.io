@@ -160,11 +160,10 @@ const sections = [
           <header class="domain-header">
             <span class="tag">{section.label}</span>
             <h2>{section.title}</h2>
-            <p class="domain-desc">{section.desc}</p>
           </header>
           <ul class="project-grid">
-            {section.projects.map(p => (
-              <li>
+            {section.projects.map((p, i) => (
+              <li class:list={[{ 'project-grid__featured': p.featured }]}>
                 <ProjectCard {...p} />
               </li>
             ))}
@@ -238,5 +237,8 @@ const sections = [
     grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
     gap: var(--space-4);
     list-style: none;
+  }
+  .project-grid__featured {
+    grid-column: 1 / -1;
   }
 </style>

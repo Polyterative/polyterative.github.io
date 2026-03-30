@@ -2,7 +2,7 @@
 title: "Patcher — Building a Database for Eurorack Modular Synthesis"
 description: "Why I built an open-source web app to manage modular synth patches, and what I learned about community-driven tools."
 date: "2024-11-10"
-tags: ["eurorack", "angular", "supabase", "open-source"]
+tags: ["Eurorack", "Angular", "Supabase", "Open Source"]
 ---
 
 Modular synthesis is inherently combinatorial. You connect a finite set of modules in near-infinite ways, and the patch — the state of all those connections — is ephemeral unless you document it. I got tired of photographing my rack and uploading screenshots to spreadsheets.

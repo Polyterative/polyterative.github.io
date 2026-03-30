@@ -35,10 +35,10 @@ const experience = [
 ];
 
 const currentFocus = [
-  'Audio-reactive visuals with Angular and Three.js',
-  'Music with Ableton Live and Eurorack',
-  'Maintaining Patcher (patcher.xyz)',
-  'Voice-driven development with Talon Voice',
+  { text: 'Audio-reactive visuals with Angular and Three.js', href: 'https://github.com/polyterative/POLY_REACTIVE_VISUALS' },
+  { text: 'Music with Ableton Live and Eurorack', href: 'https://polyterative.bandcamp.com' },
+  { text: 'Maintaining Patcher', href: 'https://patcher.xyz' },
+  { text: 'Voice-driven development with Talon Voice', href: 'https://github.com/polyterative/Poly-Talon-Scripts' },
 ];
 
 const tools = [
@@ -83,7 +83,7 @@ const tools = [
           {currentFocus.map(item => (
             <li>
               <span class="now-dot">—</span>
-              {item}
+              <a href={item.href} target="_blank" rel="noopener">{item.text}</a>
             </li>
           ))}
         </ul>
@@ -223,6 +223,13 @@ const tools = [
     gap: var(--space-3);
     font-size: 0.95rem;
     line-height: 1.5;
+  }
+  .now-list a {
+    color: var(--color-text);
+    text-decoration-color: var(--color-border);
+  }
+  .now-list a:hover {
+    text-decoration-color: var(--color-text);
   }
   .now-dot {
     color: var(--color-muted);

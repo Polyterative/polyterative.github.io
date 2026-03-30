@@ -2,7 +2,7 @@
 title: "Voice Coding with Talon — A Year of Hands-Free Development"
 description: "What works, what doesn't, and how I configured Talon Voice for daily development across JetBrains IDEs and the terminal."
 date: "2025-02-10"
-tags: ["voice-coding", "talon", "tooling", "accessibility", "productivity"]
+tags: ["Voice Coding", "Talon", "Tooling", "Accessibility", "Productivity"]
 ---
 
 I've been using Talon Voice as my primary coding interface for over a year. Not as an experiment — as my daily driver for production TypeScript, Angular, and terminal work. Here's what actually happened.

@@ -46,11 +46,13 @@ const articleSchema = {
   title={`${post.data.title} — Vlady Yakovenko`}
   description={post.data.description}
 >
-  <script type="application/ld+json" set:html={JSON.stringify(articleSchema)} />
+  <script slot="head" type="application/ld+json" set:html={JSON.stringify(articleSchema)} />
   <article class="section post">
     <div class="container">
       <header class="post__header">
         <div class="post__meta">
+          <a class="post__back" href="/blog">Writing</a>
+          <span class="meta-sep">·</span>
           <time datetime={post.data.date}>{formatted}</time>
           <span class="meta-sep">·</span>
           <span>{readingTime} min read</span>
@@ -119,6 +121,12 @@ const articleSchema = {
     font-family: var(--font-mono);
     font-size: 0.78rem;
     color: var(--color-muted);
+  }
+  .post__back {
+    color: var(--color-muted);
+    text-decoration: none;
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
   }
   .meta-sep { opacity: 0.4; }
 
