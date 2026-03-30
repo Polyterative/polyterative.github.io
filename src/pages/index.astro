@@ -1,0 +1,280 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+import PostRow from '../components/PostRow.astro';
+import { getCollection } from 'astro:content';
+
+const posts = (await getCollection('blog', ({ data }) => !data.draft))
+  .sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime())
+  .slice(0, 3);
+
+const codeProjects = [
+  {
+    name: 'Patcher',
+    description: 'The everything modular manager and database. A community-driven open-source app for Eurorack patch documentation and module discovery.',
+    url: 'https://patcher.xyz',
+    repo: 'https://github.com/polyterative/Patcher',
+    tags: ['Angular', 'Supabase', 'TypeScript', 'Eurorack'],
+    featured: true,
+  },
+  {
+    name: 'Poly Highlights',
+    description: 'Luminance-corrected syntax highlighting theme for JetBrains IDEs. Carefully tuned for readability across all token types.',
+    repo: 'https://github.com/polyterative/Poly-highlights',
+    tags: ['JetBrains', 'Design', 'Tooling'],
+  },
+  {
+    name: 'POLY_REACTIVE_VISUALS',
+    description: 'Angular + Three.js + RxJS template for audio-reactive generative visuals. Includes OSC integration for live control from hardware synths.',
+    url: 'https://reactive-visuals.vercel.app',
+    repo: 'https://github.com/polyterative/POLY_REACTIVE_VISUALS',
+    tags: ['Three.js', 'RxJS', 'Creative Coding', 'OSC'],
+  },
+  {
+    name: 'thear',
+    description: 'Sonification of AI coding activity. A Python tool that translates Claude Code hooks into OSC messages for real-time sound feedback in Ableton.',
+    repo: 'https://github.com/polyterative/thear',
+    tags: ['Python', 'Ableton', 'OSC', 'AI'],
+  },
+  {
+    name: 'Poly Talon Scripts',
+    description: 'Custom Talon Voice configuration for voice-driven coding on Mac, Windows, and Linux. My daily driver setup.',
+    repo: 'https://github.com/polyterative/Poly-Talon-Scripts',
+    tags: ['Voice Coding', 'Python', 'Productivity'],
+  },
+];
+
+const soundProjects = [
+  {
+    name: 'Eurorack / Modular',
+    description: 'Semi-modular and fully modular synthesis rigs. Deeply involved in the Bologna Modulare and Eurorack Italy communities.',
+    tags: ['Eurorack', 'Synthesis', 'Hardware'],
+  },
+  {
+    name: 'Ableton Live',
+    description: 'Electronic music production and live performance. Custom effect racks and templates, bridging the gap between software and hardware.',
+    repo: 'https://github.com/polyterative/poly-ableton-racks',
+    tags: ['Ableton', 'Production', 'Performance'],
+  },
+  {
+    name: 'OSC Audio-Visual Bridge',
+    description: 'Live performance system connecting Eurorack modular gear to generative visuals via Open Sound Control. Hardware knobs drive on-screen parameters in real time.',
+    tags: ['OSC', 'Live Performance', 'Audio-Visual'],
+  },
+];
+
+const visualProjects = [
+  {
+    name: 'POLY_REACTIVE_VISUALS',
+    description: 'Framework for audio-reactive generative art. Three.js scenes driven by RxJS streams and live OSC from hardware.',
+    url: 'https://reactive-visuals.vercel.app',
+    repo: 'https://github.com/polyterative/POLY_REACTIVE_VISUALS',
+    tags: ['Three.js', 'Generative Art', 'Real-time'],
+  },
+  {
+    name: 'Angular + p5.js',
+    description: 'Reactive setup for p5.js sketches inside an Angular + RxJS environment. Clean separation between sketch logic and application state.',
+    url: 'https://reactive-p5.vercel.app',
+    repo: 'https://github.com/polyterative/AngularReactiveP5',
+    tags: ['p5.js', 'Angular', 'Creative Coding'],
+  },
+  {
+    name: 'TouchDesigner',
+    description: 'Node-based real-time visual compositions. Used for live VJ sets and audio-reactive installations.',
+    tags: ['TouchDesigner', 'VJ', 'Installations'],
+  },
+];
+---
+
+<BaseLayout>
+  <!-- Hero -->
+  <section class="hero section">
+    <div class="container">
+      <div class="hero__inner">
+        <p class="hero__label">Vlady Yakovenko — Bologna, Italy</p>
+        <h1 class="hero__title">UX Engineer.<br />Visual Artist.<br />Electronic Musician.</h1>
+        <p class="hero__bio">
+          I design and build software, compose generative visuals, and perform with modular synthesizers.
+          My work sits at the intersection of engineering rigour and sensory experience.
+        </p>
+        <ul class="hero__links">
+          <li><a href="https://github.com/polyterative" target="_blank" rel="noopener">GitHub</a></li>
+          <li><a href="https://patcher.xyz" target="_blank" rel="noopener">patcher.xyz</a></li>
+          <li><a href="https://www.instagram.com/politerative/" target="_blank" rel="noopener">Instagram</a></li>
+          <li><a href="/blog">Writing →</a></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider" />
+
+  <!-- Code -->
+  <section class="section" id="work">
+    <div class="container">
+      <header class="section-header">
+        <span class="tag">Code</span>
+        <h2 class="section-title">Engineering & Tools</h2>
+        <p class="section-desc">Software projects spanning developer tooling, creative frameworks, and community applications.</p>
+      </header>
+      <ul class="project-grid">
+        {codeProjects.map(p => (
+          <li>
+            <ProjectCard {...p} />
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <hr class="divider" />
+
+  <!-- Sound -->
+  <section class="section" id="sound">
+    <div class="container">
+      <header class="section-header">
+        <span class="tag">Sound</span>
+        <h2 class="section-title">Music & Synthesis</h2>
+        <p class="section-desc">Electronic music through modular synthesis, Ableton Live production, and live audio-visual performance.</p>
+      </header>
+      <ul class="project-grid">
+        {soundProjects.map(p => (
+          <li>
+            <ProjectCard {...p} />
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <hr class="divider" />
+
+  <!-- Visuals -->
+  <section class="section" id="visuals">
+    <div class="container">
+      <header class="section-header">
+        <span class="tag">Visuals</span>
+        <h2 class="section-title">Generative Art</h2>
+        <p class="section-desc">Audio-reactive visuals and generative art built with Three.js, p5.js, and TouchDesigner.</p>
+      </header>
+      <ul class="project-grid">
+        {visualProjects.map(p => (
+          <li>
+            <ProjectCard {...p} />
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <hr class="divider" />
+
+  <!-- Recent Writing -->
+  {posts.length > 0 && (
+    <section class="section" id="writing">
+      <div class="container">
+        <header class="section-header">
+          <span class="tag">Writing</span>
+          <h2 class="section-title">Recent Posts</h2>
+        </header>
+        <div>
+          {posts.map(post => (
+            <PostRow
+              title={post.data.title}
+              date={post.data.date}
+              slug={post.id}
+              description={post.data.description}
+              tags={post.data.tags}
+            />
+          ))}
+        </div>
+        <a href="/blog" class="all-posts-link">All posts →</a>
+      </div>
+    </section>
+  )}
+</BaseLayout>
+
+<style>
+  .hero {
+    padding-block: var(--space-24);
+  }
+
+  .hero__inner {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+  }
+
+  .hero__label {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--color-muted);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .hero__title {
+    font-size: clamp(2.5rem, 6vw, 4.5rem);
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+  }
+
+  .hero__bio {
+    font-size: 1.125rem;
+    color: var(--color-muted);
+    line-height: 1.7;
+    max-width: 50ch;
+  }
+
+  .hero__links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-6);
+    list-style: none;
+    margin-top: var(--space-2);
+  }
+
+  .hero__links a {
+    font-size: 0.9rem;
+    color: var(--color-text);
+    text-decoration: none;
+    border-bottom: 1px solid var(--color-border);
+    padding-bottom: 2px;
+    transition: border-color var(--transition);
+  }
+  .hero__links a:hover { border-color: var(--color-text); }
+
+  .section-header {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    margin-bottom: var(--space-8);
+  }
+
+  .section-title {
+    font-size: clamp(1.5rem, 3vw, 2rem);
+  }
+
+  .section-desc {
+    color: var(--color-muted);
+    font-size: 0.95rem;
+    max-width: 55ch;
+  }
+
+  .project-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr));
+    gap: var(--space-4);
+    list-style: none;
+  }
+
+  .all-posts-link {
+    display: inline-block;
+    margin-top: var(--space-6);
+    font-size: 0.9rem;
+    color: var(--color-muted);
+    text-decoration: none;
+    transition: color var(--transition);
+  }
+  .all-posts-link:hover { color: var(--color-text); }
+</style>

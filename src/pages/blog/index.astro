@@ -1,0 +1,55 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PostRow from '../../components/PostRow.astro';
+import { getCollection } from 'astro:content';
+
+const posts = (await getCollection('blog', ({ data }) => !data.draft))
+  .sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime());
+---
+
+<BaseLayout
+  title="Writing — Vlady Yakovenko"
+  description="Posts on engineering, music, generative art, and tooling by Vlady Yakovenko (polyterative)."
+>
+  <section class="section">
+    <div class="container">
+      <header class="page-header">
+        <span class="tag">Writing</span>
+        <h1>Posts</h1>
+        <p class="page-desc">Notes on code, sound, and making things.</p>
+      </header>
+
+      <div class="posts-list">
+        {posts.map(post => (
+          <PostRow
+            title={post.data.title}
+            date={post.data.date}
+            slug={post.id}
+            description={post.data.description}
+            tags={post.data.tags}
+          />
+        ))}
+      </div>
+
+      {posts.length === 0 && (
+        <p class="empty">No posts yet — check back soon.</p>
+      )}
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .page-header {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    margin-bottom: var(--space-12);
+  }
+  .page-header h1 { font-size: clamp(2rem, 5vw, 3rem); }
+  .page-desc {
+    color: var(--color-muted);
+    font-size: 0.95rem;
+  }
+  .posts-list { display: flex; flex-direction: column; }
+  .empty { color: var(--color-muted); font-style: italic; }
+</style>
