@@ -97,14 +97,6 @@ const visualProjects = [
   },
 ];
 
-const skills = [
-  { label: 'Frontend', items: ['Angular', 'RxJS', 'TypeScript', 'HTML/CSS', 'SCSS'] },
-  { label: 'Creative', items: ['Three.js', 'p5.js', 'TouchDesigner', 'OSC', 'WebGL'] },
-  { label: 'Backend & Data', items: ['Supabase', 'PostgreSQL', 'Node.js'] },
-  { label: 'Design', items: ['Figma', 'Photoshop', 'Illustrator', 'UX Design', 'Typography'] },
-  { label: 'Music', items: ['Ableton Live', 'Eurorack', 'Max for Live', 'Sound Design'] },
-  { label: 'Tooling', items: ['Git', 'Talon Voice', 'JetBrains IDEs', 'Linux/Mac'] },
-];
 ---
 
 <BaseLayout isHome={true}>
@@ -201,24 +193,21 @@ const skills = [
 
   <hr class="divider" />
 
-  <!-- Skills -->
+  <!-- Skills — compact, links to About for full detail -->
   <section class="section" id="skills">
     <div class="container">
       <header class="section-header">
         <span class="tag">Craft</span>
         <h2 class="section-title">Tools & Skills</h2>
-        <p class="section-desc">A decade of practice across engineering, design, and musical performance.</p>
       </header>
-      <div class="skills-grid">
-        {skills.map(group => (
-          <div class="skill-group">
-            <h4 class="skill-group__label">{group.label}</h4>
-            <ul class="skill-group__items">
-              {group.items.map(item => <li>{item}</li>)}
-            </ul>
-          </div>
-        ))}
-      </div>
+      <p class="skills-summary">
+        Angular · RxJS · TypeScript · SCSS · Supabase · PostgreSQL
+        · Three.js · p5.js · OSC · TouchDesigner
+        · Figma · Illustrator · Photoshop
+        · Ableton Live · Eurorack · Max for Live
+        · Talon Voice · JetBrains IDEs
+      </p>
+      <a href="/about#tools" class="skills-more">Full tools & experience →</a>
     </div>
   </section>
 
@@ -591,29 +580,21 @@ const skills = [
   }
 
   /* ── Skills ── */
-  .skills-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-    gap: var(--space-6);
-  }
-  .skill-group__label {
-    font-family: var(--font-mono);
-    font-size: 0.75rem;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    color: var(--color-muted);
-    margin-bottom: var(--space-3);
-  }
-  .skill-group__items {
-    list-style: none;
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-2);
-  }
-  .skill-group__items li {
+  .skills-summary {
     font-size: 0.9rem;
-    color: var(--color-text);
+    color: var(--color-muted);
+    line-height: 2;
+    max-width: none;
   }
+  .skills-more {
+    display: inline-block;
+    margin-top: var(--space-4);
+    font-size: 0.875rem;
+    color: var(--color-muted);
+    text-decoration: none;
+    transition: color var(--transition);
+  }
+  .skills-more:hover { color: var(--color-text); }
 
   /* ── Section headers ── */
   .section-header {

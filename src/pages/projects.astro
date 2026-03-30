@@ -1,0 +1,242 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+
+const sections = [
+  {
+    id: 'code',
+    label: 'Code',
+    title: 'Engineering & Tools',
+    desc: 'Software projects, open-source tools, and developer utilities.',
+    projects: [
+      {
+        name: 'Patcher',
+        description: 'The digital twin workspace for Eurorack musicians. Document patches, plan racks, track modules. Free, open-source, actively maintained since 2021. Currently v5.3.7.',
+        url: 'https://patcher.xyz',
+        repo: 'https://github.com/polyterative/Patcher',
+        tags: ['Angular', 'TypeScript', 'Supabase', 'PostgreSQL', 'Eurorack'],
+        featured: true,
+      },
+      {
+        name: 'Poly Highlights',
+        description: 'Luminance-corrected syntax highlighting theme for JetBrains IDEs. Every token sits at a calibrated perceptual brightness so the hierarchy is obvious without eye strain. 10 stars.',
+        repo: 'https://github.com/polyterative/Poly-highlights',
+        tags: ['JetBrains', 'Design', 'Color Theory', 'Tooling'],
+      },
+      {
+        name: 'POLY_REACTIVE_VISUALS',
+        description: 'Angular + Three.js + RxJS scaffold for audio-reactive generative visuals. Full OSC integration for live hardware control. Forkable starting point for creative coding sets.',
+        url: 'https://reactive-visuals.vercel.app',
+        repo: 'https://github.com/polyterative/POLY_REACTIVE_VISUALS',
+        tags: ['Three.js', 'RxJS', 'Angular', 'OSC', 'Creative Coding'],
+      },
+      {
+        name: 'Angular Reactive p5.js',
+        description: 'Clean setup for p5.js sketches inside Angular + RxJS. Treats sketch state as Observable streams, decoupling rendering from app logic.',
+        url: 'https://reactive-p5.vercel.app',
+        repo: 'https://github.com/polyterative/AngularReactiveP5',
+        tags: ['p5.js', 'Angular', 'RxJS', 'Generative Art'],
+      },
+      {
+        name: 'thear',
+        description: 'Sonification of AI coding activity. Python daemon that hooks into Claude Code events and emits OSC messages to Ableton Live in real time.',
+        repo: 'https://github.com/polyterative/thear',
+        tags: ['Python', 'OSC', 'Ableton', 'AI', 'Claude'],
+      },
+      {
+        name: 'Poly Talon Scripts',
+        description: 'Custom Talon Voice configuration for hands-free coding on Mac, Windows, and Linux. My daily driver for voice-driven development across JetBrains IDEs and the terminal.',
+        repo: 'https://github.com/polyterative/Poly-Talon-Scripts',
+        tags: ['Voice Coding', 'Python', 'Talon', 'Productivity', 'Accessibility'],
+      },
+      {
+        name: 'Zulu',
+        description: 'UI experiment exploring layout density and interaction patterns in Angular. Deployed on Vercel.',
+        url: 'https://zulu-3506inbrr-polyterative.vercel.app/',
+        repo: 'https://github.com/polyterative/Zulu',
+        tags: ['Angular', 'TypeScript', 'UI Experiment'],
+      },
+      {
+        name: 'NodeMCU Sensor',
+        description: 'Firmware for a cheap ESP8266 microcontroller acting as a temperature and humidity sensor. An early project in physical computing.',
+        repo: 'https://github.com/polyterative/nodemcu-sensor',
+        tags: ['Arduino', 'C++', 'IoT', 'ESP8266'],
+      },
+    ],
+  },
+  {
+    id: 'sound',
+    label: 'Sound',
+    title: 'Music & Synthesis',
+    desc: 'Electronic music through modular synthesis, Ableton Live, and live performance.',
+    projects: [
+      {
+        name: 'Polyterative on Bandcamp',
+        description: 'Releases and recordings under the Polyterative alias. Electronic music at the intersection of modular synthesis and composed structure.',
+        url: 'https://polyterative.bandcamp.com',
+        tags: ['Electronic Music', 'Bandcamp', 'Releases'],
+      },
+      {
+        name: 'Eurorack / Modular Synthesis',
+        description: 'Semi-modular and fully modular synthesis rigs. Patches documented in Patcher. Active in Bologna Modulare and Eurorack Italy communities.',
+        tags: ['Eurorack', 'Modular Synthesis', 'Hardware', 'Semi-modular'],
+      },
+      {
+        name: 'Ableton Live Racks',
+        description: 'Personal collection of Ableton Live effect racks and templates shared openly. Bridges software production and hardware synthesis workflows.',
+        repo: 'https://github.com/polyterative/poly-ableton-racks',
+        tags: ['Ableton Live', 'Effect Racks', 'Production', 'Max for Live'],
+      },
+      {
+        name: 'OSC Audio-Visual Bridge',
+        description: 'Live performance system connecting Eurorack hardware to generative visuals via Open Sound Control. Physical knobs control Three.js parameters in real time, sub-20ms latency.',
+        tags: ['OSC', 'Live Performance', 'Audio-Visual', 'Real-time'],
+      },
+    ],
+  },
+  {
+    id: 'visuals',
+    label: 'Visuals',
+    title: 'Generative Art',
+    desc: 'Audio-reactive visuals, generative art, and live visual performance.',
+    projects: [
+      {
+        name: 'POLY_REACTIVE_VISUALS',
+        description: 'Framework for audio-reactive generative art. Three.js scenes driven by RxJS streams and live OSC from hardware synthesizers. Full source on GitHub.',
+        url: 'https://reactive-visuals.vercel.app',
+        repo: 'https://github.com/polyterative/POLY_REACTIVE_VISUALS',
+        tags: ['Three.js', 'Generative Art', 'Real-time', 'Audio-reactive'],
+      },
+      {
+        name: 'Angular + p5.js',
+        description: 'Creative coding starter that pairs p5.js sketch rendering with Angular/RxJS state management. Each sketch input becomes an Observable.',
+        url: 'https://reactive-p5.vercel.app',
+        repo: 'https://github.com/polyterative/AngularReactiveP5',
+        tags: ['p5.js', 'Generative Art', 'Creative Coding'],
+      },
+      {
+        name: 'TouchDesigner',
+        description: 'Node-based real-time visual compositions for live VJ sets and audio-reactive installations. Often driven by modular synth via OSC or audio analysis.',
+        tags: ['TouchDesigner', 'VJ', 'Real-time', 'Installations'],
+      },
+    ],
+  },
+  {
+    id: 'talks',
+    label: 'Talks',
+    title: 'Public Talks',
+    desc: 'Workshops and presentations.',
+    projects: [
+      {
+        name: 'Angular Flex: Building with Style (2022)',
+        description: 'Public workshop in Bologna. Covered design principles applied to user interfaces — space, aesthetics, usability, iteration — with a live Angular Flex Layout UI build as the core demo.',
+        repo: 'https://github.com/polyterative/Presentations',
+        tags: ['Angular', 'UI Design', 'Workshop', '2022'],
+      },
+    ],
+  },
+];
+---
+
+<BaseLayout
+  title="Projects — Vlady Yakovenko"
+  description="All projects by Vlady Yakovenko (polyterative) — code, music, generative visuals, and talks."
+>
+  <section class="section">
+    <div class="container">
+      <header class="page-header">
+        <span class="tag">Projects</span>
+        <h1>All Work</h1>
+        <p class="page-desc">Code, sound, visuals, and talks — everything in one place.</p>
+        <nav class="domain-nav" aria-label="Jump to section">
+          {sections.map(s => (
+            <a href={`#${s.id}`} class="domain-nav__link">{s.label}</a>
+          ))}
+        </nav>
+      </header>
+
+      {sections.map(section => (
+        <div class="domain-section" id={section.id}>
+          <header class="domain-header">
+            <span class="tag">{section.label}</span>
+            <h2>{section.title}</h2>
+            <p class="domain-desc">{section.desc}</p>
+          </header>
+          <ul class="project-grid">
+            {section.projects.map(p => (
+              <li>
+                <ProjectCard {...p} />
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .page-header {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    padding-top: var(--space-8);
+    margin-bottom: var(--space-16);
+  }
+  .page-header h1 {
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    letter-spacing: -0.03em;
+  }
+  .page-desc {
+    color: var(--color-muted);
+    font-size: 0.95rem;
+  }
+
+  .domain-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    margin-top: var(--space-4);
+  }
+  .domain-nav__link {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--color-muted);
+    text-decoration: none;
+    border: 1px solid var(--color-border);
+    padding: var(--space-1) var(--space-3);
+    border-radius: var(--radius-sm);
+    transition: color var(--transition), border-color var(--transition);
+  }
+  .domain-nav__link:hover {
+    color: var(--color-text);
+    border-color: var(--color-text);
+  }
+
+  .domain-section {
+    margin-bottom: var(--space-16);
+    scroll-margin-top: 80px;
+  }
+
+  .domain-header {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    margin-bottom: var(--space-6);
+  }
+  .domain-header h2 {
+    font-size: clamp(1.3rem, 2.5vw, 1.8rem);
+  }
+  .domain-desc {
+    font-size: 0.875rem;
+    color: var(--color-muted);
+    max-width: 55ch;
+  }
+
+  .project-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
+    gap: var(--space-4);
+    list-style: none;
+  }
+</style>
