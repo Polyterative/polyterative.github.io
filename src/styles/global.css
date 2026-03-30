@@ -87,6 +87,12 @@ a {
 }
 a:hover { text-decoration-color: var(--color-text); }
 
+/* Text selection */
+::selection {
+  background: var(--color-text);
+  color: var(--color-bg);
+}
+
 code, pre {
   font-family: var(--font-mono);
   font-size: 0.875em;

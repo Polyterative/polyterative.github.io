@@ -3,15 +3,35 @@ export interface Props {
   title?: string;
   description?: string;
   ogImage?: string;
+  isHome?: boolean;
 }
 
 const {
   title = 'Vlady Yakovenko — UX Engineer, Artist, Musician',
   description = 'Portfolio of Vlady Yakovenko (polyterative) — UX engineer, generative visual artist, and electronic musician based in Bologna, Italy.',
   ogImage = '/og-default.png',
+  isHome = false,
 } = Astro.props;
 
 const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
+
+const personSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: 'Vlady Yakovenko',
+  alternateName: 'polyterative',
+  url: 'https://polyterative.github.io',
+  sameAs: [
+    'https://github.com/polyterative',
+    'https://polyterative.bandcamp.com',
+    'https://www.instagram.com/politerative/',
+    'https://patcher.xyz',
+  ],
+  jobTitle: 'UX Engineer',
+  description: 'Medium-agnostic creative exploring intersections of arts, design and code.',
+  address: { '@type': 'PostalAddress', addressLocality: 'Bologna', addressCountry: 'IT' },
+  email: 'polyterative@outlook.com',
+};
 ---
 
 <!DOCTYPE html>
@@ -28,6 +48,8 @@ const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
   <meta property="og:url" content={canonicalUrl} />
   <meta property="og:type" content="website" />
   <meta property="og:image" content={new URL(ogImage, Astro.site)} />
+  <meta property="og:locale" content="en_US" />
+  <meta property="og:site_name" content="polyterative" />
 
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary" />
@@ -41,37 +63,47 @@ const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
 
+  {isHome && (
+    <script type="application/ld+json" set:html={JSON.stringify(personSchema)} />
+  )}
+
   <title>{title}</title>
 </head>
 <body>
+  <a class="skip-link" href="#main-content">Skip to content</a>
+
   <header class="site-header">
     <div class="container">
-      <nav class="nav">
+      <nav class="nav" aria-label="Main navigation">
         <a href="/" class="nav__logo">polyterative</a>
         <ul class="nav__links">
           <li><a href="/#patcher">Patcher</a></li>
           <li><a href="/#work">Code</a></li>
           <li><a href="/#sound">Sound</a></li>
-          <li><a href="/#visuals">Visuals</a></li>
           <li><a href="/blog">Writing</a></li>
+          <li><a href="/about">About</a></li>
         </ul>
       </nav>
     </div>
   </header>
 
-  <main class="site-main">
+  <main class="site-main" id="main-content" tabindex="-1">
     <slot />
   </main>
 
   <footer class="site-footer">
     <div class="container">
       <div class="footer-inner">
-        <p class="footer-copy">Vlady Yakovenko &mdash; Bologna, Italy</p>
+        <div class="footer-left">
+          <p class="footer-copy">Vlady Yakovenko</p>
+          <p class="footer-sub">Bologna, Italy &nbsp;·&nbsp; <a href="mailto:polyterative@outlook.com">polyterative@outlook.com</a></p>
+        </div>
         <ul class="footer-links">
-          <li><a href="https://github.com/polyterative" target="_blank" rel="noopener">GitHub</a></li>
-          <li><a href="https://polyterative.bandcamp.com" target="_blank" rel="noopener">Bandcamp</a></li>
-          <li><a href="https://www.instagram.com/politerative/" target="_blank" rel="noopener">Instagram</a></li>
-          <li><a href="https://patcher.xyz" target="_blank" rel="noopener">patcher.xyz</a></li>
+          <li><a href="https://github.com/polyterative" target="_blank" rel="noopener" aria-label="GitHub profile">GitHub</a></li>
+          <li><a href="https://polyterative.bandcamp.com" target="_blank" rel="noopener" aria-label="Bandcamp music page">Bandcamp</a></li>
+          <li><a href="https://www.instagram.com/politerative/" target="_blank" rel="noopener" aria-label="Instagram profile">Instagram</a></li>
+          <li><a href="https://patcher.xyz" target="_blank" rel="noopener" aria-label="Patcher app">patcher.xyz</a></li>
+          <li><a href="/about">About</a></li>
         </ul>
       </div>
     </div>
@@ -159,7 +191,53 @@ const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
   }
   .footer-links a:hover { color: var(--color-text); }
 
+  .footer-left {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+  }
+  .footer-sub {
+    font-size: 0.8rem;
+    color: var(--color-muted);
+  }
+  .footer-sub a {
+    color: var(--color-muted);
+    text-decoration: underline;
+    text-decoration-color: transparent;
+    transition: text-decoration-color var(--transition);
+  }
+  .footer-sub a:hover { text-decoration-color: var(--color-muted); }
+
+  /* Skip link */
+  .skip-link {
+    position: absolute;
+    top: -100px;
+    left: var(--space-4);
+    z-index: 999;
+    background: var(--color-text);
+    color: var(--color-bg);
+    padding: var(--space-2) var(--space-4);
+    border-radius: var(--radius-sm);
+    font-size: 0.875rem;
+    text-decoration: none;
+    transition: top var(--transition);
+  }
+  .skip-link:focus { top: var(--space-4); }
+
+  /* Global focus styles */
+  :focus-visible {
+    outline: 2px solid var(--color-text);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
   @media (max-width: 600px) {
+    .nav__links {
+      gap: var(--space-4);
+    }
+    .nav__links li:nth-child(n+4) { display: none; }
+  }
+  @media (max-width: 420px) {
     .nav__links { display: none; }
   }
 </style>

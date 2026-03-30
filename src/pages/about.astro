@@ -1,0 +1,308 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const experience = [
+  {
+    role: 'UX Engineer',
+    org: 'XTEL',
+    period: 'Current',
+    desc: 'Building enterprise-grade frontend software. Daily stack: TypeScript, Angular, SCSS, SVG.',
+  },
+  {
+    role: 'Founder & Maintainer',
+    org: 'Patcher (patcher.xyz)',
+    period: '2021 — Present',
+    desc: 'Designed, built, and continue to maintain an open-source workspace for Eurorack musicians. Community-driven module database. Currently at v5.3.7.',
+  },
+  {
+    role: 'Speaker',
+    org: 'Public (Bologna)',
+    period: '2022',
+    desc: 'Gave a workshop on design principles and Angular Flex Layout — covering constraints, iteration, and live UI building.',
+  },
+  {
+    role: 'Community Member',
+    org: 'Bologna Modulare / Eurorack Italy',
+    period: '2019 — Present',
+    desc: 'Active member of the Italian modular synthesis community. Contributor to shared knowledge, events, and gear discussion.',
+  },
+  {
+    role: 'Open Source Contributor',
+    org: 'GitHub',
+    period: '2015 — Present',
+    desc: 'Repositories spanning creative coding frameworks, developer tooling, IoT sensors, voice coding configs, and generative art templates.',
+  },
+];
+
+const currentFocus = [
+  'Building audio-reactive visuals with Angular and Three.js',
+  'Making music with Ableton Live and Eurorack gear',
+  'Maintaining and improving Patcher (patcher.xyz)',
+  'Exploring voice-driven development with Talon Voice',
+];
+
+const tools = [
+  { label: 'Daily languages', items: ['.ts', '.html', '.scss', '.svg'] },
+  { label: 'Frontend', items: ['Angular', 'RxJS', 'TypeScript', 'HTML/CSS'] },
+  { label: 'Creative code', items: ['Three.js', 'p5.js', 'TouchDesigner', 'OSC'] },
+  { label: 'Design', items: ['Figma', 'Photoshop', 'Illustrator'] },
+  { label: 'Backend', items: ['Supabase', 'PostgreSQL', 'Node.js'] },
+  { label: 'Music', items: ['Ableton Live', 'Eurorack', 'Max for Live'] },
+];
+---
+
+<BaseLayout
+  title="About — Vlady Yakovenko"
+  description="Vlady Yakovenko (polyterative) — UX engineer, generative visual artist, and electronic musician based in Bologna, Italy. Background, tools, and current focus."
+>
+  <section class="section">
+    <div class="container">
+
+      <!-- Bio -->
+      <header class="about-header">
+        <span class="tag">About</span>
+        <h1>Vlady Yakovenko</h1>
+        <p class="about-handle">polyterative &nbsp;·&nbsp; Bologna, Italy</p>
+        <p class="about-bio">
+          I'm a UX engineer and polyglot artist working at the intersection of software engineering,
+          generative art, and electronic music. My practice is medium-agnostic: the same attention
+          to systems, feedback loops, and craft applies whether I'm writing reactive TypeScript,
+          patching a modular synthesizer, or composing a visual set.
+        </p>
+        <p class="about-bio">
+          I believe in building tools that outlast trends, designing for clarity over complexity,
+          and sharing work openly. Most of my projects are free and open source.
+        </p>
+        <div class="about-contact">
+          <span class="about-contact__label">Booking & enquiries</span>
+          <a href="mailto:polyterative@outlook.com">polyterative@outlook.com</a>
+        </div>
+      </header>
+
+      <hr class="divider" />
+
+      <!-- Now -->
+      <section class="about-section">
+        <h2 class="about-section__title">Now</h2>
+        <ul class="now-list">
+          {currentFocus.map(item => (
+            <li>
+              <span class="now-dot">—</span>
+              {item}
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      <hr class="divider" />
+
+      <!-- Experience -->
+      <section class="about-section">
+        <h2 class="about-section__title">Experience</h2>
+        <div class="timeline">
+          {experience.map(item => (
+            <article class="timeline-item">
+              <div class="timeline-item__meta">
+                <time class="timeline-item__period">{item.period}</time>
+              </div>
+              <div class="timeline-item__body">
+                <h3 class="timeline-item__role">{item.role}</h3>
+                <p class="timeline-item__org">{item.org}</p>
+                <p class="timeline-item__desc">{item.desc}</p>
+              </div>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <hr class="divider" />
+
+      <!-- Tools -->
+      <section class="about-section">
+        <h2 class="about-section__title">Tools</h2>
+        <div class="tools-grid">
+          {tools.map(group => (
+            <div class="tool-group">
+              <h4 class="tool-group__label">{group.label}</h4>
+              <ul class="tool-group__items">
+                {group.items.map(item => <li><span class="tag">{item}</span></li>)}
+              </ul>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <hr class="divider" />
+
+      <!-- Links -->
+      <section class="about-section">
+        <h2 class="about-section__title">Find me</h2>
+        <ul class="links-list">
+          <li><a href="https://github.com/polyterative" target="_blank" rel="noopener">GitHub — github.com/polyterative</a></li>
+          <li><a href="https://polyterative.bandcamp.com" target="_blank" rel="noopener">Bandcamp — polyterative.bandcamp.com</a></li>
+          <li><a href="https://www.instagram.com/politerative/" target="_blank" rel="noopener">Instagram — @politerative</a></li>
+          <li><a href="https://patcher.xyz" target="_blank" rel="noopener">Patcher — patcher.xyz</a></li>
+          <li><a href="https://docs.patcher.xyz" target="_blank" rel="noopener">Patcher Docs — docs.patcher.xyz</a></li>
+          <li><a href="https://discord.gg/N6Z32xJR" target="_blank" rel="noopener">Patcher Discord</a></li>
+        </ul>
+      </section>
+
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .about-header {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    padding-top: var(--space-8);
+  }
+  .about-header h1 {
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    letter-spacing: -0.03em;
+  }
+  .about-handle {
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    color: var(--color-muted);
+    margin-top: calc(-1 * var(--space-2));
+  }
+  .about-bio {
+    font-size: 1.05rem;
+    line-height: 1.75;
+    color: var(--color-muted);
+    max-width: 60ch;
+  }
+  .about-contact {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    margin-top: var(--space-2);
+  }
+  .about-contact__label {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--color-muted);
+  }
+  .about-contact a {
+    font-size: 0.95rem;
+  }
+
+  .about-section {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+    padding-block: var(--space-4);
+  }
+  .about-section__title {
+    font-size: 1.4rem;
+    letter-spacing: -0.02em;
+  }
+
+  /* Now */
+  .now-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+  .now-list li {
+    display: flex;
+    gap: var(--space-3);
+    font-size: 0.95rem;
+    line-height: 1.5;
+  }
+  .now-dot {
+    color: var(--color-muted);
+    flex-shrink: 0;
+    font-family: var(--font-mono);
+  }
+
+  /* Timeline */
+  .timeline {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+  .timeline-item {
+    display: grid;
+    grid-template-columns: 170px 1fr;
+    gap: var(--space-6);
+    padding-block: var(--space-6);
+    border-top: 1px solid var(--color-border);
+  }
+  .timeline-item:last-child { border-bottom: 1px solid var(--color-border); }
+
+  .timeline-item__meta {
+    padding-top: 3px;
+  }
+  .timeline-item__period {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--color-muted);
+    white-space: nowrap;
+  }
+  .timeline-item__body {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+  }
+  .timeline-item__role {
+    font-size: 1rem;
+    font-weight: 600;
+  }
+  .timeline-item__org {
+    font-size: 0.85rem;
+    color: var(--color-muted);
+    font-family: var(--font-mono);
+  }
+  .timeline-item__desc {
+    font-size: 0.875rem;
+    color: var(--color-muted);
+    line-height: 1.6;
+    margin-top: var(--space-2);
+    max-width: none;
+  }
+
+  @media (max-width: 560px) {
+    .timeline-item {
+      grid-template-columns: 1fr;
+      gap: var(--space-2);
+    }
+  }
+
+  /* Tools */
+  .tools-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: var(--space-6);
+  }
+  .tool-group__label {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--color-muted);
+    margin-bottom: var(--space-3);
+  }
+  .tool-group__items {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    list-style: none;
+  }
+
+  /* Links */
+  .links-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+  .links-list a {
+    font-size: 0.95rem;
+  }
+</style>
