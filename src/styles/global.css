@@ -120,7 +120,7 @@ img { display: block; max-width: 100%; }
 }
 
 .section {
-  padding-block: var(--space-16);
+  padding-block: var(--space-12);
 }
 
 .divider {
