@@ -137,14 +137,36 @@ const tools = [
       <!-- Links -->
       <section class="about-section">
         <h2 class="about-section__title">Find me</h2>
-        <ul class="links-list">
-          <li><a href="https://github.com/polyterative" target="_blank" rel="noopener">GitHub — github.com/polyterative</a></li>
-          <li><a href="https://polyterative.bandcamp.com" target="_blank" rel="noopener">Bandcamp — polyterative.bandcamp.com</a></li>
-          <li><a href="https://www.instagram.com/politerative/" target="_blank" rel="noopener">Instagram — @politerative</a></li>
-          <li><a href="https://patcher.xyz" target="_blank" rel="noopener">Patcher — patcher.xyz</a></li>
-          <li><a href="https://docs.patcher.xyz" target="_blank" rel="noopener">Patcher Docs — docs.patcher.xyz</a></li>
-          <li><a href="https://discord.gg/N6Z32xJR" target="_blank" rel="noopener">Patcher Discord</a></li>
-        </ul>
+        <div class="contact-grid">
+          <a class="contact-card" href="https://github.com/polyterative" target="_blank" rel="noopener">
+            <span class="contact-card__label">Code</span>
+            <span class="contact-card__value">github.com/polyterative</span>
+          </a>
+          <a class="contact-card" href="https://polyterative.bandcamp.com" target="_blank" rel="noopener">
+            <span class="contact-card__label">Music</span>
+            <span class="contact-card__value">polyterative.bandcamp.com</span>
+          </a>
+          <a class="contact-card" href="https://www.instagram.com/politerative/" target="_blank" rel="noopener">
+            <span class="contact-card__label">Visual</span>
+            <span class="contact-card__value">@politerative</span>
+          </a>
+          <a class="contact-card" href="https://patcher.xyz" target="_blank" rel="noopener">
+            <span class="contact-card__label">App</span>
+            <span class="contact-card__value">patcher.xyz</span>
+          </a>
+          <a class="contact-card" href="https://docs.patcher.xyz" target="_blank" rel="noopener">
+            <span class="contact-card__label">Docs</span>
+            <span class="contact-card__value">docs.patcher.xyz</span>
+          </a>
+          <a class="contact-card" href="https://discord.gg/N6Z32xJR" target="_blank" rel="noopener">
+            <span class="contact-card__label">Community</span>
+            <span class="contact-card__value">Patcher Discord</span>
+          </a>
+          <a class="contact-card" href="mailto:polyterative@outlook.com">
+            <span class="contact-card__label">Email</span>
+            <span class="contact-card__value">polyterative@outlook.com</span>
+          </a>
+        </div>
       </section>
 
     </div>
@@ -296,13 +318,36 @@ const tools = [
   }
 
   /* Links */
-  .links-list {
-    list-style: none;
-    display: flex;
-    flex-direction: column;
+  .contact-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
     gap: var(--space-3);
   }
-  .links-list a {
-    font-size: 0.95rem;
+  .contact-card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-4) var(--space-5);
+    text-decoration: none;
+    transition: border-color var(--transition), background var(--transition);
+  }
+  .contact-card:hover {
+    border-color: var(--color-muted);
+    background: var(--color-accent-soft);
+  }
+  .contact-card__label {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--color-muted);
+  }
+  .contact-card__value {
+    font-size: 0.9rem;
+    color: var(--color-text);
+    font-weight: 500;
+    word-break: break-all;
   }
 </style>
