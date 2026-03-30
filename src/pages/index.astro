@@ -10,55 +10,60 @@ const posts = (await getCollection('blog', ({ data }) => !data.draft))
 
 const codeProjects = [
   {
-    name: 'Patcher',
-    description: 'The everything modular manager and database. A community-driven open-source app for Eurorack patch documentation and module discovery.',
-    url: 'https://patcher.xyz',
-    repo: 'https://github.com/polyterative/Patcher',
-    tags: ['Angular', 'Supabase', 'TypeScript', 'Eurorack'],
-    featured: true,
-  },
-  {
     name: 'Poly Highlights',
-    description: 'Luminance-corrected syntax highlighting theme for JetBrains IDEs. Carefully tuned for readability across all token types.',
+    description: 'Luminance-corrected syntax highlighting theme for JetBrains IDEs. Carefully calibrated for readability across all token types — 10 stars and counting.',
     repo: 'https://github.com/polyterative/Poly-highlights',
     tags: ['JetBrains', 'Design', 'Tooling'],
   },
   {
     name: 'POLY_REACTIVE_VISUALS',
-    description: 'Angular + Three.js + RxJS template for audio-reactive generative visuals. Includes OSC integration for live control from hardware synths.',
+    description: 'Angular + Three.js + RxJS template for audio-reactive generative visuals. Includes OSC integration for live control from hardware synthesizers.',
     url: 'https://reactive-visuals.vercel.app',
     repo: 'https://github.com/polyterative/POLY_REACTIVE_VISUALS',
     tags: ['Three.js', 'RxJS', 'Creative Coding', 'OSC'],
   },
   {
     name: 'thear',
-    description: 'Sonification of AI coding activity. A Python tool that translates Claude Code hooks into OSC messages for real-time sound feedback in Ableton.',
+    description: 'Sonification of AI coding activity. Translates Claude Code hooks into OSC messages for real-time audio feedback in Ableton Live.',
     repo: 'https://github.com/polyterative/thear',
     tags: ['Python', 'Ableton', 'OSC', 'AI'],
   },
   {
+    name: 'Angular Reactive p5.js',
+    description: 'Clean setup for p5.js sketches inside an Angular + RxJS environment. Separation between sketch logic and application state.',
+    url: 'https://reactive-p5.vercel.app',
+    repo: 'https://github.com/polyterative/AngularReactiveP5',
+    tags: ['p5.js', 'Angular', 'Creative Coding'],
+  },
+  {
     name: 'Poly Talon Scripts',
-    description: 'Custom Talon Voice configuration for voice-driven coding on Mac, Windows, and Linux. My daily driver setup.',
+    description: 'Custom Talon Voice configuration for voice-driven coding on Mac, Windows, and Linux. My daily driver setup for hands-free development.',
     repo: 'https://github.com/polyterative/Poly-Talon-Scripts',
     tags: ['Voice Coding', 'Python', 'Productivity'],
+  },
+  {
+    name: 'NodeMCU Sensor',
+    description: 'Cheap ESP8266 as a temperature/humidity sensor — an early hardware project bridging physical computing and software.',
+    repo: 'https://github.com/polyterative/nodemcu-sensor',
+    tags: ['Arduino', 'IoT', 'C++'],
   },
 ];
 
 const soundProjects = [
   {
-    name: 'Eurorack / Modular',
-    description: 'Semi-modular and fully modular synthesis rigs. Deeply involved in the Bologna Modulare and Eurorack Italy communities.',
-    tags: ['Eurorack', 'Synthesis', 'Hardware'],
+    name: 'Eurorack / Modular Synthesis',
+    description: 'Semi-modular and fully modular synthesis rigs. Active member of Bologna Modulare and Eurorack Italy communities. Patches documented in Patcher.',
+    tags: ['Eurorack', 'Modular Synthesis', 'Hardware'],
   },
   {
-    name: 'Ableton Live',
-    description: 'Electronic music production and live performance. Custom effect racks and templates, bridging the gap between software and hardware.',
+    name: 'Ableton Live Production',
+    description: 'Electronic music production and live performance. Custom effect racks and templates shared openly, bridging software and hardware workflows.',
     repo: 'https://github.com/polyterative/poly-ableton-racks',
-    tags: ['Ableton', 'Production', 'Performance'],
+    tags: ['Ableton', 'Production', 'Live Performance'],
   },
   {
     name: 'OSC Audio-Visual Bridge',
-    description: 'Live performance system connecting Eurorack modular gear to generative visuals via Open Sound Control. Hardware knobs drive on-screen parameters in real time.',
+    description: 'Live performance system connecting Eurorack modular gear to generative visuals via Open Sound Control. Physical knobs modulate on-screen parameters in real time.',
     tags: ['OSC', 'Live Performance', 'Audio-Visual'],
   },
 ];
@@ -66,23 +71,32 @@ const soundProjects = [
 const visualProjects = [
   {
     name: 'POLY_REACTIVE_VISUALS',
-    description: 'Framework for audio-reactive generative art. Three.js scenes driven by RxJS streams and live OSC from hardware.',
+    description: 'Framework for audio-reactive generative art. Three.js scenes driven by RxJS streams and live OSC from hardware. Open source and forkable.',
     url: 'https://reactive-visuals.vercel.app',
     repo: 'https://github.com/polyterative/POLY_REACTIVE_VISUALS',
     tags: ['Three.js', 'Generative Art', 'Real-time'],
   },
   {
     name: 'Angular + p5.js',
-    description: 'Reactive setup for p5.js sketches inside an Angular + RxJS environment. Clean separation between sketch logic and application state.',
+    description: 'Reactive setup for p5.js sketches inside Angular + RxJS. Clean separation of concerns between sketch logic and app state.',
     url: 'https://reactive-p5.vercel.app',
     repo: 'https://github.com/polyterative/AngularReactiveP5',
     tags: ['p5.js', 'Angular', 'Creative Coding'],
   },
   {
     name: 'TouchDesigner',
-    description: 'Node-based real-time visual compositions. Used for live VJ sets and audio-reactive installations.',
-    tags: ['TouchDesigner', 'VJ', 'Installations'],
+    description: 'Node-based real-time visual compositions for live VJ sets and audio-reactive installations. Often driven by modular synth via OSC.',
+    tags: ['TouchDesigner', 'VJ', 'Real-time'],
   },
+];
+
+const skills = [
+  { label: 'Frontend', items: ['Angular', 'RxJS', 'TypeScript', 'HTML/CSS', 'SCSS'] },
+  { label: 'Creative', items: ['Three.js', 'p5.js', 'TouchDesigner', 'OSC', 'WebGL'] },
+  { label: 'Backend & Data', items: ['Supabase', 'PostgreSQL', 'Node.js'] },
+  { label: 'Design', items: ['Figma', 'Photoshop', 'Illustrator', 'UX Design', 'Typography'] },
+  { label: 'Music', items: ['Ableton Live', 'Eurorack', 'Max for Live', 'Sound Design'] },
+  { label: 'Tooling', items: ['Git', 'Talon Voice', 'JetBrains IDEs', 'Linux/Mac'] },
 ];
 ---
 
@@ -91,18 +105,110 @@ const visualProjects = [
   <section class="hero section">
     <div class="container">
       <div class="hero__inner">
-        <p class="hero__label">Vlady Yakovenko — Bologna, Italy</p>
+        <p class="hero__label">Vlady Yakovenko &nbsp;·&nbsp; Bologna, Italy &nbsp;·&nbsp; Since 2015</p>
         <h1 class="hero__title">UX Engineer.<br />Visual Artist.<br />Electronic Musician.</h1>
         <p class="hero__bio">
-          I design and build software, compose generative visuals, and perform with modular synthesizers.
-          My work sits at the intersection of engineering rigour and sensory experience.
+          A medium-agnostic creative exploring the intersections of arts, design and code.
+          I build software products, compose generative visuals, and perform with modular synthesizers —
+          often all at once.
         </p>
         <ul class="hero__links">
           <li><a href="https://github.com/polyterative" target="_blank" rel="noopener">GitHub</a></li>
-          <li><a href="https://patcher.xyz" target="_blank" rel="noopener">patcher.xyz</a></li>
+          <li><a href="https://polyterative.bandcamp.com" target="_blank" rel="noopener">Bandcamp</a></li>
           <li><a href="https://www.instagram.com/politerative/" target="_blank" rel="noopener">Instagram</a></li>
           <li><a href="/blog">Writing →</a></li>
         </ul>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider" />
+
+  <!-- Featured: Patcher -->
+  <section class="section" id="patcher">
+    <div class="container">
+      <div class="featured">
+        <div class="featured__badge">
+          <span class="tag">Featured Project</span>
+          <span class="featured__status">
+            <span class="status-dot"></span>
+            Active · v5.3.7
+          </span>
+        </div>
+
+        <div class="featured__body">
+          <div class="featured__text">
+            <h2 class="featured__title">
+              <a href="https://patcher.xyz" target="_blank" rel="noopener">Patcher</a>
+            </h2>
+            <p class="featured__desc">
+              The digital twin workspace for Eurorack musicians. Document patches, plan racks,
+              track modules, and keep your real system in sync — all in a fast, clean workflow.
+              A free and open-source community tool with a curated public hardware database that
+              will always remain free.
+            </p>
+            <ul class="featured__highlights">
+              <li>Patch editor with auto-save and instance-aware connection flow</li>
+              <li>Drag-and-drop rack planner with live cable/module stats</li>
+              <li>Community module database — browse without an account</li>
+              <li>Works on desktop and mobile with the same workflow</li>
+            </ul>
+            <div class="featured__actions">
+              <a class="btn" href="https://patcher.xyz" target="_blank" rel="noopener">Open patcher.xyz →</a>
+              <a class="btn btn--ghost" href="https://github.com/polyterative/Patcher" target="_blank" rel="noopener">GitHub</a>
+              <a class="btn btn--ghost" href="https://docs.patcher.xyz" target="_blank" rel="noopener">Docs</a>
+              <a class="btn btn--ghost" href="https://discord.gg/N6Z32xJR" target="_blank" rel="noopener">Discord</a>
+            </div>
+          </div>
+
+          <div class="featured__stats">
+            <div class="stat">
+              <span class="stat__number">35</span>
+              <span class="stat__label">Stars</span>
+            </div>
+            <div class="stat">
+              <span class="stat__number">3</span>
+              <span class="stat__label">Forks</span>
+            </div>
+            <div class="stat">
+              <span class="stat__number">5+</span>
+              <span class="stat__label">Years active</span>
+            </div>
+            <div class="stat">
+              <span class="stat__number">∞</span>
+              <span class="stat__label">Free forever</span>
+            </div>
+          </div>
+        </div>
+
+        <ul class="featured__tags">
+          {['Angular', 'TypeScript', 'Supabase', 'PostgreSQL', 'Eurorack'].map(t => (
+            <li><span class="tag">{t}</span></li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider" />
+
+  <!-- Skills -->
+  <section class="section" id="skills">
+    <div class="container">
+      <header class="section-header">
+        <span class="tag">Craft</span>
+        <h2 class="section-title">Tools & Skills</h2>
+        <p class="section-desc">A decade of practice across engineering, design, and musical performance.</p>
+      </header>
+      <div class="skills-grid">
+        {skills.map(group => (
+          <div class="skill-group">
+            <h4 class="skill-group__label">{group.label}</h4>
+            <ul class="skill-group__items">
+              {group.items.map(item => <li>{item}</li>)}
+            </ul>
+          </div>
+        ))}
       </div>
     </div>
   </section>
@@ -114,8 +220,8 @@ const visualProjects = [
     <div class="container">
       <header class="section-header">
         <span class="tag">Code</span>
-        <h2 class="section-title">Engineering & Tools</h2>
-        <p class="section-desc">Software projects spanning developer tooling, creative frameworks, and community applications.</p>
+        <h2 class="section-title">Other Projects</h2>
+        <p class="section-desc">Open-source tools, creative frameworks, and experiments.</p>
       </header>
       <ul class="project-grid">
         {codeProjects.map(p => (
@@ -144,6 +250,10 @@ const visualProjects = [
           </li>
         ))}
       </ul>
+      <div class="bandcamp-cta">
+        <p>Listen to releases on Bandcamp.</p>
+        <a class="btn btn--ghost" href="https://polyterative.bandcamp.com" target="_blank" rel="noopener">polyterative.bandcamp.com →</a>
+      </div>
     </div>
   </section>
 
@@ -164,6 +274,38 @@ const visualProjects = [
           </li>
         ))}
       </ul>
+    </div>
+  </section>
+
+  <hr class="divider" />
+
+  <!-- Talks -->
+  <section class="section" id="talks">
+    <div class="container">
+      <header class="section-header">
+        <span class="tag">Speaking</span>
+        <h2 class="section-title">Public Talks</h2>
+      </header>
+      <div class="talk-list">
+        <article class="talk card">
+          <div class="talk__meta">
+            <time>2022</time>
+          </div>
+          <div class="talk__body">
+            <h3 class="talk__title">Angular Flex: Building with Style</h3>
+            <p class="talk__desc">
+              A presentation and workshop on design principles applied to user interfaces, and how to build
+              them with Angular Flex Layout. Covered design as a living system — constraints, iteration,
+              aesthetics — with a live UI build as the core demo.
+            </p>
+            <ul class="talk__tags">
+              <li><span class="tag">Angular</span></li>
+              <li><span class="tag">UI Design</span></li>
+              <li><span class="tag">Workshop</span></li>
+            </ul>
+          </div>
+        </article>
+      </div>
     </div>
   </section>
 
@@ -195,9 +337,8 @@ const visualProjects = [
 </BaseLayout>
 
 <style>
-  .hero {
-    padding-block: var(--space-24);
-  }
+  /* ── Hero ── */
+  .hero { padding-block: var(--space-24); }
 
   .hero__inner {
     display: flex;
@@ -222,8 +363,8 @@ const visualProjects = [
   .hero__bio {
     font-size: 1.125rem;
     color: var(--color-muted);
-    line-height: 1.7;
-    max-width: 50ch;
+    line-height: 1.75;
+    max-width: 52ch;
   }
 
   .hero__links {
@@ -233,7 +374,6 @@ const visualProjects = [
     list-style: none;
     margin-top: var(--space-2);
   }
-
   .hero__links a {
     font-size: 0.9rem;
     color: var(--color-text);
@@ -244,17 +384,199 @@ const visualProjects = [
   }
   .hero__links a:hover { border-color: var(--color-text); }
 
+  /* ── Featured (Patcher) ── */
+  .featured {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: var(--space-8);
+    background: var(--color-surface);
+  }
+
+  .featured__badge {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+  }
+
+  .featured__status {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--color-muted);
+  }
+
+  .status-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #22c55e;
+    animation: pulse 2s infinite;
+    flex-shrink: 0;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
+  .featured__body {
+    display: flex;
+    gap: var(--space-12);
+    align-items: flex-start;
+  }
+
+  .featured__text {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+
+  .featured__title {
+    font-size: clamp(1.8rem, 3vw, 2.5rem);
+    letter-spacing: -0.03em;
+  }
+  .featured__title a {
+    text-decoration: none;
+  }
+  .featured__title a:hover { text-decoration: underline; }
+
+  .featured__desc {
+    font-size: 1rem;
+    color: var(--color-muted);
+    line-height: 1.7;
+    max-width: 58ch;
+  }
+
+  .featured__highlights {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    padding-left: var(--space-4);
+    border-left: 2px solid var(--color-border);
+  }
+  .featured__highlights li {
+    font-size: 0.875rem;
+    color: var(--color-muted);
+    line-height: 1.5;
+  }
+
+  .featured__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    margin-top: var(--space-2);
+  }
+
+  .featured__stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-4);
+    flex-shrink: 0;
+  }
+
+  .featured__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    list-style: none;
+    padding-top: var(--space-2);
+    border-top: 1px solid var(--color-border);
+  }
+
+  .stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: var(--space-4);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    text-align: center;
+    min-width: 80px;
+  }
+  .stat__number {
+    font-size: 1.6rem;
+    font-weight: 600;
+    letter-spacing: -0.03em;
+    line-height: 1;
+  }
+  .stat__label {
+    font-size: 0.7rem;
+    color: var(--color-muted);
+    font-family: var(--font-mono);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-top: var(--space-1);
+  }
+
+  @media (max-width: 640px) {
+    .featured__body { flex-direction: column; }
+    .featured__stats { grid-template-columns: repeat(4, 1fr); }
+    .featured { padding: var(--space-6); }
+  }
+
+  /* ── Buttons ── */
+  .btn {
+    display: inline-block;
+    font-size: 0.875rem;
+    font-weight: 500;
+    padding: var(--space-2) var(--space-4);
+    border-radius: var(--radius-sm);
+    text-decoration: none;
+    border: 1px solid var(--color-text);
+    background: var(--color-text);
+    color: var(--color-bg);
+    transition: background var(--transition), color var(--transition), border-color var(--transition);
+  }
+  .btn:hover {
+    background: transparent;
+    color: var(--color-text);
+  }
+  .btn--ghost {
+    background: transparent;
+    color: var(--color-text);
+  }
+  .btn--ghost:hover {
+    background: var(--color-accent-soft);
+  }
+
+  /* ── Skills ── */
+  .skills-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: var(--space-6);
+  }
+  .skill-group__label {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--color-muted);
+    margin-bottom: var(--space-3);
+  }
+  .skill-group__items {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+  .skill-group__items li {
+    font-size: 0.9rem;
+    color: var(--color-text);
+  }
+
+  /* ── Section headers ── */
   .section-header {
     display: flex;
     flex-direction: column;
     gap: var(--space-3);
     margin-bottom: var(--space-8);
   }
-
-  .section-title {
-    font-size: clamp(1.5rem, 3vw, 2rem);
-  }
-
+  .section-title { font-size: clamp(1.5rem, 3vw, 2rem); }
   .section-desc {
     color: var(--color-muted);
     font-size: 0.95rem;
@@ -263,11 +585,61 @@ const visualProjects = [
 
   .project-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
     gap: var(--space-4);
     list-style: none;
   }
 
+  /* ── Bandcamp CTA ── */
+  .bandcamp-cta {
+    margin-top: var(--space-8);
+    padding: var(--space-6);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: var(--space-4);
+  }
+  .bandcamp-cta p {
+    font-size: 0.95rem;
+    color: var(--color-muted);
+  }
+
+  /* ── Talks ── */
+  .talk-list { display: flex; flex-direction: column; gap: var(--space-4); }
+  .talk {
+    display: grid;
+    grid-template-columns: 80px 1fr;
+    gap: var(--space-6);
+    align-items: start;
+  }
+  .talk__meta {
+    padding-top: 3px;
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--color-muted);
+  }
+  .talk__body { display: flex; flex-direction: column; gap: var(--space-3); }
+  .talk__title { font-size: 1.1rem; }
+  .talk__desc {
+    font-size: 0.875rem;
+    color: var(--color-muted);
+    line-height: 1.6;
+    max-width: none;
+  }
+  .talk__tags {
+    display: flex;
+    gap: var(--space-2);
+    list-style: none;
+    flex-wrap: wrap;
+  }
+  @media (max-width: 480px) {
+    .talk { grid-template-columns: 1fr; }
+  }
+
+  /* ── Writing ── */
   .all-posts-link {
     display: inline-block;
     margin-top: var(--space-6);
