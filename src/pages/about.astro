@@ -3,36 +3,52 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
 const experience = [
   {
-    role: 'UX Engineer',
+    role: 'Product Designer',
     org: 'XTEL',
-    period: 'Current',
-    desc: 'Building enterprise frontend for FMCG and retail — TypeScript, Angular, RxJS, SCSS, SVG. Responsible for UI architecture and component design across complex data-heavy interfaces.',
+    orgUrl: 'https://xtel.com',
+    period: 'Aug 2024 — Present',
+    desc: 'Driving innovation by rethinking platforms and defining product direction for advanced analytics software. Collaborating with cross-functional teams to reimagine user experiences and establish a cohesive design language. Leveraging a frontend engineering background to ensure design decisions are structurally sound and developer-ready.',
   },
   {
-    role: 'Founder & Maintainer',
-    org: 'Patcher — patcher.xyz',
-    period: '2021 — Present',
-    desc: 'Open-source workspace for Eurorack musicians. Angular + Supabase (PostgreSQL). Ships a patch editor, rack planner, and community module database. Currently v5.3.7.',
+    role: 'Senior Frontend Developer',
+    org: 'XTEL',
+    orgUrl: 'https://xtel.com',
+    period: 'Sep 2021 — Aug 2024',
+    desc: 'Senior developer for promotions optimization analytics in FMCG and retail. TypeScript, Angular, RxJS, SCSS. Close collaboration with data scientists, product managers, and UX teams. Responsible for UI architecture, component design, and coding standards.',
   },
   {
-    role: 'Speaker',
-    org: 'Public workshop (Bologna)',
-    period: '2022',
-    desc: '"Angular Flex: Building with Style" — design principles and a live UI build using Angular Flex Layout.',
+    role: 'Founder',
+    org: 'Patcher.xyz',
+    orgUrl: 'https://patcher.xyz',
+    period: 'Mar 2020 — Present',
+    desc: 'Open-source workspace for Eurorack musicians — patch editor, rack planner, and community module database. Angular + Supabase (PostgreSQL). Active Discord community. Currently v5.3.7.',
   },
   {
-    role: 'Community',
-    org: 'Bologna Modulare / Eurorack Italy',
-    period: '2019 — Present',
-    desc: 'Active in the Italian modular synthesis community — events, jams, gear exchange, and documentation.',
+    role: 'Frontend / Android / UX Engineer',
+    org: 'Otre Solutions',
+    period: 'Aug 2017 — Aug 2021',
+    desc: 'Full-stack product work for manufacturing clients across warehouse management, supply-chain planning, and industrial production monitoring. Angular, RxJS, Kotlin, C#, .NET Core, Firebase.',
   },
   {
-    role: 'Open Source',
-    org: 'github.com/polyterative',
-    period: '2015 — Present',
-    desc: '17 public repos: creative coding frameworks, developer tooling, IoT firmware, and community apps.',
+    role: 'Electronic Music Producer & Live Performer',
+    org: 'Freelance',
+    period: '2012 — Present',
+    desc: 'Experimental techno and modular synthesis. Live performances, sound engineering, and music for clients. Founder of the Polyterative alias.',
+  },
+  {
+    role: 'Android Engineer',
+    org: 'GESP',
+    period: 'Jun 2016 — Aug 2016',
+    desc: 'R&D for a computer vision project aimed at improving data entry speed for a logistics operator.',
   },
 ];
+
+const education = {
+  institution: 'IIS Belluzzi-Fioravanti',
+  degree: 'Perito Informatico — Computer Science',
+  period: '2012 — 2017',
+  grade: '99/100',
+};
 
 const currentFocus = [
   { text: 'Audio-reactive visuals with Angular and Three.js', href: 'https://github.com/polyterative/POLY_REACTIVE_VISUALS' },
@@ -102,11 +118,33 @@ const tools = [
               </div>
               <div class="timeline-item__body">
                 <h3 class="timeline-item__role">{item.role}</h3>
-                <p class="timeline-item__org">{item.org}</p>
+                {item.orgUrl
+                  ? <a class="timeline-item__org timeline-item__org--link" href={item.orgUrl} target="_blank" rel="noopener">{item.org}</a>
+                  : <p class="timeline-item__org">{item.org}</p>
+                }
                 <p class="timeline-item__desc">{item.desc}</p>
               </div>
             </article>
           ))}
+        </div>
+      </section>
+
+      <hr class="divider" />
+
+      <!-- Education -->
+      <section class="about-section">
+        <h2 class="about-section__title">Education</h2>
+        <div class="timeline">
+          <article class="timeline-item">
+            <div class="timeline-item__meta">
+              <time class="timeline-item__period">{education.period}</time>
+            </div>
+            <div class="timeline-item__body">
+              <h3 class="timeline-item__role">{education.degree}</h3>
+              <p class="timeline-item__org">{education.institution}</p>
+              <p class="timeline-item__desc">Final grade: {education.grade}</p>
+            </div>
+          </article>
         </div>
       </section>
 
@@ -294,6 +332,12 @@ const tools = [
     color: var(--color-muted);
     font-family: var(--font-mono);
   }
+  .timeline-item__org--link {
+    text-decoration: none;
+    color: var(--color-muted);
+    display: block;
+  }
+  .timeline-item__org--link:hover { color: var(--color-text); }
   .timeline-item__desc {
     font-size: 0.875rem;
     color: var(--color-muted);

@@ -1,0 +1,282 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const releases = [
+  {
+    title: 'Without Us',
+    year: '2025',
+    released: 'Feb 28, 2025',
+    cover: '/music/without-us.jpg',
+    url: 'https://polyterative.bandcamp.com/album/without-us',
+    genre: ['Industrial Techno', 'Modular Synthesis'],
+    desc: 'A brutalist, techno-futuristic landscape of corrupted digital space — built from the ground up with modular synthesis. If Ruled by Code was an introduction to this world, this is the moment of its unraveling.',
+    tracks: 8,
+    highlight: true,
+  },
+  {
+    title: 'Persist',
+    year: '2024',
+    released: '2024',
+    cover: '/music/persist.jpg',
+    url: null,
+    genre: ['Electronic', 'Modular'],
+    desc: 'A single released in 2024, continuing the exploration of modular synthesis and electronic sound design.',
+    tracks: 1,
+  },
+  {
+    title: 'Ruled by Code',
+    year: '2020',
+    released: 'Jun 15, 2020',
+    cover: '/music/ruled-by-code.jpg',
+    url: 'https://polyterative.bandcamp.com/album/ruled-by-code',
+    genre: ['Drone', 'Ambient', 'Electronic'],
+    desc: 'A deep and introspective look at the state of our world in the digital age — the impact of algorithmic systems on identity and autonomy. Five tracks of thought-provoking drones.',
+    tracks: 5,
+  },
+  {
+    title: 'Parzialmente Nuvoloso',
+    year: '2020',
+    released: 'Apr 18, 2020',
+    cover: '/music/parzialmente-nuvoloso.jpg',
+    url: 'https://polyterative.bandcamp.com/album/parzialmente-nuvoloso',
+    genre: ['Ambient', 'Electronic'],
+    desc: 'A sonic and visual exploration of the human experience — three long-form pieces (Cirri, Strati, Cumuli) inviting introspection. Any amount spent was donated to charity.',
+    tracks: 3,
+  },
+  {
+    title: 'Is It You',
+    year: '—',
+    released: '—',
+    cover: '/music/is-it-you.jpg',
+    url: null,
+    genre: ['Electronic'],
+    desc: 'An unreleased or privately circulated work exploring voice and electronic texture.',
+    tracks: 1,
+  },
+  {
+    title: 'Looking for Truth',
+    year: '2019',
+    released: 'Aug 15, 2019',
+    cover: '/music/looking-for-truth.jpg',
+    url: 'https://polyterative.bandcamp.com/album/looking-for-truth',
+    genre: ['Electronic', 'Ambient'],
+    desc: 'Eight tracks in two versions — standard and slow — each a meditation on awareness, growth, perspective, and consequence.',
+    tracks: 8,
+  },
+  {
+    title: 'Absence',
+    year: '2017',
+    released: 'Sep 1, 2017',
+    cover: '/music/absence.jpg',
+    url: 'https://polyterative.bandcamp.com/album/absence',
+    genre: ['Chillstep', 'Electronic'],
+    desc: 'An emotional exploration of the voids that exist within us all — longing for connection and understanding. Written October 2016 – July 2017. The debut EP.',
+    tracks: null,
+  },
+];
+---
+
+<BaseLayout
+  title="Music — Vlady Yakovenko"
+  description="Discography of Polyterative (Vlady Yakovenko) — electronic music, modular synthesis, and ambient releases from 2017 to present."
+>
+  <section class="section">
+    <div class="container">
+
+      <header class="page-header">
+        <span class="tag">Music</span>
+        <h1>Discography</h1>
+        <p class="page-desc">
+          Electronic music under the Polyterative alias — experimental techno, modular synthesis, ambient.
+          <a href="https://polyterative.bandcamp.com" target="_blank" rel="noopener" class="bandcamp-link">All releases on Bandcamp ↗</a>
+        </p>
+      </header>
+
+      <ul class="release-grid">
+        {releases.map(r => (
+          <li class:list={['release-card', { 'release-card--highlight': r.highlight }]}>
+            <div class="release-card__cover">
+              <img
+                src={r.cover}
+                alt={`${r.title} album cover`}
+                loading="lazy"
+                width="600"
+                height="600"
+              />
+              {r.url && (
+                <a class="release-card__overlay" href={r.url} target="_blank" rel="noopener" aria-label={`Listen to ${r.title} on Bandcamp`}>
+                  <span class="play-hint">Listen on Bandcamp ↗</span>
+                </a>
+              )}
+            </div>
+            <div class="release-card__body">
+              <div class="release-card__meta">
+                <time class="release-card__year">{r.released}</time>
+                {r.tracks && <span class="release-card__tracks">{r.tracks} {r.tracks === 1 ? 'track' : 'tracks'}</span>}
+              </div>
+              <h2 class="release-card__title">
+                {r.url
+                  ? <a href={r.url} target="_blank" rel="noopener">{r.title}</a>
+                  : r.title
+                }
+              </h2>
+              <p class="release-card__desc">{r.desc}</p>
+              <ul class="release-card__tags">
+                {r.genre.map(g => <li><span class="tag">{g}</span></li>)}
+              </ul>
+            </div>
+          </li>
+        ))}
+      </ul>
+
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .page-header {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    padding-top: var(--space-8);
+    margin-bottom: var(--space-12);
+  }
+  .page-header h1 { font-size: clamp(2rem, 5vw, 3rem); }
+  .page-desc {
+    color: var(--color-muted);
+    font-size: 0.95rem;
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    flex-wrap: wrap;
+  }
+  .bandcamp-link {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--color-muted);
+    text-decoration: none;
+    border-bottom: 1px solid var(--color-border);
+    padding-bottom: 1px;
+    transition: color var(--transition), border-color var(--transition);
+  }
+  .bandcamp-link:hover {
+    color: var(--color-text);
+    border-color: var(--color-text);
+  }
+
+  /* Grid */
+  .release-grid {
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
+    gap: var(--space-8);
+  }
+
+  /* Card */
+  .release-card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+  .release-card--highlight .release-card__cover {
+    grid-column: 1 / -1;
+  }
+
+  /* Cover */
+  .release-card__cover {
+    position: relative;
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+    border-radius: var(--radius-md);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+  }
+  .release-card__cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.4s ease;
+  }
+  .release-card__cover:hover img {
+    transform: scale(1.03);
+  }
+
+  /* Overlay on hover */
+  .release-card__overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.55);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.25s ease;
+    text-decoration: none;
+  }
+  .release-card__cover:hover .release-card__overlay {
+    opacity: 1;
+  }
+  .play-hint {
+    color: #fff;
+    font-size: 0.875rem;
+    font-family: var(--font-mono);
+    letter-spacing: 0.04em;
+    border: 1px solid rgba(255,255,255,0.5);
+    padding: var(--space-2) var(--space-4);
+    border-radius: var(--radius-sm);
+  }
+
+  /* Body */
+  .release-card__body {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+  .release-card__meta {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+  }
+  .release-card__year {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--color-muted);
+    letter-spacing: 0.04em;
+  }
+  .release-card__tracks {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--color-muted);
+    opacity: 0.7;
+  }
+  .release-card__title {
+    font-size: 1.15rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+  }
+  .release-card__title a {
+    text-decoration: none;
+  }
+  .release-card__title a:hover { text-decoration: underline; }
+
+  .release-card__desc {
+    font-size: 0.85rem;
+    color: var(--color-muted);
+    line-height: 1.6;
+    max-width: none;
+  }
+  .release-card__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    list-style: none;
+    margin-top: var(--space-1);
+  }
+
+  @media (max-width: 480px) {
+    .release-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

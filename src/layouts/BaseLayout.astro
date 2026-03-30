@@ -16,6 +16,7 @@ const currentPath = Astro.url.pathname;
 
 const navLinks = [
   { href: '/projects', label: 'Projects', match: '/projects' },
+  { href: '/music', label: 'Music', match: '/music' },
   { href: '/blog', label: 'Writing', match: '/blog' },
   { href: '/about', label: 'About', match: '/about' },
 ];
@@ -120,6 +121,7 @@ const personSchema = {
         <ul class="footer-links">
           <li><a href="https://github.com/polyterative" target="_blank" rel="noopener" aria-label="GitHub">GitHub</a></li>
           <li><a href="https://polyterative.bandcamp.com" target="_blank" rel="noopener" aria-label="Bandcamp">Bandcamp</a></li>
+          <li><a href="/music">Music</a></li>
           <li><a href="https://www.instagram.com/politerative/" target="_blank" rel="noopener" aria-label="Instagram">Instagram</a></li>
           <li><a href="https://patcher.xyz" target="_blank" rel="noopener" aria-label="Patcher">patcher.xyz</a></li>
         </ul>
