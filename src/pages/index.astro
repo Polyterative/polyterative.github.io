@@ -470,6 +470,24 @@ const projects = [
     resize();
     window.addEventListener('resize', resize);
 
+    // Mouse velocity → time-scale multiplier
+    let speed = 1;          // current multiplier (1 = baseline)
+    let lastX = 0, lastY = 0, lastMoveT = 0;
+
+    window.addEventListener('mousemove', e => {
+      const now = performance.now();
+      const dt = now - lastMoveT || 16;
+      const dx = e.clientX - lastX;
+      const dy = e.clientY - lastY;
+      const px_per_ms = Math.sqrt(dx * dx + dy * dy) / dt;
+      // Map velocity: 0 → 1×, ~2 px/ms → 8× (clamp)
+      speed = 1 + Math.min(px_per_ms * 3.5, 7);
+      lastX = e.clientX; lastY = e.clientY; lastMoveT = now;
+    });
+
+    // Decay speed back to 1 smoothly when mouse is still
+    const decaySpeed = () => { speed += (1 - speed) * 0.04; };
+
     // 4 oscillators with slowly drifting frequencies
     const osc = [
       { f: 1.7,  a: 0.38, phase: 0,    drift: 0.00007  },
@@ -481,6 +499,7 @@ const projects = [
     const isDark = () => window.matchMedia('(prefers-color-scheme: dark)').matches;
 
     const draw = (t: number) => {
+      decaySpeed();
       ctx.clearRect(0, 0, w, h);
       osc.forEach(o => { o.phase += o.drift * t; });
 
@@ -489,9 +508,10 @@ const projects = [
       const amp = h * 0.36;
 
       for (let x = 0; x <= w; x++) {
-        const xn = x / w; // 0..1
+        const xn = x / w;
         let y = 0;
-        osc.forEach(o => { y += o.a * Math.sin(o.f * xn * Math.PI * 2 + o.phase + t * 0.0004); });
+        // speed multiplies the time-scroll rate only
+        osc.forEach(o => { y += o.a * Math.sin(o.f * xn * Math.PI * 2 + o.phase + t * 0.0004 * speed); });
         const py = mid + y * amp;
         x === 0 ? ctx.moveTo(x, py) : ctx.lineTo(x, py);
       }
