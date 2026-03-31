@@ -38,3 +38,5 @@ Open source matters here too — the module database grows because anyone can co
 ## What's Next
 
 Better mobile UX for live patch documentation, and an API so other tools can consume the module database. If you use Eurorack, give it a try and file an issue.
+
+Patcher is where I document every patch before a live set. If you're curious what that pipeline looks like end-to-end — from patch design through performance to post-production — I wrote about it in [The Live AV Pipeline](/blog/live-av-performance-pipeline).

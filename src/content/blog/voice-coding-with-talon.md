@@ -72,3 +72,5 @@ The full command set is in the repo. It's opinionated toward my workflow but the
 Voice coding is not universally faster than keyboard coding. It's faster for specific things (navigation, large-scale refactoring, terminal work) and slower for others (dense expression writing).
 
 The real benefit for me was ergonomic. Zero wrist fatigue after full-day sessions. That alone is worth the two-week learning investment.
+
+Voice coding is one layer of a broader input system rethink. The hours I spend at the keyboard benefit from a different kind of work — remapping and hardware macros. I wrote about that in [Stream Deck + Karabiner — Building an Input Layer That Fits How I Actually Work](/blog/streamdeck-karabiner-input-layer).

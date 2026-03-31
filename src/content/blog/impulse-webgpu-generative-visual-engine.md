@@ -63,3 +63,7 @@ Impulse is work in progress. The architecture is solid and the rendering pipelin
 One hard requirement: Chromium with WebGPU enabled. On macOS, the renderer uses Metal via the `apple/metal-*` adapter — verify this is active in DevTools if something looks off. Firefox doesn't have WebGPU in stable builds yet.
 
 I'll write more as it develops. The genuinely hard problems are in the node graph execution model — specifically, making mid-performance patch edits feel instant rather than causing a visual stutter. That's the one thing TouchDesigner actually gets right.
+
+The development process has been non-linear — some nights productive, some nights spent unraveling a cascade failure in the entity pool at 3am. I wrote about one of those nights in the [Impulse dev diary](/blog/impulse-dev-diary-entity-pools). For the broader context of what Impulse is built for — the live performance pipeline it slots into — see [The Live AV Pipeline](/blog/live-av-performance-pipeline).
+
+Earlier visual work that informed Impulse's design: [Reactive Visuals — Angular Meets Three.js](/blog/reactive-visuals-angular-threejs).

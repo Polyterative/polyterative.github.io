@@ -42,3 +42,5 @@ The feedback loop between physical hardware and generative software is something
 - Angular's DI makes swapping audio backends trivial during development
 
 The repo is open. Fork it, wire it to your own inputs.
+
+This scaffold eventually pushed me toward something more ambitious — a full node-based visual engine built on WebGPU, designed for live AV performance. That project is [Impulse](/blog/impulse-webgpu-generative-visual-engine).

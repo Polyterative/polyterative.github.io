@@ -91,3 +91,5 @@ These three tools are small individually. Together they make a point: local AI i
 I'd rather build it. It's also the fastest way to actually understand what these models are doing, as opposed to prodding them through a chat window and hoping.
 
 All three are Python, packaged as native macOS `.app` bundles via py2app, living in the menu bar with rumps. Tidy codebases. I'll open-source them when they've had more time on my machine.
+
+If this theme interests you: [thear](/blog/sonifying-ai-work-thear) is another tool in the same spirit — sonifying Claude Code's activity in real time. And the ergonomic side of this whole setup is covered in [Voice Coding with Talon](/blog/voice-coding-with-talon) and [Stream Deck + Karabiner](/blog/streamdeck-karabiner-input-layer).

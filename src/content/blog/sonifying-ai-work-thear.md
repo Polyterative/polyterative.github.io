@@ -28,3 +28,5 @@ Partly curiosity. Partly because working for long stretches with AI tools can fe
 It's also just fun. The output is surprisingly musical. File writes cluster rhythmically. Long reasoning steps produce slow ambient swells.
 
 The code is on GitHub. It needs Ableton + Max for Live, but the OSC output is generic enough to route anywhere.
+
+thear isn't the only tooling I've built around local AI workflows. If this kind of thing interests you, [Three Small Tools for Living with Local AI](/blog/local-ai-toolkit-tagger-renamer-guard) covers mini-tagger, mini-renamer, and lms-guard — a set of macOS utilities built on the same philosophy of instrumenting the AI experience rather than just consuming it.
