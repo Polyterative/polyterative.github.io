@@ -182,8 +182,8 @@ const sections = [
     display: flex;
     flex-direction: column;
     gap: var(--space-3);
-    padding-top: var(--space-8);
-    margin-bottom: var(--space-16);
+    padding-top: var(--space-10);
+    margin-bottom: var(--space-12);
   }
   .page-header h1 {
     font-size: clamp(2rem, 5vw, 3.5rem);
@@ -191,28 +191,30 @@ const sections = [
   }
   .page-desc {
     color: var(--color-muted);
-    font-size: 0.95rem;
+    font-size: var(--font-size-base);
+    line-height: 1.65;
   }
 
   .domain-nav {
     display: flex;
     flex-wrap: wrap;
-    gap: var(--space-3);
+    gap: var(--space-2);
     margin-top: var(--space-4);
   }
   .domain-nav__link {
     font-family: var(--font-mono);
-    font-size: 0.8rem;
+    font-size: var(--font-size-meta);
     color: var(--color-muted);
     text-decoration: none;
     border: 1px solid var(--color-border);
     padding: var(--space-1) var(--space-3);
-    border-radius: var(--radius-sm);
-    transition: color var(--transition), border-color var(--transition);
+    border-radius: var(--radius-md);
+    transition: color var(--transition), border-color var(--transition), background var(--transition);
   }
   .domain-nav__link:hover {
     color: var(--color-text);
-    border-color: var(--color-text);
+    border-color: var(--color-muted);
+    background: var(--color-accent-soft);
   }
 
   .domain-section {
@@ -240,20 +242,22 @@ const sections = [
     opacity: 0.8;
   }
 
-  /* Color accents per domain */
-  .domain-header[data-domain="code"]    { --domain-color: #14b8a6; border-left-color: #14b8a6; }
-  .domain-header[data-domain="sound"]   { --domain-color: #f59e0b; border-left-color: #f59e0b; }
-  .domain-header[data-domain="visuals"] { --domain-color: #8b5cf6; border-left-color: #8b5cf6; }
+  /* Domain color accents — using global token vars */
+  .domain-header[data-domain="code"]    { --domain-color: var(--domain-code);    border-left-color: var(--domain-code); }
+  .domain-header[data-domain="sound"]   { --domain-color: var(--domain-sound);   border-left-color: var(--domain-sound); }
+  .domain-header[data-domain="visuals"] { --domain-color: var(--domain-visuals); border-left-color: var(--domain-visuals); }
   .domain-header[data-domain="talks"]   { --domain-color: var(--color-muted); }
+
   .domain-desc {
-    font-size: 0.875rem;
+    font-size: var(--font-size-sm);
     color: var(--color-muted);
     max-width: 55ch;
+    line-height: 1.6;
   }
 
   .project-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, var(--project-card-min)), 1fr));
     gap: var(--space-4);
     list-style: none;
   }

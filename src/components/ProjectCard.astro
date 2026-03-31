@@ -33,11 +33,12 @@ const { name, description, url, repo, tags = [], featured = false } = Astro.prop
     )}
   </div>
 </article>
-</article>
 
 <style>
   .project-card {
     position: relative;
+    display: flex;
+    flex-direction: column;
   }
 
   .project-card--featured {
@@ -52,27 +53,27 @@ const { name, description, url, repo, tags = [], featured = false } = Astro.prop
   }
 
   .project-card__title {
-    font-size: 1rem;
+    font-size: var(--font-size-base);
     font-weight: 600;
+    letter-spacing: -0.015em;
   }
   .project-card__title a {
     text-decoration: none;
+    transition: opacity var(--transition);
   }
-  .project-card__title a:hover {
-    text-decoration: underline;
-  }
+  .project-card__title a:hover { opacity: 0.7; }
 
   .project-card__desc {
-    font-size: 0.875rem;
+    font-size: var(--font-size-sm);
     color: var(--color-muted);
-    line-height: 1.5;
+    line-height: 1.55;
     max-width: none;
   }
 
   .project-card__tags {
     display: flex;
     flex-wrap: wrap;
-    gap: var(--space-2);
+    gap: var(--space-1) var(--space-2);
     list-style: none;
     margin-top: var(--space-2);
   }
@@ -80,10 +81,12 @@ const { name, description, url, repo, tags = [], featured = false } = Astro.prop
   .project-card__links {
     display: flex;
     gap: var(--space-4);
-    margin-top: var(--space-3);
+    margin-top: auto;
+    padding-top: var(--space-4);
   }
   .project-card__links a {
-    font-size: 0.8rem;
+    font-size: var(--font-size-meta);
+    font-family: var(--font-mono);
     color: var(--color-muted);
     text-decoration: none;
     transition: color var(--transition);

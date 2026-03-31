@@ -63,23 +63,26 @@ const years = Object.keys(byYear).sort((a, b) => Number(b) - Number(a));
     display: flex;
     flex-direction: column;
     gap: var(--space-3);
-    padding-top: var(--space-8);
-    margin-bottom: var(--space-12);
+    padding-top: var(--space-10);
+    margin-bottom: var(--space-10);
   }
-  .page-header h1 { font-size: clamp(2rem, 5vw, 3rem); }
+  .page-header h1 {
+    font-size: clamp(2rem, 5vw, 3rem);
+    letter-spacing: -0.03em;
+  }
   .page-desc {
     color: var(--color-muted);
-    font-size: 0.95rem;
+    font-size: var(--font-size-base);
     display: flex;
     align-items: center;
     gap: var(--space-3);
   }
   .post-count {
     font-family: var(--font-mono);
-    font-size: 0.75rem;
+    font-size: var(--font-size-meta);
     background: var(--color-tag-bg);
     border-radius: var(--radius-sm);
-    padding: 2px 8px;
+    padding: var(--space-1) var(--space-2);
     color: var(--color-muted);
   }
 
@@ -92,12 +95,12 @@ const years = Object.keys(byYear).sort((a, b) => Number(b) - Number(a));
   .year-group {
     display: flex;
     flex-direction: column;
-    gap: var(--space-2);
+    gap: 0;
   }
 
   .year-label {
     font-family: var(--font-mono);
-    font-size: 0.75rem;
+    font-size: var(--font-size-meta);
     text-transform: uppercase;
     letter-spacing: 0.08em;
     color: var(--color-muted);

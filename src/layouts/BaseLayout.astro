@@ -85,7 +85,7 @@ const personSchema = {
   <a class="skip-link" href="#main-content">Skip to content</a>
 
   <!-- Signal trace cursor canvas -->
-  <canvas id="signal-trace" aria-hidden="true" style="position:fixed;inset:0;pointer-events:none;z-index:9999;"></canvas>
+  <canvas id="signal-trace" aria-hidden="true" style={`position:fixed;inset:0;pointer-events:none;z-index:var(--z-canvas, 9999);`}></canvas>
 
   <header class="site-header">
     <div class="container">
@@ -142,11 +142,12 @@ const personSchema = {
   .site-header {
     position: sticky;
     top: 0;
-    z-index: 100;
-    background: var(--color-bg);
+    z-index: var(--z-header);
+    background: color-mix(in srgb, var(--color-bg) 85%, transparent);
     border-bottom: 1px solid var(--color-border);
-    padding-block: var(--space-4);
-    backdrop-filter: blur(8px);
+    padding-block: var(--space-3) var(--space-4);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
   }
 
   .nav {
@@ -161,37 +162,56 @@ const personSchema = {
     font-size: 0.9rem;
     font-weight: 500;
     text-decoration: none;
-    letter-spacing: -0.01em;
+    letter-spacing: -0.02em;
     color: var(--color-text);
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-3);
+    flex-shrink: 0;
+  }
+  .nav__logo:hover { opacity: 0.75; }
+  .nav__logo:focus-visible {
+    outline: 2px solid var(--color-text);
+    outline-offset: 4px;
+    border-radius: var(--radius-sm);
   }
 
   .nav__links {
     display: flex;
     list-style: none;
-    gap: var(--space-6);
+    gap: var(--space-1);
   }
 
-  .nav__links a,
   .nav__link {
-    font-size: 0.875rem;
+    display: block;
+    font-size: var(--font-size-sm);
     color: var(--color-muted);
     text-decoration: none;
-    transition: color var(--transition);
+    padding: var(--space-1) var(--space-3);
+    border-radius: var(--radius-md);
+    transition: color var(--transition), background var(--transition);
   }
-  .nav__link:hover { color: var(--color-text); }
+  .nav__link:hover {
+    color: var(--color-text);
+    background: var(--color-accent-soft);
+  }
+  .nav__link:focus-visible {
+    outline: 2px solid var(--color-text);
+    outline-offset: 2px;
+    border-radius: var(--radius-md);
+  }
   .nav__link--active {
     color: var(--color-text);
     font-weight: 500;
-    text-decoration: underline;
-    text-underline-offset: 4px;
-    text-decoration-color: var(--color-text);
+    background: var(--color-tag-bg);
   }
+  .nav__link--active:hover { background: var(--color-tag-bg); }
 
   .site-main { flex: 1; }
 
   .site-footer {
     border-top: 1px solid var(--color-border);
-    padding-block: var(--space-6);
+    padding-block: var(--space-8);
     margin-top: var(--space-16);
   }
 
@@ -204,25 +224,30 @@ const personSchema = {
   }
 
   .footer-copy {
-    font-size: 0.8rem;
+    font-family: var(--font-mono);
+    font-size: var(--font-size-meta);
     color: var(--color-muted);
+    line-height: 1.8;
   }
   .footer-copy a {
     color: var(--color-muted);
-    text-decoration: underline;
     text-decoration-color: transparent;
-    transition: text-decoration-color var(--transition);
+    transition: color var(--transition), text-decoration-color var(--transition);
   }
-  .footer-copy a:hover { text-decoration-color: var(--color-muted); }
+  .footer-copy a:hover {
+    color: var(--color-text);
+    text-decoration-color: var(--color-muted);
+  }
 
   .footer-links {
     display: flex;
     list-style: none;
-    gap: var(--space-6);
+    gap: var(--space-5);
+    flex-wrap: wrap;
   }
 
   .footer-links a {
-    font-size: 0.8rem;
+    font-size: var(--font-size-meta);
     color: var(--color-muted);
     text-decoration: none;
     transition: color var(--transition);
@@ -234,34 +259,23 @@ const personSchema = {
     position: absolute;
     top: -100px;
     left: var(--space-4);
-    z-index: 999;
+    z-index: var(--z-skip);
     background: var(--color-text);
     color: var(--color-bg);
     padding: var(--space-2) var(--space-4);
-    border-radius: var(--radius-sm);
-    font-size: 0.875rem;
+    border-radius: var(--radius-md);
+    font-size: var(--font-size-sm);
+    font-weight: 500;
     text-decoration: none;
-    transition: top var(--transition);
+    transition: top var(--transition-fast);
   }
   .skip-link:focus { top: var(--space-4); }
 
-  /* Global focus styles */
-  :focus-visible {
-    outline: 2px solid var(--color-text);
-    outline-offset: 3px;
-    border-radius: 2px;
-  }
-
   @media (max-width: 640px) {
-    .nav__links {
-      gap: var(--space-3);
-    }
-    .nav__links a {
-      font-size: 0.8rem;
-    }
+    .nav__links { gap: 0; }
+    .nav__link { font-size: 0.8rem; padding: var(--space-1) var(--space-2); }
   }
   @media (max-width: 480px) {
-    /* Show only most important links on smallest screens */
     .nav__links li:nth-child(n+4) { display: none; }
   }
   @media (max-width: 360px) {
@@ -271,11 +285,9 @@ const personSchema = {
     .footer-inner {
       flex-direction: column;
       align-items: flex-start;
+      gap: var(--space-3);
     }
-    .footer-links {
-      flex-wrap: wrap;
-      gap: var(--space-4);
-    }
+    .footer-links { gap: var(--space-4); }
   }</style>
 
 <script>

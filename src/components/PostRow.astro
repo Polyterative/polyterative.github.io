@@ -6,16 +6,20 @@ export interface Props {
   description?: string;
   tags?: string[];
   compact?: boolean;
+  wordCount?: number;
 }
 
-const { title, date, slug, description, tags = [], compact = false } = Astro.props;
+const { title, date, slug, description, tags = [], compact = false, wordCount } = Astro.props;
 const dateObj = new Date(date);
-// Compact: "Apr 2024"
 const formatted = dateObj.toLocaleDateString('en-US', { year: 'numeric', month: 'short' });
+const readingTime = wordCount ? Math.max(1, Math.round(wordCount / 200)) : null;
 ---
 
 <article class:list={['post-row', { 'post-row--compact': compact }]}>
-  <time class="post-row__date" datetime={date}>{formatted}</time>
+  <div class="post-row__meta">
+    <time class="post-row__date" datetime={date}>{formatted}</time>
+    {!compact && readingTime && <span class="post-row__rt">{readingTime} min</span>}
+  </div>
   <div class="post-row__body">
     <h2 class="post-row__title">
       <a href={`/blog/${slug}`}>{title}</a>
@@ -32,25 +36,38 @@ const formatted = dateObj.toLocaleDateString('en-US', { year: 'numeric', month: 
 <style>
   .post-row {
     display: grid;
-    grid-template-columns: 130px 1fr;
+    grid-template-columns: var(--post-row-date) 1fr;
     gap: var(--space-6);
     padding-block: var(--space-6);
     border-bottom: 1px solid var(--color-border);
     align-items: start;
+    transition: background var(--transition);
   }
   .post-row--compact {
-    grid-template-columns: 90px 1fr;
+    grid-template-columns: var(--post-row-date-sm) 1fr;
     padding-block: var(--space-4);
   }
 
   .post-row:first-child { border-top: 1px solid var(--color-border); }
 
+  .post-row__meta {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    padding-top: 3px;
+  }
+
   .post-row__date {
     font-family: var(--font-mono);
-    font-size: 0.75rem;
+    font-size: var(--font-size-meta);
     color: var(--color-muted);
-    padding-top: 4px;
     white-space: nowrap;
+  }
+
+  .post-row__rt {
+    font-family: var(--font-mono);
+    font-size: var(--font-size-meta);
+    color: var(--color-border);
   }
 
   .post-row__body {
@@ -60,24 +77,28 @@ const formatted = dateObj.toLocaleDateString('en-US', { year: 'numeric', month: 
   }
 
   .post-row__title {
-    font-size: 1.1rem;
+    font-size: 1.05rem;
     font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.3;
   }
   .post-row__title a {
     text-decoration: none;
+    transition: opacity var(--transition);
   }
-  .post-row__title a:hover { text-decoration: underline; }
+  .post-row__title a:hover { opacity: 0.65; }
 
   .post-row__desc {
-    font-size: 0.875rem;
+    font-size: var(--font-size-sm);
     color: var(--color-muted);
+    line-height: 1.55;
     max-width: none;
   }
 
   .post-row__tags {
     display: flex;
     flex-wrap: wrap;
-    gap: var(--space-2);
+    gap: var(--space-1) var(--space-2);
     list-style: none;
   }
 
@@ -86,5 +107,6 @@ const formatted = dateObj.toLocaleDateString('en-US', { year: 'numeric', month: 
       grid-template-columns: 1fr;
       gap: var(--space-2);
     }
+    .post-row__meta { flex-direction: row; align-items: center; gap: var(--space-3); }
   }
 </style>
