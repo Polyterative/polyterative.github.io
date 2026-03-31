@@ -105,6 +105,89 @@ const articleSchema = {
   </article>
 </BaseLayout>
 
+<script>
+  // ── Reading progress bar + section name flash ────────────────────
+  if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    // Progress bar
+    const bar = document.createElement('div');
+    bar.id = 'read-progress';
+    bar.setAttribute('aria-hidden', 'true');
+    document.body.prepend(bar);
+
+    // Section label in nav
+    const logo = document.querySelector('.nav__logo');
+    const label = document.createElement('span');
+    label.id = 'section-label';
+    logo?.parentElement?.appendChild(label);
+
+    const update = () => {
+      const el = document.documentElement;
+      const pct = el.scrollTop / (el.scrollHeight - el.clientHeight);
+      bar.style.width = `${Math.min(pct * 100, 100)}%`;
+    };
+    window.addEventListener('scroll', update, { passive: true });
+    update();
+
+    // Section observer
+    const headings = Array.from(document.querySelectorAll('.prose h2'));
+    let hideTimer = 0;
+
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          clearTimeout(hideTimer);
+          label.textContent = entry.target.innerText;
+          label.classList.add('visible');
+          // pulse the bar
+          bar.classList.remove('pulse');
+          void bar.offsetWidth; // reflow
+          bar.classList.add('pulse');
+          hideTimer = window.setTimeout(() => label.classList.remove('visible'), 2200);
+        }
+      });
+    }, { rootMargin: '-30% 0px -65% 0px' });
+
+    headings.forEach(h => observer.observe(h));
+  }
+</script>
+
+<style>
+  #read-progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 2px;
+    width: 0%;
+    background: var(--color-text);
+    z-index: 200;
+    transition: width 80ms linear;
+    transform-origin: left;
+  }
+  #read-progress.pulse {
+    animation: bar-pulse 400ms ease-out;
+  }
+  @keyframes bar-pulse {
+    0%   { opacity: 1; }
+    50%  { opacity: 0.4; }
+    100% { opacity: 1; }
+  }
+
+  #section-label {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--color-muted);
+    opacity: 0;
+    transition: opacity 300ms ease;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 28ch;
+    margin-left: var(--space-4);
+    letter-spacing: 0;
+  }
+  #section-label.visible { opacity: 1; }
+</style>
+
 <style>
   .post__header {
     display: flex;
