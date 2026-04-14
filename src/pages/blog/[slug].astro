@@ -267,7 +267,7 @@ const articleSchema = {
     max-width: 68ch;
   }
   /* Elegant drop cap */
-  .prose :global(p:first-of-type::first-letter) {
+  .prose > :global(p:first-of-type)::first-letter {
     float: left;
     font-size: 3em;
     line-height: 0.88;
