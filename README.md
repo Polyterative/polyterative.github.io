@@ -15,10 +15,10 @@ An [Astro](https://astro.build) static site with:
 ## Local development
 
 ```sh
-npm install
-npm run dev       # http://localhost:4321
-npm run build     # production build to ./dist/
-npm run preview   # preview the build locally
+pnpm install
+pnpm dev       # http://localhost:4321
+pnpm build     # production build to ./dist/
+pnpm preview   # preview the build locally
 ```
 
 ## Content
