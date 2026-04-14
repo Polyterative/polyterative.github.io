@@ -11,6 +11,26 @@ The last major message was around **v5.1.0**, which was the release where the pa
 
 The result is that Patcher now feels less like a set of separate tools and more like one coherent workspace for modular musicians.
 
+A few screens from the current state of the product:
+
+<div class="post-gallery">
+  <figure>
+    <img src="/blog/patcher-v5-4-2/pipf-22.jpg" alt="Patcher v5.4.2 promotional screenshot" loading="lazy" />
+  </figure>
+  <figure>
+    <img src="/blog/patcher-v5-4-2/pipf-23.jpg" alt="Patcher v5.4.2 promotional screenshot" loading="lazy" />
+  </figure>
+  <figure>
+    <img src="/blog/patcher-v5-4-2/pipf-24.jpg" alt="Patcher v5.4.2 promotional screenshot" loading="lazy" />
+  </figure>
+  <figure>
+    <img src="/blog/patcher-v5-4-2/pipf-25.jpg" alt="Patcher v5.4.2 promotional screenshot" loading="lazy" />
+  </figure>
+  <figure>
+    <img src="/blog/patcher-v5-4-2/pipf-26.jpg" alt="Patcher v5.4.2 promotional screenshot" loading="lazy" />
+  </figure>
+</div>
+
 ## The database side got much stronger
 
 One of the biggest improvements since v5.1.0 is the database and discovery layer.
