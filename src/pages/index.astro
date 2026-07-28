@@ -2,6 +2,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import ProjectCard from '../components/ProjectCard.astro';
 import PostRow from '../components/PostRow.astro';
+import Icon from '../components/Icon.astro';
 import { getCollection } from 'astro:content';
 
 const posts = (await getCollection('blog', ({ data }) => !data.draft))
@@ -38,503 +39,245 @@ const projects = [
 ---
 
 <BaseLayout isHome={true}>
-  <!-- Hero -->
-  <section class="hero">
-    <div class="hero__bg" aria-hidden="true">
-      <span class="hero__monogram">p.</span>
-    </div>
-    <div class="container">
-      <p class="hero__label">Bologna, Italy</p>
+  <div class="container container--wide">
+
+    <!-- Hero -->
+    <section class="hero">
+      <p class="label label--ic"><Icon name="map-pin" size={13} />Bologna, Italy</p>
       <h1 class="hero__title">UX Engineer.<br />Visual Artist.<br />Electronic Musician.</h1>
       <p class="hero__bio">
         Medium-agnostic creative at the intersection of software, generative art, and modular synthesis.
       </p>
-      <figure class="hero__wave" aria-hidden="true">
-        <canvas id="wave-canvas" height="64"></canvas>
-      </figure>
       <ul class="hero__links">
-        <li><a href="/projects">Projects →</a></li>
-        <li><a href="/blog">Writing →</a></li>
-        <li><a href="/about">About →</a></li>
+        <li><a class="iclink" href="/projects"><Icon name="code" size={14} />Projects</a></li>
+        <li><a class="iclink" href="/music"><Icon name="music" size={14} />Music</a></li>
+        <li><a class="iclink" href="/blog"><Icon name="book" size={14} />Writing</a></li>
+        <li><a class="iclink" href="/about"><Icon name="activity" size={14} />About</a></li>
       </ul>
-    </div>
-  </section>
+    </section>
 
-  <!-- Patcher -->
-  <section class="section" id="patcher">
-    <div class="container">
-      <div class="featured">
-        <div class="featured__header">
-          <span class="tag">Featured project</span>
-          <span class="featured__status">
-            <span class="status-dot"></span>Active · v5.3.7
-          </span>
+    <!-- Featured: Patcher -->
+    <section class="featured-wrap" id="patcher">
+      <div class="panel featured">
+        <div class="featured__head">
+          <span class="label label--ic"><Icon name="star" size={13} />Featured</span>
+          <span class="label">Active — v5.3.7</span>
         </div>
-
-        <div class="featured__body">
-          <div class="featured__text">
-            <h2 class="featured__title">
-              <a href="https://patcher.xyz" target="_blank" rel="noopener">Patcher</a>
-            </h2>
-            <p class="featured__desc">
-              A free, open-source workspace for Eurorack musicians — patch editor, rack planner,
-              and community module database in one place.
-            </p>
-            <ul class="featured__bullets">
-              <li>Plan and document your patches — never lose a setup again</li>
-              <li>Drag-and-drop rack builder with a searchable module database</li>
-              <li>Browse the community database without creating an account</li>
-            </ul>
-            <div class="featured__actions">
-              <a class="btn" href="https://patcher.xyz" target="_blank" rel="noopener">Open app →</a>
-              <a class="btn btn--ghost" href="https://github.com/polyterative/Patcher" target="_blank" rel="noopener">GitHub</a>
-              <a class="btn btn--ghost" href="https://discord.gg/N6Z32xJR" target="_blank" rel="noopener">Discord</a>
-            </div>
-            <p class="featured__meta">35★ &nbsp;·&nbsp; active since 2021 &nbsp;·&nbsp; free &amp; open source</p>
-          </div>
-
-          <!-- Patch-cable illustration -->
-          <div class="patch-diagram" aria-hidden="true">
-            <svg viewBox="0 0 200 185" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <!-- Module A: VCO -->
-              <rect x="8" y="10" width="52" height="76" rx="3" stroke="currentColor" stroke-width="1.2" fill="none" opacity="0.35"/>
-              <text x="34" y="28" font-size="7.5" text-anchor="middle" fill="currentColor" opacity="0.55" font-family="monospace">VCO</text>
-              <circle cx="34" cy="48" r="9" stroke="currentColor" stroke-width="1" fill="none" opacity="0.3"/>
-              <circle cx="34" cy="48" r="3.5" fill="currentColor" opacity="0.2"/>
-              <circle cx="18" cy="74" r="4.5" stroke="currentColor" stroke-width="1.2" fill="var(--color-bg)" opacity="0.85"/>
-              <circle cx="34" cy="74" r="4.5" stroke="currentColor" stroke-width="1.2" fill="var(--color-bg)" opacity="0.85"/>
-              <circle cx="50" cy="74" r="4.5" stroke="currentColor" stroke-width="1.2" fill="var(--color-bg)" opacity="0.85"/>
-              <text x="34" y="98" font-size="5.5" text-anchor="middle" fill="currentColor" opacity="0.35" font-family="monospace">OUT</text>
-              <!-- Module B: VCF -->
-              <rect x="74" y="10" width="52" height="76" rx="3" stroke="currentColor" stroke-width="1.2" fill="none" opacity="0.35"/>
-              <text x="100" y="28" font-size="7.5" text-anchor="middle" fill="currentColor" opacity="0.55" font-family="monospace">VCF</text>
-              <circle cx="100" cy="48" r="9" stroke="currentColor" stroke-width="1" fill="none" opacity="0.3"/>
-              <circle cx="100" cy="48" r="3.5" fill="currentColor" opacity="0.2"/>
-              <circle cx="84" cy="74" r="4.5" stroke="currentColor" stroke-width="1.2" fill="var(--color-bg)" opacity="0.85"/>
-              <circle cx="100" cy="74" r="4.5" stroke="currentColor" stroke-width="1.2" fill="var(--color-bg)" opacity="0.85"/>
-              <circle cx="116" cy="74" r="4.5" stroke="currentColor" stroke-width="1.2" fill="var(--color-bg)" opacity="0.85"/>
-              <text x="100" y="98" font-size="5.5" text-anchor="middle" fill="currentColor" opacity="0.35" font-family="monospace">OUT</text>
-              <!-- Module C: VCA -->
-              <rect x="140" y="10" width="52" height="76" rx="3" stroke="currentColor" stroke-width="1.2" fill="none" opacity="0.35"/>
-              <text x="166" y="28" font-size="7.5" text-anchor="middle" fill="currentColor" opacity="0.55" font-family="monospace">VCA</text>
-              <circle cx="166" cy="48" r="9" stroke="currentColor" stroke-width="1" fill="none" opacity="0.3"/>
-              <circle cx="166" cy="48" r="3.5" fill="currentColor" opacity="0.2"/>
-              <circle cx="150" cy="74" r="4.5" stroke="currentColor" stroke-width="1.2" fill="var(--color-bg)" opacity="0.85"/>
-              <circle cx="166" cy="74" r="4.5" stroke="currentColor" stroke-width="1.2" fill="var(--color-bg)" opacity="0.85"/>
-              <circle cx="182" cy="74" r="4.5" stroke="currentColor" stroke-width="1.2" fill="var(--color-bg)" opacity="0.85"/>
-              <!-- Patch cables (bezier arcs) -->
-              <path d="M34 74 C34 130 84 130 84 74" stroke="var(--domain-sound)" stroke-width="2.5" fill="none" opacity="0.75" stroke-linecap="round"/>
-              <path d="M116 74 C116 140 150 140 150 74" stroke="var(--domain-code)" stroke-width="2.5" fill="none" opacity="0.75" stroke-linecap="round"/>
-              <path d="M50 74 C50 118 100 118 100 74" stroke="var(--domain-visuals)" stroke-width="2.5" fill="none" opacity="0.65" stroke-linecap="round"/>
-              <!-- Jack dots at each end -->
-              <circle cx="34" cy="74" r="3.5" fill="var(--domain-sound)"/>
-              <circle cx="84" cy="74" r="3.5" fill="var(--domain-sound)"/>
-              <circle cx="116" cy="74" r="3.5" fill="var(--domain-code)"/>
-              <circle cx="150" cy="74" r="3.5" fill="var(--domain-code)"/>
-              <circle cx="50" cy="74" r="3.5" fill="var(--domain-visuals)"/>
-              <circle cx="100" cy="74" r="3.5" fill="var(--domain-visuals)"/>
-              <!-- Filename label -->
-              <text x="100" y="178" font-size="6.5" text-anchor="middle" fill="currentColor" opacity="0.25" font-family="monospace" letter-spacing="0.04em">patch_001.json</text>
-            </svg>
-          </div>
+        <h2 class="featured__title">
+          <a class="iclink accent-hover" href="https://patcher.xyz" target="_blank" rel="noopener">Patcher<Icon name="arrow-up-right" size={22} /></a>
+        </h2>
+        <p class="featured__desc">
+          A free, open-source workspace for Eurorack musicians — patch editor, rack planner,
+          and community module database in one place.
+        </p>
+        <ul class="featured__bullets">
+          <li><Icon name="arrow-right" size={14} />Plan and document your patches — never lose a setup again</li>
+          <li><Icon name="arrow-right" size={14} />Drag-and-drop rack builder with a searchable module database</li>
+          <li><Icon name="arrow-right" size={14} />Browse the community database without creating an account</li>
+        </ul>
+        <ul class="featured__stats">
+          <li class="stat"><Icon name="star" size={13} />35 stars</li>
+          <li class="stat"><Icon name="calendar" size={13} />since 2021</li>
+          <li class="stat"><Icon name="code" size={13} />open source</li>
+        </ul>
+        <div class="featured__actions">
+          <a class="btn iclink" href="https://patcher.xyz" target="_blank" rel="noopener">Open app<Icon name="arrow-up-right" size={14} /></a>
+          <a class="btn-text iclink" href="https://github.com/polyterative/Patcher" target="_blank" rel="noopener"><Icon name="github" size={13} />Source</a>
+          <a class="btn-text iclink" href="https://discord.gg/N6Z32xJR" target="_blank" rel="noopener"><Icon name="message" size={13} />Discord</a>
         </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Waveform divider -->
-  <div class="wave-divider" aria-hidden="true">
-    <span></span><span></span><span></span><span></span><span></span>
-  </div>
-
-  <hr class="divider" />
-
-  <!-- Other projects -->
-  <section class="section" id="work">
-    <div class="container">
-      <header class="section-header">
-        <span class="tag">Code</span>
-        <h2>Projects</h2>
-      </header>
-      <ul class="project-grid">
-        {projects.map(p => <li><ProjectCard {...p} /></li>)}
-      </ul>
-      <a href="/projects" class="more-link">All projects →</a>
-    </div>
-  </section>
-
-  <hr class="divider" />
-
-  <!-- Recent writing -->
-  {posts.length > 0 && (
-    <section class="section" id="writing">
-      <div class="container">
-        <header class="section-header">
-          <span class="tag">Writing</span>
-          <h2>Recent posts</h2>
-        </header>
-        {posts.map(post => (
-          <PostRow
-            title={post.data.title}
-            date={post.data.date}
-            slug={post.id}
-            description={post.data.description}
-            tags={post.data.tags}
-            compact={true}
-          />
-        ))}
-        <a href="/blog" class="more-link">All posts →</a>
       </div>
     </section>
-  )}
+
+    <!-- Projects -->
+    <section class="block" id="work">
+      <header class="block__head">
+        <h2 class="block__title"><Icon name="layers" size={18} />Projects</h2>
+      </header>
+      <ul class="grid">
+        {projects.map(p => <li><ProjectCard {...p} /></li>)}
+      </ul>
+      <a href="/projects" class="more iclink">All projects<Icon name="arrow-right" size={13} /></a>
+    </section>
+
+    <!-- Recent writing -->
+    {posts.length > 0 && (
+      <section class="block" id="writing">
+        <header class="block__head">
+          <h2 class="block__title"><Icon name="book" size={18} />Recent posts</h2>
+        </header>
+        <div class="rows">
+          {posts.map(post => (
+            <PostRow
+              title={post.data.title}
+              date={post.data.date}
+              slug={post.id}
+              description={post.data.description}
+              tags={post.data.tags}
+              compact={true}
+            />
+          ))}
+        </div>
+        <a href="/blog" class="more iclink">All posts<Icon name="arrow-right" size={13} /></a>
+      </section>
+    )}
+
+  </div>
 </BaseLayout>
 
 <style>
   /* ── Hero ── */
   .hero {
-    position: relative;
-    padding-block: var(--space-16) var(--space-12);
-    overflow: hidden;
-  }
-  .hero__bg {
-    position: absolute;
-    inset: 0;
-    background-image: radial-gradient(circle, var(--color-border) 1px, transparent 1px);
-    background-size: 28px 28px;
-    opacity: 0.5;
-    pointer-events: none;
-    mask-image: radial-gradient(ellipse 85% 85% at 50% 50%, black 20%, transparent 100%);
-    -webkit-mask-image: radial-gradient(ellipse 85% 85% at 50% 50%, black 20%, transparent 100%);
-  }
-  .hero__monogram {
-    position: absolute;
-    bottom: -0.12em;
-    right: 0.02em;
-    font-size: clamp(10rem, 28vw, 22rem);
-    font-weight: 700;
-    line-height: 1;
-    letter-spacing: -0.06em;
-    color: var(--color-text);
-    opacity: 0.028;
-    user-select: none;
-    pointer-events: none;
-    font-family: var(--font-sans);
-  }
-  .hero__label {
-    font-family: var(--font-mono);
-    font-size: var(--font-size-meta);
-    color: var(--color-muted);
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    margin-bottom: var(--space-5);
+    padding-block: var(--space-24) var(--space-16);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
+    border-bottom: 1px solid var(--color-line);
   }
   .hero__title {
-    font-size: clamp(2.4rem, 6vw, 4.5rem);
-    line-height: 1.06;
+    font-size: clamp(2.2rem, 6vw, 4rem);
+    line-height: 1.05;
     letter-spacing: -0.035em;
-    margin-bottom: var(--space-5);
   }
   .hero__bio {
     font-size: var(--font-size-lg);
     color: var(--color-muted);
-    line-height: 1.7;
-    max-width: 44ch;
-    margin-bottom: var(--space-6);
+    line-height: 1.6;
+    max-width: 42ch;
   }
-  /* Hero CTAs — Fitts-compliant, clearly afforded */
   .hero__links {
     display: flex;
-    gap: var(--space-3);
+    gap: var(--space-6);
     list-style: none;
     flex-wrap: wrap;
-  }
-  .hero__links a {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--space-2);
-    font-size: var(--font-size-sm);
-    font-weight: 500;
-    color: var(--color-text);
-    text-decoration: none;
-    padding: var(--space-2) var(--space-4);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-md);
-    background: var(--color-surface);
-    transition: border-color var(--transition), background var(--transition), box-shadow var(--transition);
-  }
-  .hero__links a:hover {
-    border-color: var(--color-muted);
-    background: var(--color-accent-soft);
-    box-shadow: var(--shadow-sm);
-  }
-
-  /* ── Sections ── */
-  .section-header {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-2);
-    margin-bottom: var(--space-8);
-  }
-  .section-header h2 {
-    font-size: clamp(1.3rem, 2.5vw, 1.7rem);
-    letter-spacing: -0.025em;
-  }
-
-  /* ── Featured project card ── */
-  .featured {
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-lg);
-    padding: var(--space-8);
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-6);
-    background: var(--color-surface);
-    transition: border-color var(--transition), box-shadow var(--transition);
-  }
-  .featured:hover {
-    border-color: var(--color-muted);
-    box-shadow: var(--shadow-md);
-  }
-  .featured__header {
-    display: flex;
-    align-items: center;
-    gap: var(--space-4);
-  }
-  .featured__status {
-    display: flex;
-    align-items: center;
-    gap: var(--space-2);
-    font-family: var(--font-mono);
-    font-size: var(--font-size-meta);
-    color: var(--color-muted);
-  }
-  .status-dot {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: var(--color-status-active);
-    animation: pulse 3s ease-in-out infinite;
-    flex-shrink: 0;
-  }
-  @keyframes pulse {
-    0%, 100% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.55; transform: scale(0.85); }
-  }
-  .featured__body {
-    display: flex;
-    gap: var(--space-8);
-    align-items: flex-start;
-  }
-  .featured__text {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-4);
-    min-width: 0;
-  }
-  .patch-diagram {
-    flex-shrink: 0;
-    width: 180px;
-    color: var(--color-text);
-    opacity: 0.9;
     margin-top: var(--space-2);
   }
-  .patch-diagram svg { width: 100%; height: auto; }
+  .hero__links a {
+    font-size: var(--font-size-sm);
+    color: var(--color-muted);
+  }
+  .hero__links a:hover { color: var(--color-text); }
+
+  /* ── Featured (filled panel) ── */
+  .featured-wrap {
+    padding-block: var(--space-16);
+    border-bottom: 1px solid var(--color-line);
+  }
+  .featured {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    max-width: var(--max-w);
+    padding: var(--space-8);
+  }
+  .featured__head {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--space-4);
+  }
   .featured__title {
-    font-size: clamp(1.8rem, 3vw, 2.5rem);
+    font-size: clamp(1.8rem, 4vw, 2.6rem);
     letter-spacing: -0.03em;
-    line-height: 1.1;
   }
-  .featured__title a {
-    text-decoration: none;
-    transition: opacity var(--transition);
-  }
-  .featured__title a:hover { opacity: 0.7; }
+  .featured__title .icon { color: var(--color-faint); }
   .featured__desc {
     font-size: var(--font-size-base);
     color: var(--color-muted);
-    line-height: 1.7;
-    max-width: 50ch;
+    line-height: 1.65;
+    max-width: 52ch;
   }
   .featured__bullets {
     list-style: none;
     display: flex;
     flex-direction: column;
     gap: var(--space-2);
-    padding-left: var(--space-4);
-    border-left: 2px solid var(--color-border);
   }
   .featured__bullets li {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-3);
     font-size: var(--font-size-sm);
     color: var(--color-muted);
     line-height: 1.55;
   }
+  .featured__bullets .icon { color: var(--color-accent); flex: none; }
+  .featured__stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    list-style: none;
+    margin-top: var(--space-1);
+  }
   .featured__actions {
     display: flex;
     flex-wrap: wrap;
-    gap: var(--space-3);
-  }
-  .featured__meta {
-    font-family: var(--font-mono);
-    font-size: var(--font-size-meta);
-    color: var(--color-muted);
-    letter-spacing: 0.02em;
+    align-items: center;
+    gap: var(--space-5);
+    margin-top: var(--space-3);
   }
 
   /* ── Buttons ── */
   .btn {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--space-2);
     font-size: var(--font-size-sm);
     font-weight: 500;
     padding: var(--space-2) var(--space-4);
-    border-radius: var(--radius-md);
-    text-decoration: none;
-    border: 1px solid var(--color-text);
-    background: var(--color-text);
-    color: var(--color-bg);
-    transition: background var(--transition), color var(--transition), box-shadow var(--transition);
-    letter-spacing: -0.01em;
-  }
-  .btn:hover {
+    border: 1px solid var(--color-border);
     background: transparent;
     color: var(--color-text);
-    box-shadow: var(--shadow-sm);
+    border-radius: var(--radius-pill);
+    transition: border-color var(--transition), background var(--transition);
   }
-  .btn--ghost {
-    background: transparent;
-    color: var(--color-text);
+  .btn:hover { border-color: var(--color-text); background: var(--color-hover); }
+  .btn .icon { color: var(--color-faint); }
+  .btn:hover .icon { color: var(--color-text); }
+  .btn-text {
+    font-family: var(--font-mono);
+    font-size: var(--font-size-meta);
+    color: var(--color-muted);
   }
-  .btn--ghost:hover {
-    background: var(--color-accent-soft);
-    box-shadow: none;
-  }
+  .btn-text:hover { color: var(--color-text); }
 
-  /* ── Project grid ── */
-  .project-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(min(100%, var(--project-card-min)), 1fr));
-    gap: var(--space-4);
-    list-style: none;
+  /* ── Blocks ── */
+  .block {
+    padding-block: var(--space-16);
+    border-bottom: 1px solid var(--color-line);
   }
-
-  /* ── More link ── */
-  .more-link {
-    display: inline-flex;
-    align-items: center;
+  .block:last-child { border-bottom: none; }
+  .block__head {
+    display: flex;
+    flex-direction: column;
     gap: var(--space-2);
+    margin-bottom: var(--space-8);
+  }
+  .block__title {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+  }
+  .block__title .icon { color: var(--color-accent); }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0 var(--space-8);
+    list-style: none;
+    max-width: var(--max-w);
+  }
+  @media (max-width: 560px) {
+    .grid { grid-template-columns: 1fr; }
+  }
+  .rows { display: flex; flex-direction: column; }
+
+  .more {
     margin-top: var(--space-6);
     font-family: var(--font-mono);
     font-size: var(--font-size-meta);
     color: var(--color-muted);
-    text-decoration: none;
-    transition: color var(--transition);
   }
-  .more-link:hover { color: var(--color-text); }
+  .more:hover { color: var(--color-text); }
+  .more .icon { color: var(--color-faint); }
+  .more:hover .icon { color: var(--color-accent); }
 
-  /* ── Hero waveform ── */
-  .hero__wave {
-    margin: 0 0 var(--space-6);
-    width: 100%;
-    max-width: 520px;
-  }
-  .hero__wave canvas {
-    width: 100%;
-    display: block;
-    opacity: 0.28;
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .hero__wave { display: none; }
-  }
-
-  /* ── Waveform divider ── */
-  .wave-divider {
-    display: flex;
-    align-items: flex-end;
-    justify-content: center;
-    gap: var(--space-1);
-    height: 24px;
-    margin-block: var(--space-4);
-    opacity: 0.2;
-  }
-  .wave-divider span {
-    display: block;
-    width: 3px;
-    border-radius: 2px;
-    background: var(--color-muted);
-    animation: wave 1.6s ease-in-out infinite;
-  }
-  .wave-divider span:nth-child(1) { height: 8px;  animation-delay: 0s; }
-  .wave-divider span:nth-child(2) { height: 18px; animation-delay: 0.18s; }
-  .wave-divider span:nth-child(3) { height: 24px; animation-delay: 0.36s; }
-  .wave-divider span:nth-child(4) { height: 18px; animation-delay: 0.54s; }
-  .wave-divider span:nth-child(5) { height: 8px;  animation-delay: 0.72s; }
-  @keyframes wave {
-    0%, 100% { transform: scaleY(0.5); }
-    50%       { transform: scaleY(1.0); }
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .wave-divider span { animation: none; }
-  }
-
-  /* ── Responsive ── */
-  @media (max-width: 640px) {
-    .featured__body { flex-direction: column; }
-    .patch-diagram { width: 100%; max-width: 200px; align-self: center; }
-  }
-  @media (max-width: 600px) {
-    .featured { padding: var(--space-6); }
+  @media (max-width: 560px) {
+    .featured { padding: var(--space-5); }
   }
 </style>
-
-<script>
-  // ── Generative homepage waveform ─────────────────────────────────
-  const canvas = document.getElementById('wave-canvas') as HTMLCanvasElement | null;
-  if (canvas && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    const ctx = canvas.getContext('2d')!;
-    let w = 0, h = 0;
-
-    const resize = () => {
-      w = canvas.offsetWidth * devicePixelRatio;
-      h = 64 * devicePixelRatio;
-      canvas.width = w;
-      canvas.height = h;
-    };
-    resize();
-    window.addEventListener('resize', resize);
-
-    // 4 oscillators with slowly drifting frequencies
-    const osc = [
-      { f: 1.7,  a: 0.38, phase: 0,    drift: 0.00007  },
-      { f: 3.1,  a: 0.22, phase: 1.2,  drift: -0.00005 },
-      { f: 5.3,  a: 0.13, phase: 2.5,  drift: 0.00003  },
-      { f: 8.7,  a: 0.07, phase: 0.7,  drift: -0.00009 },
-    ];
-
-    const isDark = () => window.matchMedia('(prefers-color-scheme: dark)').matches;
-
-    const draw = (t: number) => {
-      ctx.clearRect(0, 0, w, h);
-      osc.forEach(o => { o.phase += o.drift * t; });
-
-      ctx.beginPath();
-      const mid = h / 2;
-      const amp = h * 0.36;
-
-      for (let x = 0; x <= w; x++) {
-        const xn = x / w;
-        let y = 0;
-        osc.forEach(o => { y += o.a * Math.sin(o.f * xn * Math.PI * 2 + o.phase + t * 0.0004); });
-        const py = mid + y * amp;
-        x === 0 ? ctx.moveTo(x, py) : ctx.lineTo(x, py);
-      }
-
-      ctx.strokeStyle = isDark() ? '#e8e8e4' : '#1a1a18';
-      ctx.lineWidth = 1 * devicePixelRatio;
-      ctx.stroke();
-      requestAnimationFrame(draw);
-    };
-    requestAnimationFrame(draw);
-  }
-</script>

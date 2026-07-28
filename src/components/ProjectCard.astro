@@ -1,4 +1,6 @@
 ---
+import Icon from './Icon.astro';
+
 export interface Props {
   name: string;
   description: string;
@@ -6,90 +8,137 @@ export interface Props {
   repo?: string;
   tags?: string[];
   featured?: boolean;
+  image?: string;
+  icon?: string;
 }
 
-const { name, description, url, repo, tags = [], featured = false } = Astro.props;
+const { name, description, url, repo, tags = [], featured = false, image, icon = 'code' } = Astro.props;
+
+// Deterministic hue from the project name so generated covers stay coherent but distinct.
+const hue = [...name].reduce((h, c) => (h * 31 + c.charCodeAt(0)) % 360, 7);
+const hue2 = (hue + 42) % 360;
+const coverStyle = `--h1:${hue};--h2:${hue2}`;
+const coverLabel = tags[0] ?? 'Project';
 ---
 
-<article class:list={['card', 'project-card', { 'project-card--featured': featured }]}>
-  <div class="project-card__body">
-    <h3 class="project-card__title">
-      {url
-        ? <a href={url} target="_blank" rel="noopener">{name}</a>
-        : name
-      }
-    </h3>
-    <p class="project-card__desc">{description}</p>
-    {tags.length > 0 && (
-      <ul class="project-card__tags">
-        {tags.map(t => <li><span class="tag">{t}</span></li>)}
-      </ul>
-    )}
-    {(url || repo) && (
-      <div class="project-card__links">
-        {url && <a href={url} target="_blank" rel="noopener">Live ↗</a>}
-        {repo && <a href={repo} target="_blank" rel="noopener">GitHub ↗</a>}
-      </div>
-    )}
+<article class:list={['project', { 'project--featured': featured }]}>
+  <div class="project__cover" class:list={[{ 'project__cover--gen': !image }]} style={!image ? coverStyle : undefined}>
+    {image
+      ? <img class="project__img" src={image} alt={`${name} preview`} loading="lazy" decoding="async" />
+      : (
+        <>
+          <Icon name={icon} size={40} />
+          <span class="project__cover-tag">{coverLabel}</span>
+        </>
+      )
+    }
   </div>
+  <h3 class="project__title">
+    {url
+      ? <a class="accent-hover" href={url} target="_blank" rel="noopener">{name}</a>
+      : name
+    }
+  </h3>
+  <p class="project__desc">{description}</p>
+  {tags.length > 0 && (
+    <ul class="project__tags">
+      {tags.map(t => <li><span class="tag">{t}</span></li>)}
+    </ul>
+  )}
+  {(url || repo) && (
+    <div class="project__links">
+      {url && <a class="iclink" href={url} target="_blank" rel="noopener">Live<Icon name="external" size={13} /></a>}
+      {repo && <a class="iclink" href={repo} target="_blank" rel="noopener">Source<Icon name="github" size={13} /></a>}
+    </div>
+  )}
 </article>
 
 <style>
-  .project-card {
+  .project {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    padding: var(--space-5) 0;
+    border-top: 1px solid var(--color-line);
+    height: 100%;
+  }
+
+  .project__cover {
     position: relative;
+    aspect-ratio: 16 / 10;
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    border: 1px solid var(--color-line);
+    margin-bottom: var(--space-1);
+  }
+  .project--featured .project__cover { aspect-ratio: 21 / 9; }
+
+  .project__cover--gen { aspect-ratio: 2 / 1; }
+
+  .project__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+    display: block;
+    transition: transform 0.4s ease;
+  }
+  .project:hover .project__img { transform: scale(1.02); }
+
+  .project__cover--gen {
     display: flex;
     flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-3);
+    background:
+      radial-gradient(120% 120% at 15% 0%, hsl(var(--h1) 70% 62% / 0.85), transparent 60%),
+      linear-gradient(135deg, hsl(var(--h1) 55% 42%), hsl(var(--h2) 55% 34%));
+  }
+  .project__cover--gen :global(.icon) { color: rgba(255, 255, 255, 0.92); }
+  .project__cover-tag {
+    font-family: var(--font-mono);
+    font-size: var(--font-size-meta);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.85);
+    padding: 2px 8px;
+    border-radius: var(--radius-pill);
+    background: rgba(0, 0, 0, 0.22);
+    backdrop-filter: blur(2px);
   }
 
-  .project-card--featured {
-    border-left: 3px solid var(--color-text);
-  }
-
-  .project-card__body {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-2);
-  }
-
-  .project-card__title {
+  .project__title {
     font-size: var(--font-size-base);
     font-weight: 600;
-    letter-spacing: -0.015em;
+    letter-spacing: -0.01em;
   }
-  .project-card__title a {
-    text-decoration: none;
-    transition: opacity var(--transition);
-  }
-  .project-card__title a:hover { opacity: 0.7; }
+  .project__title a:hover { opacity: 0.6; }
 
-  .project-card__desc {
+  .project__desc {
     font-size: var(--font-size-sm);
     color: var(--color-muted);
-    line-height: 1.55;
-    max-width: none;
+    line-height: 1.6;
+    max-width: 52ch;
   }
 
-  .project-card__tags {
+  .project__tags {
     display: flex;
     flex-wrap: wrap;
-    gap: var(--space-1) var(--space-2);
+    gap: var(--space-2);
     list-style: none;
-    margin-top: var(--space-2);
   }
 
-  .project-card__links {
+  .project__links {
     display: flex;
     gap: var(--space-4);
     margin-top: auto;
-    padding-top: var(--space-4);
+    padding-top: var(--space-2);
   }
-  .project-card__links a {
-    font-size: var(--font-size-meta);
+  .project__links a {
     font-family: var(--font-mono);
+    font-size: var(--font-size-meta);
     color: var(--color-muted);
-    text-decoration: none;
-    transition: color var(--transition);
   }
-  .project-card__links a:hover { color: var(--color-text); }
+  .project__links a:hover { color: var(--color-text); }
 </style>

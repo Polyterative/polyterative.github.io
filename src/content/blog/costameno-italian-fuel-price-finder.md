@@ -3,6 +3,7 @@ title: "CostaMeno — Finding the Cheapest Fuel in Italy with Open Government Da
 description: "I built a mobile-first fuel price finder using Italian Ministry open data — no tracking, no app install, no nonsense."
 date: "2026-03-31"
 tags: ["Next.js", "TypeScript", "Tailwind", "Civic Tech", "Open Data"]
+cover: "/blog/covers/costameno.png"
 ---
 
 Every fuel price app in Italy is either behind a login wall, plastered with ads, or wants your GPS coordinates. I wanted something with no ceremony: open a URL while standing at a pump, see which station nearby is cheapest. That's the whole product.

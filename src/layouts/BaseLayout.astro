@@ -1,4 +1,6 @@
 ---
+import Icon from '../components/Icon.astro';
+
 export interface Props {
   title?: string;
   description?: string;
@@ -62,17 +64,32 @@ const personSchema = {
   <meta name="twitter:title" content={title} />
   <meta name="twitter:description" content={description} />
 
-  <!-- Theme color -->
-  <meta name="theme-color" content="#f9f9f7" media="(prefers-color-scheme: light)" />
-  <meta name="theme-color" content="#111110" media="(prefers-color-scheme: dark)" />
+  <!-- Theme color (kept in sync by the resolver below) -->
+  <meta name="theme-color" content="#f6f6f4" id="theme-color-meta" />
 
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   <link rel="alternate" type="application/rss+xml" title="polyterative — Writing" href="/rss.xml" />
 
-  <!-- Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <!-- Pre-paint theme resolver: light by default, dark in the evening or by choice. Runs before first paint to avoid a flash. -->
+  <script is:inline>
+    (function () {
+      try {
+        var params = new URLSearchParams(location.search);
+        var override = params.get('theme');
+        var mode = override || localStorage.getItem('theme') || 'auto';
+        var resolved = mode;
+        if (mode === 'auto') {
+          var h = new Date().getHours();
+          resolved = (h >= 19 || h < 7) ? 'dark' : 'light';
+        }
+        var el = document.documentElement;
+        el.dataset.theme = resolved;
+        el.dataset.themeMode = mode;
+        var m = document.getElementById('theme-color-meta');
+        if (m) m.setAttribute('content', resolved === 'dark' ? '#15202b' : '#f6f6f4');
+      } catch (e) {}
+    })();
+  </script>
 
   {isHome && (
     <script type="application/ld+json" set:html={JSON.stringify(personSchema)} />
@@ -85,7 +102,7 @@ const personSchema = {
   <a class="skip-link" href="#main-content">Skip to content</a>
 
   <header class="site-header">
-    <div class="container">
+    <div class="container container--wide">
       <nav class="nav" aria-label="Main navigation">
         <a href="/" class="nav__logo">polyterative</a>
         <ul class="nav__links">
@@ -101,6 +118,13 @@ const personSchema = {
               </li>
             );
           })}
+          <li>
+            <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Toggle color theme" title="Theme: auto">
+              <span class="theme-toggle__ic theme-toggle__ic--auto"><Icon name="monitor" size={16} /></span>
+              <span class="theme-toggle__ic theme-toggle__ic--light"><Icon name="sun" size={16} /></span>
+              <span class="theme-toggle__ic theme-toggle__ic--dark"><Icon name="moon" size={16} /></span>
+            </button>
+          </li>
         </ul>
       </nav>
     </div>
@@ -111,23 +135,52 @@ const personSchema = {
   </main>
 
   <footer class="site-footer">
-    <div class="container">
+    <div class="container container--wide">
       <div class="footer-inner">
         <p class="footer-copy">
-          polyterative &nbsp;·&nbsp; Bologna &nbsp;·&nbsp;
-          <a href="mailto:polyterative@outlook.com">polyterative@outlook.com</a>
-          &nbsp;·&nbsp; &copy; {new Date().getFullYear()}
+          polyterative, Bologna &copy; {new Date().getFullYear()}
         </p>
         <ul class="footer-links">
-          <li><a href="https://github.com/polyterative" target="_blank" rel="noopener" aria-label="GitHub">GitHub</a></li>
-          <li><a href="https://polyterative.bandcamp.com" target="_blank" rel="noopener" aria-label="Bandcamp">Bandcamp</a></li>
-          <li><a href="/music">Music</a></li>
-          <li><a href="https://www.instagram.com/polyterative/" target="_blank" rel="noopener" aria-label="Instagram">Instagram</a></li>
-          <li><a href="https://patcher.xyz" target="_blank" rel="noopener" aria-label="Patcher">patcher.xyz</a></li>
+          <li><a class="iclink" href="mailto:polyterative@outlook.com"><Icon name="mail" size={14} />Email</a></li>
+          <li><a class="iclink" href="https://github.com/polyterative" target="_blank" rel="noopener"><Icon name="github" size={14} />GitHub</a></li>
+          <li><a class="iclink" href="https://polyterative.bandcamp.com" target="_blank" rel="noopener"><Icon name="music" size={14} />Bandcamp</a></li>
+          <li><a class="iclink" href="https://www.instagram.com/polyterative/" target="_blank" rel="noopener"><Icon name="instagram" size={14} />Instagram</a></li>
+          <li><a class="iclink" href="https://patcher.xyz" target="_blank" rel="noopener"><Icon name="external" size={14} />patcher.xyz</a></li>
         </ul>
       </div>
     </div>
   </footer>
+
+  <script is:inline>
+    (function () {
+      var order = ['auto', 'light', 'dark'];
+      var btn = document.getElementById('theme-toggle');
+      if (!btn) return;
+      var el = document.documentElement;
+      var meta = document.getElementById('theme-color-meta');
+
+      function resolve(mode) {
+        if (mode !== 'auto') return mode;
+        var h = new Date().getHours();
+        return (h >= 19 || h < 7) ? 'dark' : 'light';
+      }
+      function apply(mode) {
+        var resolved = resolve(mode);
+        el.dataset.theme = resolved;
+        el.dataset.themeMode = mode;
+        btn.setAttribute('title', 'Theme: ' + mode);
+        if (meta) meta.setAttribute('content', resolved === 'dark' ? '#15202b' : '#f6f6f4');
+      }
+      apply(el.dataset.themeMode || 'auto');
+
+      btn.addEventListener('click', function () {
+        var current = el.dataset.themeMode || 'auto';
+        var next = order[(order.indexOf(current) + 1) % order.length];
+        try { localStorage.setItem('theme', next); } catch (e) {}
+        apply(next);
+      });
+    })();
+  </script>
 </body>
 </html>
 
@@ -140,16 +193,14 @@ const personSchema = {
     position: sticky;
     top: 0;
     z-index: var(--z-header);
-    background: color-mix(in srgb, var(--color-bg) 85%, transparent);
-    border-bottom: 1px solid var(--color-border);
-    padding-block: var(--space-3) var(--space-4);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+    background: var(--color-bg);
+    border-bottom: 1px solid var(--color-line);
+    padding-block: var(--space-4);
   }
 
   .nav {
     display: flex;
-    align-items: center;
+    align-items: baseline;
     justify-content: space-between;
     gap: var(--space-6);
   }
@@ -158,63 +209,58 @@ const personSchema = {
     font-family: var(--font-mono);
     font-size: 0.9rem;
     font-weight: 500;
-    text-decoration: none;
     letter-spacing: -0.02em;
     color: var(--color-text);
-    display: flex;
-    align-items: baseline;
-    gap: var(--space-3);
     flex-shrink: 0;
   }
-  .nav__logo:hover { opacity: 0.75; }
-  .nav__logo:focus-visible {
-    outline: 2px solid var(--color-text);
-    outline-offset: 4px;
-    border-radius: var(--radius-sm);
-  }
+  .nav__logo:hover { opacity: 0.6; }
 
   .nav__links {
     display: flex;
     list-style: none;
-    gap: var(--space-1);
+    gap: var(--space-5);
   }
 
   .nav__link {
-    display: block;
     font-size: var(--font-size-sm);
     color: var(--color-muted);
-    text-decoration: none;
-    padding: var(--space-1) var(--space-3);
-    border-radius: var(--radius-md);
-    transition: color var(--transition), background var(--transition);
   }
-  .nav__link:hover {
-    color: var(--color-text);
-    background: var(--color-accent-soft);
+  .nav__link:hover { color: var(--color-text); }
+  .nav__link--active { color: var(--color-text); }
+
+  .nav__links { align-items: center; }
+
+  .theme-toggle {
+    display: inline-grid;
+    place-items: center;
+    width: 30px;
+    height: 30px;
+    background: transparent;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-pill);
+    color: var(--color-muted);
+    cursor: pointer;
+    transition: color var(--transition), border-color var(--transition), background var(--transition);
   }
-  .nav__link:focus-visible {
-    outline: 2px solid var(--color-text);
-    outline-offset: 2px;
-    border-radius: var(--radius-md);
-  }
-  .nav__link--active {
-    color: var(--color-text);
-    font-weight: 500;
-    background: var(--color-tag-bg);
-  }
-  .nav__link--active:hover { background: var(--color-tag-bg); }
+  .theme-toggle:hover { color: var(--color-text); border-color: var(--color-muted); }
+  .theme-toggle__ic { display: none; grid-area: 1 / 1; line-height: 0; }
+  :root[data-theme-mode="auto"]  .theme-toggle__ic--auto  { display: block; }
+  :root[data-theme-mode="light"] .theme-toggle__ic--light { display: block; }
+  :root[data-theme-mode="dark"]  .theme-toggle__ic--dark  { display: block; }
+  /* pre-hydration fallback: show auto glyph */
+  :root:not([data-theme-mode]) .theme-toggle__ic--auto { display: block; }
 
   .site-main { flex: 1; }
 
   .site-footer {
-    border-top: 1px solid var(--color-border);
+    border-top: 1px solid var(--color-line);
     padding-block: var(--space-8);
-    margin-top: var(--space-16);
+    margin-top: var(--space-24);
   }
 
   .footer-inner {
     display: flex;
-    align-items: center;
+    align-items: baseline;
     justify-content: space-between;
     flex-wrap: wrap;
     gap: var(--space-4);
@@ -223,17 +269,7 @@ const personSchema = {
   .footer-copy {
     font-family: var(--font-mono);
     font-size: var(--font-size-meta);
-    color: var(--color-muted);
-    line-height: 1.8;
-  }
-  .footer-copy a {
-    color: var(--color-muted);
-    text-decoration-color: transparent;
-    transition: color var(--transition), text-decoration-color var(--transition);
-  }
-  .footer-copy a:hover {
-    color: var(--color-text);
-    text-decoration-color: var(--color-muted);
+    color: var(--color-faint);
   }
 
   .footer-links {
@@ -242,16 +278,13 @@ const personSchema = {
     gap: var(--space-5);
     flex-wrap: wrap;
   }
-
   .footer-links a {
+    font-family: var(--font-mono);
     font-size: var(--font-size-meta);
     color: var(--color-muted);
-    text-decoration: none;
-    transition: color var(--transition);
   }
   .footer-links a:hover { color: var(--color-text); }
 
-  /* Skip link */
   .skip-link {
     position: absolute;
     top: -100px;
@@ -260,29 +293,16 @@ const personSchema = {
     background: var(--color-text);
     color: var(--color-bg);
     padding: var(--space-2) var(--space-4);
-    border-radius: var(--radius-md);
+    border-radius: var(--radius);
     font-size: var(--font-size-sm);
-    font-weight: 500;
-    text-decoration: none;
-    transition: top var(--transition-fast);
   }
   .skip-link:focus { top: var(--space-4); }
 
-  @media (max-width: 640px) {
-    .nav__links { gap: 0; }
-    .nav__link { font-size: 0.8rem; padding: var(--space-1) var(--space-2); }
-  }
-  @media (max-width: 480px) {
-    .nav__links li:nth-child(n+4) { display: none; }
-  }
-  @media (max-width: 360px) {
-    .nav__links { display: none; }
+  @media (max-width: 460px) {
+    .nav__links { gap: var(--space-4); }
+    .nav__link { font-size: 0.8rem; }
   }
   @media (max-width: 640px) {
-    .footer-inner {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: var(--space-3);
-    }
-    .footer-links { gap: var(--space-4); }
-  }</style>
+    .footer-inner { flex-direction: column; align-items: flex-start; gap: var(--space-3); }
+  }
+</style>

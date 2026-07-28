@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import Icon from '../components/Icon.astro';
 
 const releases = [
   {
@@ -80,63 +81,47 @@ const releases = [
   title="Music — Vlady Yakovenko"
   description="Discography of Polyterative (Vlady Yakovenko) — electronic music, modular synthesis, and ambient releases from 2017 to present."
 >
-  <section class="section">
-    <div class="container">
+  <div class="container container--wide">
 
-      <header class="page-header">
-        <span class="tag">Music</span>
-        <h1>Discography</h1>
-        <p class="page-desc">
-          Electronic music under the Polyterative alias — experimental techno, modular synthesis, ambient.
-          <a href="https://polyterative.bandcamp.com" target="_blank" rel="noopener" class="bandcamp-link">All releases on Bandcamp ↗</a>
-        </p>
-      </header>
+    <header class="page-header">
+      <h1>Discography</h1>
+      <p class="page-desc">
+        Electronic music under the Polyterative alias — experimental techno, modular synthesis, ambient.
+        <a href="https://polyterative.bandcamp.com" target="_blank" rel="noopener" class="bandcamp-link iclink">All releases on Bandcamp<Icon name="external" size={13} /></a>
+      </p>
+    </header>
 
-      <ul class="release-grid">
-        {releases.map(r => (
-          <li class:list={['release-card', { 'release-card--highlight': r.highlight }]}>
-            <div class="release-card__cover">
-              <img
-                src={r.cover}
-                alt={`${r.title} album cover`}
-                loading="lazy"
-                width="600"
-                height="600"
-              />
-              {r.url && (
-                <a class="release-card__overlay" href={r.url} target="_blank" rel="noopener" aria-label={`Listen to ${r.title} on Bandcamp`}>
-                  <span class="play-hint">Listen on Bandcamp ↗</span>
-                </a>
-              )}
+    <ul class="release-grid">
+      {releases.map(r => (
+        <li class:list={['release', { 'release--highlight': r.highlight }]}>
+          <a class="release__cover" href={r.url ?? undefined} target={r.url ? '_blank' : undefined} rel={r.url ? 'noopener' : undefined} aria-label={r.url ? `Listen to ${r.title} on Bandcamp` : undefined}>
+            <img src={r.cover} alt={`${r.title} album cover`} loading="lazy" width="600" height="600" />
+          </a>
+          <div class="release__body">
+            <div class="release__meta">
+              <time class="release__year"><Icon name="calendar" size={12} />{r.released}</time>
+              {r.tracks && <span class="release__tracks"><Icon name="disc" size={12} />{r.tracks} {r.tracks === 1 ? 'track' : 'tracks'}</span>}
             </div>
-              <div class="release-card__body">
-              <div class="release-card__meta">
-                <time class="release-card__year">{r.released}</time>
-                {r.tracks && <span class="release-card__tracks">{r.tracks} {r.tracks === 1 ? 'track' : 'tracks'}</span>}
+            <h2 class="release__title">
+              {r.url
+                ? <a class="iclink accent-hover" href={r.url} target="_blank" rel="noopener">{r.title}<Icon name="arrow-up-right" size={15} /></a>
+                : r.title
+              }
+            </h2>
+            {r.desc && (
+              <div class="release__desc">
+                {r.desc.split('\n\n').map(para => <p>{para}</p>)}
               </div>
-              <h2 class="release-card__title">
-                {r.url
-                  ? <a href={r.url} target="_blank" rel="noopener">{r.title}</a>
-                  : r.title
-                }
-              </h2>
-              {r.desc && (
-                <div class="release-card__desc">
-                  {r.desc.split('\n\n').map(para => (
-                    <p>{para}</p>
-                  ))}
-                </div>
-              )}
-              <ul class="release-card__tags">
-                {r.genre.map(g => <li><span class="tag">{g}</span></li>)}
-              </ul>
-            </div>
-          </li>
-        ))}
-      </ul>
+            )}
+            <ul class="release__tags">
+              {r.genre.map(g => <li><span class="tag">{g}</span></li>)}
+            </ul>
+          </div>
+        </li>
+      ))}
+    </ul>
 
-    </div>
-  </section>
+  </div>
 </BaseLayout>
 
 <style>
@@ -144,143 +129,76 @@ const releases = [
     display: flex;
     flex-direction: column;
     gap: var(--space-3);
-    padding-top: var(--space-8);
-    margin-bottom: var(--space-12);
+    padding-block: var(--space-16) var(--space-10);
+    max-width: var(--max-w);
   }
   .page-header h1 { font-size: clamp(2rem, 5vw, 3rem); }
   .page-desc {
     color: var(--color-muted);
-    font-size: 0.95rem;
     display: flex;
-    align-items: center;
+    align-items: baseline;
     gap: var(--space-4);
     flex-wrap: wrap;
   }
   .bandcamp-link {
     font-family: var(--font-mono);
-    font-size: 0.8rem;
+    font-size: var(--font-size-meta);
     color: var(--color-muted);
-    text-decoration: none;
-    border-bottom: 1px solid var(--color-border);
-    padding-bottom: 1px;
-    transition: color var(--transition), border-color var(--transition);
   }
-  .bandcamp-link:hover {
-    color: var(--color-text);
-    border-color: var(--color-text);
-  }
+  .bandcamp-link:hover { color: var(--color-text); }
 
-  /* Grid */
   .release-grid {
     list-style: none;
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
-    gap: var(--space-8);
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr));
+    gap: var(--space-10) var(--space-8);
   }
 
-  /* Card */
-  .release-card {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-4);
-  }
-  .release-card--highlight .release-card__cover {
-    grid-column: 1 / -1;
-  }
+  .release { display: flex; flex-direction: column; gap: var(--space-4); }
+  .release--highlight { grid-column: 1 / -1; }
 
-  /* Cover */
-  .release-card__cover {
-    position: relative;
+  .release__cover {
+    display: block;
     aspect-ratio: 1 / 1;
     overflow: hidden;
-    border-radius: var(--radius-md);
-    background: var(--color-surface);
+    border-radius: var(--radius);
     border: 1px solid var(--color-border);
+    background: var(--color-hover);
   }
-  .release-card__cover img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-    transition: transform 0.4s ease;
-  }
-  .release-card__cover:hover img {
-    transform: scale(1.03);
-  }
+  .release--highlight .release__cover { max-width: 420px; }
+  .release__cover img { width: 100%; height: 100%; object-fit: cover; }
+  .release__cover:hover { opacity: 0.85; }
 
-  /* Overlay on hover */
-  .release-card__overlay {
-    position: absolute;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.55);
-    display: flex;
+  .release__body { display: flex; flex-direction: column; gap: var(--space-2); }
+  .release__meta { display: flex; align-items: baseline; gap: var(--space-3); }
+  .release__year {
+    display: inline-flex;
     align-items: center;
-    justify-content: center;
-    opacity: 0;
-    transition: opacity 0.25s ease;
-    text-decoration: none;
-  }
-  .release-card__cover:hover .release-card__overlay {
-    opacity: 1;
-  }
-  .play-hint {
-    color: #fff;
-    font-size: 0.875rem;
+    gap: var(--space-1);
     font-family: var(--font-mono);
-    letter-spacing: 0.04em;
-    border: 1px solid rgba(255,255,255,0.5);
-    padding: var(--space-2) var(--space-4);
-    border-radius: var(--radius-sm);
+    font-size: var(--font-size-meta);
+    color: var(--color-faint);
   }
-
-  /* Body */
-  .release-card__body {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-2);
-  }
-  .release-card__meta {
-    display: flex;
+  .release__tracks {
+    display: inline-flex;
     align-items: center;
-    gap: var(--space-3);
-  }
-  .release-card__year {
+    gap: var(--space-1);
     font-family: var(--font-mono);
-    font-size: 0.72rem;
-    color: var(--color-muted);
-    letter-spacing: 0.04em;
+    font-size: var(--font-size-meta);
+    color: var(--color-faint);
   }
-  .release-card__tracks {
-    font-family: var(--font-mono);
-    font-size: 0.72rem;
-    color: var(--color-muted);
-    opacity: 0.7;
-  }
-  .release-card__title {
-    font-size: 1.15rem;
-    font-weight: 600;
-    letter-spacing: -0.02em;
-  }
-  .release-card__title a {
-    text-decoration: none;
-  }
-  .release-card__title a:hover { text-decoration: underline; }
+  .release__title { font-size: 1.1rem; font-weight: 600; letter-spacing: -0.02em; }
+  .release__title .icon { color: var(--color-faint); }
 
-  .release-card__desc {
-    font-size: 0.85rem;
+  .release__desc {
+    font-size: var(--font-size-sm);
     color: var(--color-muted);
     line-height: 1.65;
-    display: -webkit-box;
-    -webkit-line-clamp: 5;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
+    max-width: 60ch;
   }
-  .release-card__desc p {
-    max-width: none;
-    margin-bottom: 0.5em;
-  }
-  .release-card__desc p:last-child { margin-bottom: 0; }
-  .release-card__tags {
+  .release__desc p { max-width: none; margin-bottom: 0.6em; }
+  .release__desc p:last-child { margin-bottom: 0; }
+  .release__tags {
     display: flex;
     flex-wrap: wrap;
     gap: var(--space-2);
@@ -288,9 +206,7 @@ const releases = [
     margin-top: var(--space-1);
   }
 
-  @media (max-width: 480px) {
-    .release-grid {
-      grid-template-columns: 1fr;
-    }
+  @media (max-width: 420px) {
+    .release-grid { grid-template-columns: 1fr; }
   }
 </style>

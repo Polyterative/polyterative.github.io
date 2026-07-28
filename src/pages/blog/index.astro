@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import PostRow from '../../components/PostRow.astro';
+import Icon from '../../components/Icon.astro';
 import { getCollection } from 'astro:content';
 
 const allPosts = (await getCollection('blog', ({ data }) => !data.draft))
@@ -21,14 +22,13 @@ const years = Object.keys(byYear).sort((a, b) => Number(b) - Number(a));
   title="Writing — Vlady Yakovenko"
   description="Posts on engineering, music, generative art, and tooling by Vlady Yakovenko (polyterative)."
 >
-  <section class="section">
-    <div class="container">
+  <div class="container container--wide">
       <header class="page-header">
-        <span class="tag">Writing</span>
         <h1>Posts</h1>
         <p class="page-desc">
           Notes on code, sound, and making things.
           {allPosts.length > 0 && <span class="post-count">{allPosts.length} posts</span>}
+          <a class="rss-link iclink" href="/rss.xml"><Icon name="rss" size={13} />Subscribe</a>
         </p>
       </header>
 
@@ -45,6 +45,7 @@ const years = Object.keys(byYear).sort((a, b) => Number(b) - Number(a));
                     slug={post.id}
                     description={post.data.description}
                     tags={post.data.tags}
+                    cover={post.data.cover}
                   />
                 ))}
               </div>
@@ -54,8 +55,7 @@ const years = Object.keys(byYear).sort((a, b) => Number(b) - Number(a));
       ) : (
         <p class="empty">Nothing published yet — check back soon.</p>
       )}
-    </div>
-  </section>
+  </div>
 </BaseLayout>
 
 <style>
@@ -63,47 +63,44 @@ const years = Object.keys(byYear).sort((a, b) => Number(b) - Number(a));
     display: flex;
     flex-direction: column;
     gap: var(--space-3);
-    padding-top: var(--space-10);
-    margin-bottom: var(--space-10);
+    padding-block: var(--space-16) var(--space-10);
+    max-width: var(--max-w);
   }
-  .page-header h1 {
-    font-size: clamp(2rem, 5vw, 3rem);
-    letter-spacing: -0.03em;
-  }
+  .page-header h1 { font-size: clamp(2rem, 5vw, 3rem); }
   .page-desc {
     color: var(--color-muted);
-    font-size: var(--font-size-base);
     display: flex;
-    align-items: center;
-    gap: var(--space-3);
+    align-items: baseline;
+    gap: var(--space-4);
+    flex-wrap: wrap;
   }
   .post-count {
     font-family: var(--font-mono);
     font-size: var(--font-size-meta);
-    background: var(--color-tag-bg);
-    border-radius: var(--radius-sm);
-    padding: var(--space-1) var(--space-2);
+    color: var(--color-faint);
+  }
+  .rss-link {
+    font-family: var(--font-mono);
+    font-size: var(--font-size-meta);
     color: var(--color-muted);
   }
+  .rss-link:hover { color: var(--color-text); }
+  .rss-link .icon { color: var(--color-faint); }
+  .rss-link:hover .icon { color: var(--color-accent); }
 
   .posts-by-year {
     display: flex;
     flex-direction: column;
     gap: var(--space-12);
+    max-width: 880px;
   }
-
-  .year-group {
-    display: flex;
-    flex-direction: column;
-    gap: 0;
-  }
-
+  .year-group { display: flex; flex-direction: column; }
   .year-label {
     font-family: var(--font-mono);
     font-size: var(--font-size-meta);
     text-transform: uppercase;
     letter-spacing: 0.08em;
-    color: var(--color-muted);
+    color: var(--color-faint);
     padding-bottom: var(--space-3);
     border-bottom: 1px solid var(--color-border);
     font-weight: 400;
@@ -111,5 +108,5 @@ const years = Object.keys(byYear).sort((a, b) => Number(b) - Number(a));
 
   .posts-list { display: flex; flex-direction: column; }
   .year-group .post-row:first-child { border-top: none; }
-  .empty { color: var(--color-muted); font-style: italic; }
+  .empty { color: var(--color-muted); }
 </style>

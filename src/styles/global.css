@@ -1,95 +1,66 @@
-/* ── Design Tokens ── */
+/* ── Design tokens ── */
 :root {
-  /* Typography */
-  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
-  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
-  --font-size-xs:   0.72rem;   /* section label, fine print */
-  --font-size-meta: 0.75rem;   /* dates, tags, mono labels */
-  --font-size-sm:   0.875rem;  /* secondary body, captions */
+  /* Type */
+  --font-sans: "Helvetica Neue", Helvetica, Arial, system-ui, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --font-size-meta: 0.75rem;   /* mono labels, dates, tags */
+  --font-size-sm:   0.875rem;  /* secondary body */
   --font-size-base: 1rem;
-  --font-size-lg:   1.1rem;
+  --font-size-lg:   1.125rem;
 
-  /* Colors — light */
-  --color-bg:          #f9f9f7;
-  --color-surface:     #ffffff;
-  --color-border:      #e2e2df;
-  --color-text:        #1a1a18;
-  --color-muted:       #737370;
-  --color-accent:      #1a1a18;
-  --color-accent-soft: #f0f0ee;
-  --color-tag-bg:      #ebebea;
-  --color-status-active: #22c55e;
-
-  /* Domain accent colors */
-  --domain-code:    #14b8a6;
-  --domain-sound:   #f59e0b;
-  --domain-visuals: #8b5cf6;
+  /* Color — LIGHT is the default base. Warm off-white, one blue accent. */
+  --color-bg:      #f6f6f4;
+  --color-surface: #ffffff;
+  --color-text:    #16160f;
+  --color-muted:   #5c5c55;
+  --color-faint:   #8a8a82;
+  --color-border:  #dcdcd6;
+  --color-line:    #e8e8e2;
+  --color-hover:   #eeeeea;
+  --color-accent:      #1366c9;
+  --color-accent-ink:  #0f4f9e;
+  --color-accent-weak: rgba(19, 102, 201, 0.10);
 
   /* Spacing */
-  --space-1:  0.25rem;   /*  4px */
-  --space-2:  0.5rem;    /*  8px */
-  --space-3:  0.75rem;   /* 12px */
-  --space-4:  1rem;      /* 16px */
-  --space-5:  1.25rem;   /* 20px */
-  --space-6:  1.5rem;    /* 24px */
-  --space-8:  2rem;      /* 32px */
-  --space-10: 2.5rem;    /* 40px */
-  --space-12: 3rem;      /* 48px */
-  --space-16: 4rem;      /* 64px */
-  --space-24: 6rem;      /* 96px */
+  --space-1:  0.25rem;
+  --space-2:  0.5rem;
+  --space-3:  0.75rem;
+  --space-4:  1rem;
+  --space-5:  1.25rem;
+  --space-6:  1.5rem;
+  --space-8:  2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+  --space-24: 6rem;
 
-  /* Radii */
-  --radius-sm: 3px;
-  --radius-md: 6px;
-  --radius-lg: 10px;
-  --radius-xl: 16px;
+  --radius: 0;          /* base stays sharp */
+  --radius-sm: 8px;     /* panels */
+  --radius-pill: 999px; /* stat chips */
 
   /* Layout */
-  --max-w:      720px;
-  --max-w-wide: 1024px;
+  --max-w:      680px;
+  --max-w-wide: 1040px;
 
-  /* Shadows */
-  --shadow-sm:   0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
-  --shadow-md:   0 4px 12px rgba(0,0,0,0.07), 0 2px 4px rgba(0,0,0,0.04);
-  --shadow-lg:   0 8px 28px rgba(0,0,0,0.09), 0 4px 8px rgba(0,0,0,0.05);
-  --shadow-card: 0 4px 16px rgba(0,0,0,0.06), 0 1px 3px rgba(0,0,0,0.04);
+  --transition: 150ms ease;
 
-  /* Transitions */
-  --transition-fast: 100ms ease;
-  --transition:      180ms ease;
-  --transition-slow: 320ms ease;
-
-  /* Z-index layers */
-  --z-base:     1;
-  --z-raised:   10;
-  --z-header:   20;
-  --z-progress: 30;
-  --z-skip:     100;
-  --z-canvas:   9999;
-
-  /* Layout helpers */
-  --timeline-col:    170px;
-  --post-row-date:   130px;
-  --post-row-date-sm: 80px;
-  --project-card-min: 280px;
+  --z-header: 20;
+  --z-skip:   100;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --color-bg:          #111110;
-    --color-surface:     #1a1a18;
-    --color-border:      #2c2c2a;
-    --color-text:        #e8e8e4;
-    --color-muted:       #888884;
-    --color-accent:      #e8e8e4;
-    --color-accent-soft: #222220;
-    --color-tag-bg:      #222220;
-
-    --shadow-sm:   0 1px 3px rgba(0,0,0,0.25), 0 1px 2px rgba(0,0,0,0.15);
-    --shadow-md:   0 4px 12px rgba(0,0,0,0.30), 0 2px 4px rgba(0,0,0,0.18);
-    --shadow-lg:   0 8px 28px rgba(0,0,0,0.38), 0 4px 8px rgba(0,0,0,0.22);
-    --shadow-card: 0 4px 16px rgba(0,0,0,0.28), 0 1px 3px rgba(0,0,0,0.18);
-  }
+/* ── Dark — Twitter "Dim" blue ── */
+:root[data-theme="dark"] {
+  --color-bg:      #15202b;
+  --color-surface: #1e2732;
+  --color-text:    #f7f9f9;
+  --color-muted:   #8b98a5;
+  --color-faint:   #5f6e7c;
+  --color-border:  #38444d;
+  --color-line:    #273340;
+  --color-hover:   #22303c;
+  --color-accent:      #1d9bf0;
+  --color-accent-ink:  #4bb0f5;
+  --color-accent-weak: rgba(29, 155, 240, 0.15);
 }
 
 /* ── Reset ── */
@@ -97,7 +68,6 @@
 
 html {
   font-size: 16px;
-  scroll-behavior: smooth;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
@@ -111,62 +81,50 @@ body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  transition: background-color 200ms ease, color 200ms ease;
 }
 
-/* ── Scrollbar ── */
 @supports (scrollbar-color: auto) {
   * { scrollbar-color: var(--color-border) transparent; scrollbar-width: thin; }
 }
-::-webkit-scrollbar { width: 6px; height: 6px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: var(--color-border); border-radius: 99px; }
-::-webkit-scrollbar-thumb:hover { background: var(--color-muted); }
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; animation: none !important; }
+}
 
 /* ── Typography ── */
 h1, h2, h3, h4 {
-  line-height: 1.15;
-  letter-spacing: -0.025em;
+  line-height: 1.12;
+  letter-spacing: -0.02em;
   font-weight: 600;
+  text-wrap: balance;
 }
-
-h1 { font-size: clamp(2rem, 5vw, 3.5rem); letter-spacing: -0.03em; }
-h2 { font-size: clamp(1.4rem, 3vw, 2rem); }
-h3 { font-size: 1.2rem; }
+h1 { font-size: clamp(1.9rem, 4.5vw, 2.9rem); letter-spacing: -0.03em; }
+h2 { font-size: clamp(1.3rem, 2.6vw, 1.6rem); }
+h3 { font-size: 1.1rem; }
 h4 { font-size: 1rem; }
 
-p { max-width: 65ch; }
+p { max-width: 66ch; }
 
 a {
   color: inherit;
-  text-decoration: underline;
-  text-decoration-color: var(--color-border);
-  text-underline-offset: 3px;
-  transition: text-decoration-color var(--transition);
-}
-a:hover { text-decoration-color: var(--color-text); }
-
-/* Text selection */
-::selection {
-  background: var(--color-text);
-  color: var(--color-bg);
+  text-decoration: none;
+  transition: color var(--transition), opacity var(--transition), border-color var(--transition);
 }
 
-/* ── Focus ── */
+::selection { background: var(--color-accent); color: #fff; }
+
 :focus-visible {
-  outline: 2px solid var(--color-text);
+  outline: 2px solid var(--color-accent);
   outline-offset: 3px;
-  border-radius: var(--radius-sm);
+  border-radius: 2px;
 }
 
-code, pre {
-  font-family: var(--font-mono);
-  font-size: 0.875em;
-}
-
+code, pre { font-family: var(--font-mono); font-size: 0.85em; }
 pre {
-  background: var(--color-surface);
+  background: transparent;
   border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius);
   padding: var(--space-4) var(--space-5);
   overflow-x: auto;
   line-height: 1.7;
@@ -174,51 +132,94 @@ pre {
 
 img { display: block; max-width: 100%; }
 
-/* ── Layout utilities ── */
+/* ── Layout ── */
 .container {
   width: 100%;
   max-width: var(--max-w);
   margin-inline: auto;
   padding-inline: var(--space-6);
 }
-.container--wide {
-  max-width: var(--max-w-wide);
-}
+.container--wide { max-width: var(--max-w-wide); }
 
-.section {
-  padding-block: var(--space-12);
-}
+.section { padding-block: var(--space-12); }
 
 .divider {
   border: none;
   height: 1px;
-  background: linear-gradient(to right, transparent, var(--color-border) 20%, var(--color-border) 80%, transparent);
-  margin-block: var(--space-12);
+  background: var(--color-line);
+  margin-block: var(--space-16);
 }
 
-/* ── Tag/badge ── */
+/* ── Meta label (mono, uppercase) ── */
+.label {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--color-faint);
+}
+
+/* label with a small leading icon */
+.label--ic {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+/* ── Tag — unboxed metadata ── */
 .tag {
-  display: inline-block;
   font-family: var(--font-mono);
   font-size: var(--font-size-meta);
-  background: var(--color-tag-bg);
-  color: var(--color-muted);
-  border-radius: var(--radius-sm);
-  padding: var(--space-1) var(--space-2);
-  letter-spacing: 0.02em;
-  line-height: 1.5;
+  color: var(--color-faint);
+  letter-spacing: 0.01em;
+  line-height: 1.4;
 }
 
-/* ── Card ── */
-.card {
+/* ── Icon ── */
+.icon {
+  display: inline-block;
+  flex: none;
+  width: 1em;
+  height: 1em;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 1.75;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vertical-align: -0.14em;
+}
+
+/* ── Panel — a filled block that breaks the hairline rhythm ── */
+.panel {
   background: var(--color-surface);
   border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius-sm);
   padding: var(--space-6);
-  transition: border-color var(--transition), box-shadow var(--transition), transform var(--transition);
 }
-.card:hover {
-  border-color: var(--color-muted);
-  box-shadow: var(--shadow-card);
-  transform: translateY(-3px);
+
+/* ── Stat chip — small pill of hard data ── */
+.stat {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-1) var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-pill);
+  font-family: var(--font-mono);
+  font-size: var(--font-size-meta);
+  color: var(--color-muted);
+  white-space: nowrap;
 }
+.stat .icon { color: var(--color-faint); font-size: 0.85rem; }
+
+/* ── Icon link — text + trailing/leading glyph ── */
+.iclink {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+.iclink .icon { color: var(--color-faint); transition: color var(--transition); }
+.iclink:hover .icon { color: var(--color-accent); }
+
+/* accent-aware hover for interactive text */
+.accent-hover:hover { color: var(--color-accent-ink); }

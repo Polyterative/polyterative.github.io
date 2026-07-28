@@ -3,6 +3,7 @@ title: "Patcher v5.4.2 — What Changed Since v5.1.0"
 description: "A progress update on Patcher: manufacturer pages, public profiles, SSR, moderation tools, multi-panel workflows, and a more coherent digital twin workspace for Eurorack."
 date: "2026-04-14"
 tags: ["Patcher", "Eurorack", "Angular", "Supabase", "Open Source"]
+cover: "/blog/covers/patcher-v5.jpg"
 ---
 
 It has been a while since the last public update for Patcher.

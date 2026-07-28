@@ -1,5 +1,7 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import Icon from '../../components/Icon.astro';
+import PostCover from '../../components/PostCover.astro';
 import { getCollection, render } from 'astro:content';
 
 export async function getStaticPaths() {
@@ -22,7 +24,6 @@ const { Content } = await render(post);
 const dateObj = new Date(post.data.date);
 const formatted = dateObj.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
 
-// Estimate reading time (~200 wpm)
 const wordCount = post.body?.split(/\s+/).length ?? 0;
 const readingTime = Math.max(1, Math.round(wordCount / 200));
 
@@ -47,178 +48,97 @@ const articleSchema = {
   description={post.data.description}
 >
   <script slot="head" type="application/ld+json" set:html={JSON.stringify(articleSchema)} />
-  <article class="section post">
-    <div class="container">
+  <article class="post">
+    <div class="container container--wide">
       <header class="post__header">
         <div class="post__meta">
-          <a class="post__back" href="/blog">Writing</a>
-          <span class="meta-sep">·</span>
-          <time datetime={post.data.date}>{formatted}</time>
-          <span class="meta-sep">·</span>
-          <span>{readingTime} min read</span>
-          {post.data.tags.length > 0 && (
-            <>
-              <span class="meta-sep">·</span>
-              <ul class="post__tags">
-                {post.data.tags.map(t => <li><span class="tag">{t}</span></li>)}
-              </ul>
-            </>
-          )}
+          <a class="post__back iclink" href="/blog"><Icon name="arrow-left" size={13} />Writing</a>
+          <span class="sep">/</span>
+          <time class="post__metaitem" datetime={post.data.date}><Icon name="calendar" size={12} />{formatted}</time>
+          <span class="sep">/</span>
+          <span class="post__metaitem"><Icon name="book" size={12} />{readingTime} min read</span>
         </div>
         <h1 class="post__title">{post.data.title}</h1>
         {post.data.description && (
           <p class="post__desc">{post.data.description}</p>
         )}
+        {post.data.tags.length > 0 && (
+          <ul class="post__tags">
+            {post.data.tags.map(t => <li><span class="tag">{t}</span></li>)}
+          </ul>
+        )}
       </header>
 
-      <hr class="divider" />
+      <div class="post__cover">
+        <PostCover title={post.data.title} tags={post.data.tags} cover={post.data.cover} variant="hero" />
+      </div>
 
       <div class="prose">
         <Content />
       </div>
 
-      <hr class="divider" />
-
       <nav class="post-nav" aria-label="Post navigation">
-        <div class="post-nav__item post-nav__item--prev">
+        <div class="post-nav__item">
           {prev && (
             <>
-              <span class="post-nav__label">← Older</span>
-              <a href={`/blog/${prev.id}`} class="post-nav__link">{prev.data.title}</a>
+              <span class="label label--ic"><Icon name="arrow-left" size={12} />Older</span>
+              <a href={`/blog/${prev.id}`} class="post-nav__link accent-hover">{prev.data.title}</a>
             </>
           )}
         </div>
         <div class="post-nav__item post-nav__item--next">
           {next && (
             <>
-              <span class="post-nav__label">Newer →</span>
-              <a href={`/blog/${next.id}`} class="post-nav__link">{next.data.title}</a>
+              <span class="label label--ic">Newer<Icon name="arrow-right" size={12} /></span>
+              <a href={`/blog/${next.id}`} class="post-nav__link accent-hover">{next.data.title}</a>
             </>
           )}
         </div>
       </nav>
-
-      <div class="post-footer-links">
-        <a href="/blog">← All posts</a>
-      </div>
     </div>
   </article>
 </BaseLayout>
-
-<script>
-  // ── Reading progress bar + section name flash ────────────────────
-  if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    // Progress bar
-    const bar = document.createElement('div');
-    bar.id = 'read-progress';
-    bar.setAttribute('aria-hidden', 'true');
-    document.body.prepend(bar);
-
-    // Section label in nav
-    const logo = document.querySelector('.nav__logo');
-    const label = document.createElement('span');
-    label.id = 'section-label';
-    label.setAttribute('aria-live', 'polite');
-    label.setAttribute('aria-atomic', 'true');
-    logo?.parentElement?.appendChild(label);
-
-    const update = () => {
-      const el = document.documentElement;
-      const pct = el.scrollTop / (el.scrollHeight - el.clientHeight);
-      bar.style.width = `${Math.min(pct * 100, 100)}%`;
-    };
-    window.addEventListener('scroll', update, { passive: true });
-    update();
-
-    // Section observer
-    const headings = Array.from(document.querySelectorAll('.prose h2'));
-    let hideTimer = 0;
-
-    const observer = new IntersectionObserver(entries => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          clearTimeout(hideTimer);
-          label.textContent = entry.target.innerText;
-          label.classList.add('visible');
-          // pulse the bar
-          bar.classList.remove('pulse');
-          void bar.offsetWidth; // reflow
-          bar.classList.add('pulse');
-          hideTimer = window.setTimeout(() => label.classList.remove('visible'), 2200);
-        }
-      });
-    }, { rootMargin: '-30% 0px -65% 0px' });
-
-    headings.forEach(h => observer.observe(h));
-  }
-</script>
-
-<style>
-  #read-progress {
-    position: fixed;
-    top: 0;
-    left: 0;
-    height: 2px;
-    width: 0%;
-    background: var(--color-text);
-    z-index: var(--z-progress);
-    transition: width 80ms linear;
-    transform-origin: left;
-    opacity: 0.7;
-  }
-  #read-progress.pulse {
-    animation: bar-pulse 350ms ease-out;
-  }
-  @keyframes bar-pulse {
-    0%   { opacity: 0.7; }
-    40%  { opacity: 1; }
-    100% { opacity: 0.7; }
-  }
-
-  #section-label {
-    font-family: var(--font-mono);
-    font-size: var(--font-size-xs);
-    color: var(--color-muted);
-    opacity: 0;
-    transition: opacity var(--transition-slow) ease;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-width: 28ch;
-    margin-left: var(--space-4);
-    letter-spacing: 0.01em;
-  }
-  #section-label.visible { opacity: 1; }
-</style>
 
 <style>
   .post__header {
     display: flex;
     flex-direction: column;
     gap: var(--space-4);
-    padding-top: var(--space-10);
-    padding-bottom: var(--space-6);
+    padding-block: var(--space-16) var(--space-10);
+    border-bottom: 1px solid var(--color-line);
+    max-width: var(--max-w);
   }
-
   .post__meta {
     display: flex;
-    align-items: center;
+    align-items: baseline;
     gap: var(--space-3);
     flex-wrap: wrap;
     font-family: var(--font-mono);
     font-size: var(--font-size-meta);
     color: var(--color-muted);
   }
-  .post__back {
-    color: var(--color-muted);
-    text-decoration: none;
-    font-family: var(--font-mono);
-    font-size: var(--font-size-meta);
-    transition: color var(--transition);
-  }
   .post__back:hover { color: var(--color-text); }
-  .meta-sep { opacity: 0.35; }
+  .post__back .icon { color: var(--color-faint); }
+  .post__back:hover .icon { color: var(--color-accent); }
+  .post__metaitem {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+  }
+  .post__metaitem .icon { color: var(--color-faint); }
+  .sep { color: var(--color-faint); }
 
+  .post__title {
+    font-size: clamp(1.9rem, 4.5vw, 3rem);
+    letter-spacing: -0.035em;
+    line-height: 1.1;
+  }
+  .post__desc {
+    font-size: var(--font-size-lg);
+    color: var(--color-muted);
+    line-height: 1.6;
+    max-width: 54ch;
+  }
   .post__tags {
     display: flex;
     gap: var(--space-2);
@@ -226,17 +146,9 @@ const articleSchema = {
     flex-wrap: wrap;
   }
 
-  .post__title {
-    font-size: clamp(1.9rem, 4.5vw, 3.2rem);
-    letter-spacing: -0.035em;
-    line-height: 1.1;
-  }
-
-  .post__desc {
-    font-size: var(--font-size-lg);
-    color: var(--color-muted);
-    line-height: 1.65;
-    max-width: 52ch;
+  .post__cover {
+    max-width: var(--max-w);
+    margin-block: var(--space-8) 0;
   }
 
   /* ── Prose ── */
@@ -244,38 +156,25 @@ const articleSchema = {
     display: flex;
     flex-direction: column;
     gap: var(--space-5);
-    padding-bottom: var(--space-6);
+    padding-block: var(--space-12);
+    max-width: var(--max-w);
   }
   .prose :global(h2) {
-    font-size: 1.35rem;
-    letter-spacing: -0.025em;
+    font-size: 1.3rem;
+    letter-spacing: -0.02em;
     line-height: 1.2;
     margin-top: var(--space-6);
     padding-top: var(--space-6);
-    border-top: 1px solid var(--color-border);
+    border-top: 1px solid var(--color-line);
   }
   .prose :global(h3) {
     font-size: 1.1rem;
-    letter-spacing: -0.015em;
     margin-top: var(--space-3);
-    color: var(--color-text);
   }
   .prose :global(p) {
     font-size: var(--font-size-base);
-    line-height: 1.85;
-    color: var(--color-text);
+    line-height: 1.8;
     max-width: 68ch;
-  }
-  /* Elegant drop cap */
-  .prose > :global(p:first-of-type)::first-letter {
-    float: left;
-    font-size: 3em;
-    line-height: 0.88;
-    font-weight: 700;
-    margin-right: 0.06em;
-    margin-top: 0.08em;
-    letter-spacing: -0.03em;
-    color: var(--color-text);
   }
   .prose :global(ul), .prose :global(ol) {
     padding-left: var(--space-5);
@@ -287,62 +186,85 @@ const articleSchema = {
     font-size: var(--font-size-base);
     line-height: 1.75;
     max-width: 65ch;
-    color: var(--color-text);
   }
   .prose :global(a) {
-    color: var(--color-text);
-    text-underline-offset: 3px;
+    text-decoration: underline;
     text-decoration-color: var(--color-border);
+    text-underline-offset: 3px;
     transition: text-decoration-color var(--transition);
   }
   .prose :global(a:hover) { text-decoration-color: var(--color-text); }
   .prose :global(code) {
-    background: var(--color-tag-bg);
-    border-radius: var(--radius-sm);
-    padding: var(--space-1) 6px;
     font-size: 0.85em;
+    padding: 1px 5px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
   }
-  .prose :global(pre) {
-    margin-block: var(--space-3);
-  }
-  .prose :global(pre code) {
-    background: none;
-    padding: 0;
-    font-size: 0.875rem;
-  }
+  .prose :global(pre) { margin-block: var(--space-3); background: transparent !important; }
+  .prose :global(pre code) { border: none; padding: 0; font-size: 0.875rem; }
+  .prose :global(pre code span) { color: inherit !important; }
   .prose :global(blockquote) {
-    border-left: 2px solid var(--color-muted);
-    padding: var(--space-4) var(--space-5);
-    background: var(--color-accent-soft);
-    border-radius: 0 var(--radius-md) var(--radius-md) 0;
+    border-left: 2px solid var(--color-border);
+    padding-left: var(--space-5);
     color: var(--color-muted);
-    font-style: italic;
     margin-block: var(--space-2);
   }
   .prose :global(blockquote p) { max-width: none; }
   .prose :global(hr) {
     border: none;
-    border-top: 1px solid var(--color-border);
+    border-top: 1px solid var(--color-line);
     margin-block: var(--space-8);
   }
-  .prose :global(img) {
-    border-radius: var(--radius-md);
-    border: 1px solid var(--color-border);
-  }
+  .prose :global(img) { border-radius: var(--radius); border: 1px solid var(--color-border); }
   .prose :global(.post-gallery) {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: var(--space-4);
     align-items: start;
   }
-  .prose :global(.post-gallery figure) {
-    margin: 0;
+  .prose :global(.post-gallery figure) { margin: 0; }
+  .prose :global(.post-gallery img) { width: 100%; height: auto; }
+
+  /* ── Mind notes: personal decision-making, sprinkled through the story ── */
+  .prose :global(.mind) {
+    --mind: var(--color-accent);
+    --mind-bg: var(--color-accent-weak);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    border: 1px solid color-mix(in srgb, var(--mind) 38%, var(--color-border));
+    border-radius: var(--radius-sm);
+    background: var(--mind-bg);
+    padding: var(--space-4) var(--space-5);
+    margin-block: var(--space-4);
   }
-  .prose :global(.post-gallery img) {
-    width: 100%;
-    height: auto;
-    display: block;
-    background: var(--color-accent-soft);
+  .prose :global(.mind__tag) {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    align-self: flex-start;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--mind);
+  }
+  .prose :global(.mind__tag svg) { width: 14px; height: 14px; flex-shrink: 0; }
+  .prose :global(.mind p) {
+    margin: 0;
+    max-width: none;
+    line-height: 1.7;
+  }
+  .prose :global(.mind p + p) { margin-top: var(--space-2); }
+  .prose :global(.mind--design) {
+    --mind: #a855f7;
+    --mind-bg: color-mix(in srgb, #a855f7 9%, transparent);
+  }
+  .prose :global(.mind--code) {
+    --mind: #14b8a6;
+    --mind-bg: color-mix(in srgb, #14b8a6 9%, transparent);
   }
 
   /* ── Post navigation ── */
@@ -350,46 +272,19 @@ const articleSchema = {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: var(--space-6);
-    padding-block: var(--space-6);
-    border-top: 1px solid var(--color-border);
+    padding-block: var(--space-8);
+    border-top: 1px solid var(--color-line);
+    max-width: var(--max-w);
   }
-  .post-nav__item {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-2);
-  }
-  .post-nav__item--next {
-    text-align: right;
-    align-items: flex-end;
-  }
-  .post-nav__label {
-    font-family: var(--font-mono);
-    font-size: var(--font-size-meta);
-    color: var(--color-muted);
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-  }
+  .post-nav__item { display: flex; flex-direction: column; gap: var(--space-2); }
+  .post-nav__item--next { text-align: right; align-items: flex-end; }
   .post-nav__link {
     font-size: var(--font-size-sm);
     font-weight: 500;
-    text-decoration: none;
     max-width: 28ch;
     line-height: 1.4;
-    transition: opacity var(--transition);
   }
-  .post-nav__link:hover { opacity: 0.65; }
-
-  .post-footer-links {
-    padding-bottom: var(--space-10);
-  }
-  .post-footer-links a {
-    font-family: var(--font-mono);
-    font-size: var(--font-size-meta);
-    color: var(--color-muted);
-    text-decoration: none;
-    transition: color var(--transition);
-  }
-  .post-footer-links a:hover { color: var(--color-text); }
+  .post-nav__link:hover { opacity: 0.6; }
 
   @media (max-width: 480px) {
     .post-nav { grid-template-columns: 1fr; }

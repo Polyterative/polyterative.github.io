@@ -1,4 +1,7 @@
 ---
+import Icon from './Icon.astro';
+import PostCover from './PostCover.astro';
+
 export interface Props {
   title: string;
   date: string;
@@ -7,9 +10,10 @@ export interface Props {
   tags?: string[];
   compact?: boolean;
   wordCount?: number;
+  cover?: string;
 }
 
-const { title, date, slug, description, tags = [], compact = false, wordCount } = Astro.props;
+const { title, date, slug, description, tags = [], compact = false, wordCount, cover } = Astro.props;
 const dateObj = new Date(date);
 const formatted = dateObj.toLocaleDateString('en-US', { year: 'numeric', month: 'short' });
 const readingTime = wordCount ? Math.max(1, Math.round(wordCount / 200)) : null;
@@ -17,12 +21,17 @@ const readingTime = wordCount ? Math.max(1, Math.round(wordCount / 200)) : null;
 
 <article class:list={['post-row', { 'post-row--compact': compact }]}>
   <div class="post-row__meta">
-    <time class="post-row__date" datetime={date}>{formatted}</time>
-    {!compact && readingTime && <span class="post-row__rt">{readingTime} min</span>}
+    <time class="post-row__date" datetime={date}><Icon name="calendar" size={12} />{formatted}</time>
+    {!compact && readingTime && <span class="post-row__rt">{readingTime} min read</span>}
   </div>
+  {!compact && (
+    <a class="post-row__cover" href={`/blog/${slug}`} aria-hidden="true" tabindex="-1">
+      <PostCover title={title} tags={tags} cover={cover} variant="thumb" />
+    </a>
+  )}
   <div class="post-row__body">
     <h2 class="post-row__title">
-      <a href={`/blog/${slug}`}>{title}</a>
+      <a class="accent-hover" href={`/blog/${slug}`}>{title}</a>
     </h2>
     {!compact && description && <p class="post-row__desc">{description}</p>}
     {!compact && tags.length > 0 && (
@@ -36,38 +45,37 @@ const readingTime = wordCount ? Math.max(1, Math.round(wordCount / 200)) : null;
 <style>
   .post-row {
     display: grid;
-    grid-template-columns: var(--post-row-date) 1fr;
+    grid-template-columns: 120px 168px 1fr;
     gap: var(--space-6);
-    padding-block: var(--space-6);
-    border-bottom: 1px solid var(--color-border);
+    padding-block: var(--space-5);
+    border-top: 1px solid var(--color-line);
     align-items: start;
-    transition: background var(--transition);
   }
-  .post-row--compact {
-    grid-template-columns: var(--post-row-date-sm) 1fr;
-    padding-block: var(--space-4);
-  }
+  .post-row--compact { grid-template-columns: 80px 1fr; padding-block: var(--space-4); align-items: baseline; }
 
-  .post-row:first-child { border-top: 1px solid var(--color-border); }
+  .post-row__cover { display: block; }
+  .post-row__cover :global(.pcover) { transition: border-color var(--transition); }
+  .post-row:hover .post-row__cover :global(.pcover__img) { transform: scale(1.03); }
 
   .post-row__meta {
     display: flex;
     flex-direction: column;
     gap: var(--space-1);
-    padding-top: 3px;
   }
-
   .post-row__date {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
     font-family: var(--font-mono);
     font-size: var(--font-size-meta);
-    color: var(--color-muted);
+    color: var(--color-faint);
     white-space: nowrap;
   }
-
+  .post-row__date .icon { color: var(--color-faint); }
   .post-row__rt {
     font-family: var(--font-mono);
     font-size: var(--font-size-meta);
-    color: var(--color-border);
+    color: var(--color-faint);
   }
 
   .post-row__body {
@@ -75,38 +83,37 @@ const readingTime = wordCount ? Math.max(1, Math.round(wordCount / 200)) : null;
     flex-direction: column;
     gap: var(--space-2);
   }
-
   .post-row__title {
     font-size: 1.05rem;
     font-weight: 600;
-    letter-spacing: -0.02em;
+    letter-spacing: -0.015em;
     line-height: 1.3;
   }
-  .post-row__title a {
-    text-decoration: none;
-    transition: opacity var(--transition);
-  }
-  .post-row__title a:hover { opacity: 0.65; }
+  .post-row__title a:hover { opacity: 0.6; }
 
   .post-row__desc {
     font-size: var(--font-size-sm);
     color: var(--color-muted);
-    line-height: 1.55;
-    max-width: none;
+    line-height: 1.6;
+    max-width: 58ch;
   }
-
   .post-row__tags {
     display: flex;
     flex-wrap: wrap;
-    gap: var(--space-1) var(--space-2);
+    gap: var(--space-2);
     list-style: none;
   }
 
+  @media (max-width: 720px) {
+    .post-row { grid-template-columns: 140px 1fr; gap: var(--space-4) var(--space-5); }
+    .post-row__cover { grid-row: 1 / 3; order: -1; }
+    .post-row__meta { grid-column: 2; }
+    .post-row__body { grid-column: 2; }
+  }
   @media (max-width: 480px) {
-    .post-row {
-      grid-template-columns: 1fr;
-      gap: var(--space-2);
-    }
-    .post-row__meta { flex-direction: row; align-items: center; gap: var(--space-3); }
+    .post-row { grid-template-columns: 1fr; gap: var(--space-3); }
+    .post-row__cover, .post-row__meta, .post-row__body { grid-column: 1; }
+    .post-row__cover { grid-row: auto; }
+    .post-row--compact { grid-template-columns: 1fr; }
   }
 </style>

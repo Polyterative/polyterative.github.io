@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import Icon from '../components/Icon.astro';
 
 const experience = [
   {
@@ -58,12 +59,20 @@ const currentFocus = [
 ];
 
 const tools = [
-  { label: 'Daily languages', items: ['.ts', '.html', '.scss', '.svg'] },
-  { label: 'Frontend', items: ['Angular', 'RxJS', 'TypeScript', 'HTML/CSS'] },
-  { label: 'Creative code', items: ['WebGPU', 'Three.js', 'p5.js', 'OSC'] },
-  { label: 'Design', items: ['Figma', 'Photoshop', 'Illustrator'] },
-  { label: 'Backend', items: ['Supabase', 'PostgreSQL', 'Node.js'] },
-  { label: 'Music', items: ['Ableton Live', 'Eurorack', 'Max for Live'] },
+  { label: 'Daily languages', icon: 'code', items: ['.ts', '.html', '.scss', '.svg'] },
+  { label: 'Frontend', icon: 'layers', items: ['Angular', 'RxJS', 'TypeScript', 'HTML/CSS'] },
+  { label: 'Creative code', icon: 'terminal', items: ['WebGPU', 'Three.js', 'p5.js', 'OSC'] },
+  { label: 'Design', icon: 'star', items: ['Figma', 'Photoshop', 'Illustrator'] },
+  { label: 'Backend', icon: 'activity', items: ['Supabase', 'PostgreSQL', 'Node.js'] },
+  { label: 'Music', icon: 'music', items: ['Ableton Live', 'Eurorack', 'Max for Live'] },
+];
+
+const links = [
+  { label: 'Code', icon: 'github', value: 'github.com/polyterative', href: 'https://github.com/polyterative' },
+  { label: 'Music', icon: 'music', value: 'polyterative.bandcamp.com', href: 'https://polyterative.bandcamp.com' },
+  { label: 'Visual', icon: 'instagram', value: '@polyterative', href: 'https://www.instagram.com/polyterative/' },
+  { label: 'App', icon: 'external', value: 'patcher.xyz', href: 'https://patcher.xyz' },
+  { label: 'Email', icon: 'mail', value: 'polyterative@outlook.com', href: 'mailto:polyterative@outlook.com' },
 ];
 ---
 
@@ -71,131 +80,93 @@ const tools = [
   title="About — Vlady Yakovenko"
   description="Vlady Yakovenko (polyterative) — UX engineer, generative visual artist, and electronic musician based in Bologna, Italy. Background, tools, and current focus."
 >
-  <section class="section">
-    <div class="container">
+  <div class="container container--wide">
 
-      <!-- Bio -->
-      <header class="about-header">
-        <span class="tag">About</span>
-        <h1>Vlady Yakovenko</h1>
-        <p class="about-handle">polyterative &nbsp;·&nbsp; Bologna, Italy</p>
-        <p class="about-bio">
-          UX engineer and polyglot artist. The same attention to systems, feedback loops,
-          and craft applies whether I'm writing reactive TypeScript, patching a modular synthesizer,
-          or composing a visual set. Most of what I make is free and open source.
-        </p>
-        <div class="about-contact">
-          <span class="about-contact__label">Booking & enquiries</span>
-          <a href="mailto:polyterative@outlook.com">polyterative@outlook.com</a>
-        </div>
-      </header>
+    <header class="about-header">
+      <h1>Vlady Yakovenko</h1>
+      <p class="about-handle">polyterative — Bologna, Italy</p>
+      <p class="about-bio">
+        UX engineer and polyglot artist. The same attention to systems, feedback loops,
+        and craft applies whether I'm writing reactive TypeScript, patching a modular synthesizer,
+        or composing a visual set. Most of what I make is free and open source.
+      </p>
+      <p class="about-contact">
+        <span class="label">Booking &amp; enquiries</span>
+        <a href="mailto:polyterative@outlook.com">polyterative@outlook.com</a>
+      </p>
+    </header>
 
-      <hr class="divider" />
+    <section class="about-section">
+      <h2 class="about-section__title"><Icon name="activity" size={17} />Now</h2>
+      <ul class="now-list">
+        {currentFocus.map(item => (
+          <li><a class="iclink" href={item.href} target="_blank" rel="noopener"><span class="now-dot" aria-hidden="true"></span>{item.text}</a></li>
+        ))}
+      </ul>
+    </section>
 
-      <!-- Now -->
-      <section class="about-section">
-        <h2 class="about-section__title">Now</h2>
-        <ul class="now-list">
-          {currentFocus.map(item => (
-            <li>
-              <span class="now-dot">—</span>
-              <a href={item.href} target="_blank" rel="noopener">{item.text}</a>
-            </li>
-          ))}
-        </ul>
-      </section>
-
-      <hr class="divider" />
-
-      <!-- Experience -->
-      <section class="about-section">
-        <h2 class="about-section__title">Experience</h2>
-        <div class="timeline">
-          {experience.map(item => (
-            <article class="timeline-item">
-              <div class="timeline-item__meta">
-                <time class="timeline-item__period">{item.period}</time>
-              </div>
-              <div class="timeline-item__body">
-                <h3 class="timeline-item__role">{item.role}</h3>
-                {item.orgUrl
-                  ? <a class="timeline-item__org timeline-item__org--link" href={item.orgUrl} target="_blank" rel="noopener">{item.org}</a>
-                  : <p class="timeline-item__org">{item.org}</p>
-                }
-                <p class="timeline-item__desc">{item.desc}</p>
-              </div>
-            </article>
-          ))}
-        </div>
-      </section>
-
-      <hr class="divider" />
-
-      <!-- Education -->
-      <section class="about-section">
-        <h2 class="about-section__title">Education</h2>
-        <div class="timeline">
-          <article class="timeline-item">
-            <div class="timeline-item__meta">
-              <time class="timeline-item__period">{education.period}</time>
-            </div>
-            <div class="timeline-item__body">
-              <h3 class="timeline-item__role">{education.degree}</h3>
-              <p class="timeline-item__org">{education.institution}</p>
-              <p class="timeline-item__desc">Final grade: {education.grade}</p>
+    <section class="about-section">
+      <h2 class="about-section__title"><Icon name="briefcase" size={17} />Experience</h2>
+      <div class="timeline">
+        {experience.map(item => (
+          <article class="row">
+            <time class="row__period">{item.period}</time>
+            <div class="row__body">
+              <h3 class="row__role">{item.role}</h3>
+              {item.orgUrl
+                ? <a class="row__org iclink" href={item.orgUrl} target="_blank" rel="noopener">{item.org}<Icon name="arrow-up-right" size={12} /></a>
+                : <p class="row__org">{item.org}</p>
+              }
+              <p class="row__desc">{item.desc}</p>
             </div>
           </article>
-        </div>
-      </section>
+        ))}
+      </div>
+    </section>
 
-      <hr class="divider" />
+    <section class="about-section">
+      <h2 class="about-section__title"><Icon name="book" size={17} />Education</h2>
+      <div class="timeline">
+        <article class="row">
+          <time class="row__period">{education.period}</time>
+          <div class="row__body">
+            <h3 class="row__role">{education.degree}</h3>
+            <p class="row__org">{education.institution}</p>
+            <p class="row__desc">Final grade: {education.grade}</p>
+          </div>
+        </article>
+      </div>
+    </section>
 
-      <!-- Tools -->
-      <section class="about-section" id="tools">
-        <h2 class="about-section__title">Tools</h2>
-        <div class="tools-grid">
-          {tools.map(group => (
-            <div class="tool-group">
-              <h4 class="tool-group__label">{group.label}</h4>
-              <ul class="tool-group__items">
-                {group.items.map(item => <li><span class="tag">{item}</span></li>)}
-              </ul>
-            </div>
-          ))}
-        </div>
-      </section>
+    <section class="about-section" id="tools">
+      <h2 class="about-section__title"><Icon name="tool" size={17} />Tools</h2>
+      <div class="tools-grid">
+        {tools.map(group => (
+          <div class="tool-group panel">
+            <h4 class="label label--ic"><Icon name={group.icon} size={13} />{group.label}</h4>
+            <ul class="tool-group__items">
+              {group.items.map(item => <li><span class="tag">{item}</span></li>)}
+            </ul>
+          </div>
+        ))}
+      </div>
+    </section>
 
-      <hr class="divider" />
+    <section class="about-section">
+      <h2 class="about-section__title"><Icon name="link" size={17} />Find me</h2>
+      <ul class="link-list">
+        {links.map(l => (
+          <li>
+            <a href={l.href} target="_blank" rel="noopener">
+              <span class="link-list__label label label--ic"><Icon name={l.icon} size={14} />{l.label}</span>
+              <span class="link-list__value">{l.value}</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </section>
 
-      <!-- Links -->
-      <section class="about-section">
-        <h2 class="about-section__title">Find me</h2>
-        <div class="contact-grid">
-          <a class="contact-card" href="https://github.com/polyterative" target="_blank" rel="noopener">
-            <span class="contact-card__label">Code</span>
-            <span class="contact-card__value">github.com/polyterative</span>
-          </a>
-          <a class="contact-card" href="https://polyterative.bandcamp.com" target="_blank" rel="noopener">
-            <span class="contact-card__label">Music</span>
-            <span class="contact-card__value">polyterative.bandcamp.com</span>
-          </a>
-          <a class="contact-card" href="https://www.instagram.com/polyterative/" target="_blank" rel="noopener">
-            <span class="contact-card__label">Visual</span>
-            <span class="contact-card__value">@politerative</span>
-          </a>
-          <a class="contact-card" href="https://patcher.xyz" target="_blank" rel="noopener">
-            <span class="contact-card__label">App</span>
-            <span class="contact-card__value">patcher.xyz</span>
-          </a>
-          <a class="contact-card" href="mailto:polyterative@outlook.com">
-            <span class="contact-card__label">Email</span>
-            <span class="contact-card__value">polyterative@outlook.com</span>
-          </a>
-        </div>
-      </section>
-
-    </div>
-  </section>
+  </div>
 </BaseLayout>
 
 <style>
@@ -203,13 +174,10 @@ const tools = [
     display: flex;
     flex-direction: column;
     gap: var(--space-4);
-    padding-top: var(--space-10);
-    padding-bottom: var(--space-6);
+    padding-block: var(--space-16) var(--space-10);
+    max-width: var(--max-w);
   }
-  .about-header h1 {
-    font-size: clamp(2rem, 5vw, 3.5rem);
-    letter-spacing: -0.03em;
-  }
+  .about-header h1 { font-size: clamp(2rem, 5vw, 3.2rem); }
   .about-handle {
     font-family: var(--font-mono);
     font-size: var(--font-size-sm);
@@ -218,200 +186,129 @@ const tools = [
   }
   .about-bio {
     font-size: var(--font-size-lg);
-    line-height: 1.75;
+    line-height: 1.7;
     color: var(--color-muted);
-    max-width: 58ch;
+    max-width: 56ch;
   }
   .about-contact {
     display: flex;
     flex-direction: column;
     gap: var(--space-1);
-    margin-top: var(--space-3);
+    margin-top: var(--space-2);
   }
-  .about-contact__label {
-    font-family: var(--font-mono);
-    font-size: var(--font-size-meta);
-    text-transform: uppercase;
-    letter-spacing: 0.07em;
-    color: var(--color-muted);
-  }
-  .about-contact a {
-    font-size: var(--font-size-base);
-    font-weight: 500;
-  }
+  .about-contact a { font-weight: 500; }
+  .about-contact a:hover { opacity: 0.6; }
 
   .about-section {
     display: flex;
     flex-direction: column;
-    gap: var(--space-6);
-    padding-block: var(--space-6);
-    border-top: 1px solid var(--color-border);
+    gap: var(--space-5);
+    padding-block: var(--space-12);
+    border-top: 1px solid var(--color-line);
+    max-width: var(--max-w);
   }
   .about-section__title {
-    font-size: 1.35rem;
-    letter-spacing: -0.025em;
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    font-size: 1.3rem;
   }
+  .about-section__title .icon { color: var(--color-accent); }
 
-  /* ── Now ── */
+  /* Now */
   .now-list {
     list-style: none;
     display: flex;
     flex-direction: column;
-    gap: var(--space-3);
   }
   .now-list li {
-    display: flex;
-    gap: var(--space-3);
+    padding-block: var(--space-3);
+    border-top: 1px solid var(--color-line);
     font-size: var(--font-size-base);
-    line-height: 1.6;
+    line-height: 1.5;
   }
-  .now-list a {
-    color: var(--color-text);
-    text-decoration-color: var(--color-border);
-    transition: text-decoration-color var(--transition);
-  }
-  .now-list a:hover { text-decoration-color: var(--color-text); }
+  .now-list li:first-child { border-top: none; padding-top: 0; }
+  .now-list a { color: var(--color-text); align-items: baseline; }
+  .now-list a:hover { color: var(--color-accent-ink); }
   .now-dot {
-    color: var(--color-muted);
-    flex-shrink: 0;
-    font-family: var(--font-mono);
-    line-height: 1.6;
-  }
-
-  /* ── Timeline ── */
-  .timeline {
-    display: flex;
-    flex-direction: column;
-    gap: 0;
-  }
-  .timeline-item {
-    display: grid;
-    grid-template-columns: var(--timeline-col) 1fr;
-    gap: var(--space-6);
-    padding-block: var(--space-5);
-    border-top: 1px solid var(--color-border);
-  }
-  .timeline-item:last-child { border-bottom: 1px solid var(--color-border); }
-
-  .timeline-item__meta {
-    padding-top: 2px;
-    display: flex;
-    align-items: flex-start;
-    gap: var(--space-2);
-  }
-  .timeline-item__meta::before {
-    content: '';
-    flex-shrink: 0;
+    flex: none;
     width: 7px;
     height: 7px;
-    border-radius: 50%;
-    margin-top: 4px;
-    background: var(--color-border);
-    border: 2px solid var(--color-bg);
-    box-shadow: 0 0 0 1px var(--color-border);
+    border-radius: var(--radius-pill);
+    background: var(--color-accent);
+    transform: translateY(-1px);
   }
-  .timeline-item:first-child .timeline-item__meta::before {
-    background: var(--color-text);
-    box-shadow: 0 0 0 1px var(--color-text);
+
+  /* Timeline / rows */
+  .timeline { display: flex; flex-direction: column; }
+  .row {
+    display: grid;
+    grid-template-columns: 160px 1fr;
+    gap: var(--space-6);
+    padding-block: var(--space-5);
+    border-top: 1px solid var(--color-line);
   }
-  .timeline-item__period {
+  .row:first-child { border-top: none; padding-top: 0; }
+  .row__period {
     font-family: var(--font-mono);
     font-size: var(--font-size-meta);
-    color: var(--color-muted);
+    color: var(--color-faint);
     white-space: nowrap;
-    line-height: 1.6;
+    line-height: 1.7;
   }
-  .timeline-item__body {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-1);
-  }
-  .timeline-item__role {
-    font-size: var(--font-size-base);
-    font-weight: 600;
-    letter-spacing: -0.01em;
-  }
-  .timeline-item__org {
+  .row__body { display: flex; flex-direction: column; gap: var(--space-1); }
+  .row__role { font-size: var(--font-size-base); font-weight: 600; letter-spacing: -0.01em; }
+  .row__org {
+    font-family: var(--font-mono);
     font-size: var(--font-size-sm);
     color: var(--color-muted);
-    font-family: var(--font-mono);
   }
-  .timeline-item__org--link {
-    text-decoration: none;
-    color: var(--color-muted);
-    display: block;
-    transition: color var(--transition);
-  }
-  .timeline-item__org--link:hover { color: var(--color-text); }
-  .timeline-item__desc {
+  a.row__org:hover { color: var(--color-text); }
+  .row__desc {
     font-size: var(--font-size-sm);
     color: var(--color-muted);
     line-height: 1.65;
     margin-top: var(--space-2);
-    max-width: none;
+    max-width: 60ch;
   }
 
   @media (max-width: 560px) {
-    .timeline-item {
-      grid-template-columns: 1fr;
-      gap: var(--space-2);
-    }
-    .timeline-item__meta { flex-direction: row; align-items: center; }
+    .row { grid-template-columns: 1fr; gap: var(--space-2); }
   }
 
-  /* ── Tools ── */
+  /* Tools */
   .tools-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(155px, 1fr));
-    gap: var(--space-6);
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: var(--space-4);
   }
-  .tool-group__label {
-    font-family: var(--font-mono);
-    font-size: var(--font-size-meta);
-    text-transform: uppercase;
-    letter-spacing: 0.07em;
-    color: var(--color-muted);
-    margin-bottom: var(--space-3);
-  }
+  .tool-group { display: flex; flex-direction: column; gap: var(--space-3); }
+  .tool-group h4 .icon { color: var(--color-accent); }
   .tool-group__items {
     display: flex;
     flex-wrap: wrap;
-    gap: var(--space-1) var(--space-2);
+    gap: var(--space-2);
     list-style: none;
   }
 
-  /* ── Links / Contact ── */
-  .contact-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
-    gap: var(--space-3);
-  }
-  .contact-card {
+  /* Links */
+  .link-list { list-style: none; display: flex; flex-direction: column; }
+  .link-list li { border-top: 1px solid var(--color-line); }
+  .link-list li:first-child { border-top: none; }
+  .link-list a {
     display: flex;
-    flex-direction: column;
-    gap: var(--space-1);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-md);
-    padding: var(--space-4) var(--space-5);
-    text-decoration: none;
-    transition: border-color var(--transition), background var(--transition), box-shadow var(--transition);
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--space-4);
+    padding-block: var(--space-3);
   }
-  .contact-card:hover {
-    border-color: var(--color-muted);
-    background: var(--color-accent-soft);
-    box-shadow: var(--shadow-sm);
-  }
-  .contact-card__label {
-    font-family: var(--font-mono);
-    font-size: var(--font-size-meta);
-    text-transform: uppercase;
-    letter-spacing: 0.07em;
-    color: var(--color-muted);
-  }
-  .contact-card__value {
+  .link-list__label .icon { color: var(--color-faint); transition: color var(--transition); }
+  .link-list a:hover .link-list__value { color: var(--color-accent-ink); }
+  .link-list a:hover .icon { color: var(--color-accent); }
+  .link-list__value {
     font-size: var(--font-size-sm);
-    color: var(--color-text);
     font-weight: 500;
     word-break: break-all;
+    text-align: right;
   }
 </style>

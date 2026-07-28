@@ -1,13 +1,20 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import ProjectCard from '../components/ProjectCard.astro';
+import Icon from '../components/Icon.astro';
+
+const sectionIcons: Record<string, string> = {
+  code: 'code',
+  sound: 'music',
+  visuals: 'layers',
+  talks: 'message',
+};
 
 const sections = [
   {
     id: 'code',
     label: 'Code',
     title: 'Engineering & Tools',
-    icon: `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="5,4 1,8 5,12"/><polyline points="11,4 15,8 11,12"/></svg>`,
     projects: [
       {
         name: 'Patcher',
@@ -15,7 +22,36 @@ const sections = [
         url: 'https://patcher.xyz',
         repo: 'https://github.com/polyterative/Patcher',
         tags: ['Angular', 'TypeScript', 'Supabase', 'PostgreSQL', 'Eurorack'],
+        image: '/projects/patcher.jpg',
         featured: true,
+      },
+      {
+        name: 'Impulse',
+        description: 'Node-based generative visual engine for live AV performance — built on WebGPU and TypeScript as a transparent, version-controllable, AI-friendly alternative to TouchDesigner.',
+        tags: ['WebGPU', 'TypeScript', 'Three.js', 'MIDI', 'Live Performance', 'Creative Coding'],
+        featured: true,
+      },
+      {
+        name: 'Kinetip',
+        description: 'Native macOS utility that drives a pen tablet in absolute mode with click/drag pass-through and context-aware inertial pan-scrolling — aware of whether the pen landed on scrollable content or controls.',
+        tags: ['macOS', 'Swift', 'Pen Tablet', 'UX', 'Accessibility'],
+      },
+      {
+        name: 'Local AI Toolkit',
+        description: 'mini-tagger, mini-renamer, and lms-guard — small macOS utilities for living with local LLMs: AI-assisted file tagging and renaming via LM Studio, plus a daemon that unloads idle models to reclaim RAM.',
+        tags: ['Python', 'Local AI', 'LM Studio', 'macOS', 'Tooling'],
+      },
+      {
+        name: 'METRON Preset Tool',
+        description: 'Terminal viewer and manager for WMD METRON .WMD preset files — unofficial and reverse-engineered. A code ↔ Eurorack crossover.',
+        repo: 'https://github.com/Polyterative/metron-preset-tool',
+        tags: ['Python', 'Eurorack', 'Reverse Engineering', 'CLI'],
+      },
+      {
+        name: 'CostaMeno',
+        description: 'Mobile-first fuel price finder built on Italian Ministry open data — open a URL at the pump and see the cheapest station nearby. No login, no ads, no tracking.',
+        url: 'https://costameno.vercel.app',
+        tags: ['Next.js', 'TypeScript', 'Open Data', 'Civic Tech'],
       },
       {
         name: 'Poly Highlights',
@@ -68,24 +104,26 @@ const sections = [
     id: 'sound',
     label: 'Sound',
     title: 'Music & Synthesis',
-    icon: `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M2 10 Q4 6 6 10 Q8 14 10 10 Q12 6 14 10"/></svg>`,
     projects: [
       {
         name: 'Polyterative on Bandcamp',
         description: 'Releases under the Polyterative alias — electronic music at the intersection of modular synthesis and composition.',
         url: 'https://polyterative.bandcamp.com',
         tags: ['Electronic Music', 'Bandcamp', 'Releases'],
+        image: '/music/ruled-by-code.jpg',
       },
       {
         name: 'Eurorack / Modular Synthesis',
         description: 'Semi-modular and fully modular synthesis rigs, documented in Patcher. Active in Bologna Modulare and Eurorack Italy.',
         tags: ['Eurorack', 'Modular Synthesis', 'Hardware', 'Semi-modular'],
+        image: '/projects/eurorack.jpg',
       },
       {
         name: 'Ableton Live Racks',
         description: 'Personal Ableton Live effect racks and templates, shared openly.',
         repo: 'https://github.com/polyterative/poly-ableton-racks',
         tags: ['Ableton Live', 'Effect Racks', 'Production', 'Max for Live'],
+        image: '/projects/ableton.jpg',
       },
       {
         name: 'OSC Audio-Visual Bridge',
@@ -98,8 +136,12 @@ const sections = [
     id: 'visuals',
     label: 'Visuals',
     title: 'Generative Art',
-    icon: `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="5"/><circle cx="8" cy="8" r="2"/></svg>`,
     projects: [
+      {
+        name: 'Impulse',
+        description: 'WebGPU node-based engine for real-time generative visuals in live AV sets — the tool I built to replace TouchDesigner, with a fully transparent TypeScript structure.',
+        tags: ['WebGPU', 'Generative Art', 'Real-time', 'Live Performance'],
+      },
       {
         name: 'POLY_REACTIVE_VISUALS',
         description: 'Three.js scenes driven by RxJS and live OSC from hardware — open source.',
@@ -116,8 +158,18 @@ const sections = [
       },
       {
         name: 'TouchDesigner',
-        description: 'Real-time visual compositions for live VJ sets and installations, driven by modular synth via OSC.',
+        description: 'Real-time visual compositions for live VJ sets and installations, driven by modular synth via OSC — including the ongoing "dotgrid" system (2023–).',
         tags: ['TouchDesigner', 'VJ', 'Real-time', 'Installations'],
+      },
+      {
+        name: 'Ship UI',
+        description: 'Sci-fi spaceship interface design set — combat, comms, systems, and main-menu HUD screens exploring dense, legible futuristic UI.',
+        tags: ['UI Design', 'Sci-Fi', 'Interface Design', 'Concept'],
+      },
+      {
+        name: 'Blender — Environment Studies',
+        description: 'Architectural and lighting studies in Blender — brutalist interiors and lamp/material experiments.',
+        tags: ['Blender', '3D', 'Lighting', 'Environment Design'],
       },
     ],
   },
@@ -125,7 +177,6 @@ const sections = [
     id: 'talks',
     label: 'Talks',
     title: 'Public Talks',
-    icon: `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><polygon points="4,3 13,8 4,13"/></svg>`,
     projects: [
       {
         name: 'Angular Flex: Building with Style (2022)',
@@ -142,39 +193,33 @@ const sections = [
   title="Projects — Vlady Yakovenko"
   description="All projects by Vlady Yakovenko (polyterative) — code, music, generative visuals, and talks."
 >
-  <section class="section">
-    <div class="container container--wide">
-      <header class="page-header">
-        <span class="tag">Projects</span>
-        <h1>All Work</h1>
-        <p class="page-desc">Code, sound, visuals, and talks — everything in one place.</p>
-        <nav class="domain-nav" aria-label="Jump to section">
-          {sections.map(s => (
-            <a href={`#${s.id}`} class="domain-nav__link">{s.label}</a>
-          ))}
-        </nav>
-      </header>
+  <div class="container container--wide">
+    <header class="page-header">
+      <h1>All Work</h1>
+      <p class="page-desc">Code, sound, visuals, and talks — everything in one place.</p>
+      <nav class="index-nav" aria-label="Jump to section">
+        {sections.map((s, i) => (
+          <a href={`#${s.id}`} class="index-nav__link iclink"><Icon name={sectionIcons[s.id]} size={13} />{s.label}</a>
+        ))}
+      </nav>
+    </header>
 
-      {sections.map(section => (
-        <div class="domain-section" id={section.id}>
-          <header class="domain-header" data-domain={section.id}>
-            <div class="domain-label-row">
-              <span class="domain-icon" set:html={section.icon}/>
-              <span class="tag">{section.label}</span>
-            </div>
-            <h2>{section.title}</h2>
-          </header>
-          <ul class="project-grid">
-            {section.projects.map((p, i) => (
-              <li class:list={[{ 'project-grid__featured': p.featured }]}>
-                <ProjectCard {...p} />
-              </li>
-            ))}
-          </ul>
-        </div>
-      ))}
-    </div>
-  </section>
+    {sections.map(section => (
+      <section class="domain" id={section.id}>
+        <header class="domain__head">
+          <span class="label label--ic"><Icon name={sectionIcons[section.id]} size={13} />{section.label}</span>
+          <h2>{section.title}</h2>
+        </header>
+        <ul class="grid">
+          {section.projects.map(p => (
+            <li class:list={[{ 'grid__span': p.featured }]}>
+              <ProjectCard {...p} icon={sectionIcons[section.id]} />
+            </li>
+          ))}
+        </ul>
+      </section>
+    ))}
+  </div>
 </BaseLayout>
 
 <style>
@@ -182,86 +227,46 @@ const sections = [
     display: flex;
     flex-direction: column;
     gap: var(--space-3);
-    padding-top: var(--space-10);
-    margin-bottom: var(--space-12);
+    padding-block: var(--space-16) var(--space-10);
+    max-width: var(--max-w);
   }
-  .page-header h1 {
-    font-size: clamp(2rem, 5vw, 3.5rem);
-    letter-spacing: -0.03em;
-  }
-  .page-desc {
-    color: var(--color-muted);
-    font-size: var(--font-size-base);
-    line-height: 1.65;
-  }
+  .page-header h1 { font-size: clamp(2rem, 5vw, 3.2rem); }
+  .page-desc { color: var(--color-muted); line-height: 1.6; }
 
-  .domain-nav {
+  .index-nav {
     display: flex;
     flex-wrap: wrap;
-    gap: var(--space-2);
+    gap: var(--space-4);
     margin-top: var(--space-4);
   }
-  .domain-nav__link {
+  .index-nav__link {
     font-family: var(--font-mono);
     font-size: var(--font-size-meta);
     color: var(--color-muted);
-    text-decoration: none;
-    border: 1px solid var(--color-border);
-    padding: var(--space-1) var(--space-3);
-    border-radius: var(--radius-md);
-    transition: color var(--transition), border-color var(--transition), background var(--transition);
   }
-  .domain-nav__link:hover {
-    color: var(--color-text);
-    border-color: var(--color-muted);
-    background: var(--color-accent-soft);
-  }
+  .index-nav__link:hover { color: var(--color-text); }
+  .index-nav__link .icon { color: var(--color-faint); }
+  .index-nav__link:hover .icon { color: var(--color-accent); }
 
-  .domain-section {
-    margin-bottom: var(--space-16);
-    scroll-margin-top: 80px;
-  }
+  .domain__head .label .icon { color: var(--color-accent); }
 
-  .domain-header {
+  .domain {
+    padding-block: var(--space-12);
+    border-top: 1px solid var(--color-line);
+    scroll-margin-top: 72px;
+  }
+  .domain__head {
     display: flex;
     flex-direction: column;
     gap: var(--space-2);
     margin-bottom: var(--space-6);
-    padding-left: var(--space-4);
-    border-left: 3px solid var(--color-border);
-  }
-  .domain-label-row {
-    display: flex;
-    align-items: center;
-    gap: var(--space-2);
-  }
-  .domain-icon {
-    display: flex;
-    align-items: center;
-    color: var(--domain-color, var(--color-muted));
-    opacity: 0.8;
   }
 
-  /* Domain color accents — using global token vars */
-  .domain-header[data-domain="code"]    { --domain-color: var(--domain-code);    border-left-color: var(--domain-code); }
-  .domain-header[data-domain="sound"]   { --domain-color: var(--domain-sound);   border-left-color: var(--domain-sound); }
-  .domain-header[data-domain="visuals"] { --domain-color: var(--domain-visuals); border-left-color: var(--domain-visuals); }
-  .domain-header[data-domain="talks"]   { --domain-color: var(--color-muted); }
-
-  .domain-desc {
-    font-size: var(--font-size-sm);
-    color: var(--color-muted);
-    max-width: 55ch;
-    line-height: 1.6;
-  }
-
-  .project-grid {
+  .grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(min(100%, var(--project-card-min)), 1fr));
-    gap: var(--space-4);
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
+    gap: 0 var(--space-8);
     list-style: none;
   }
-  .project-grid__featured {
-    grid-column: 1 / -1;
-  }
+  .grid__span { grid-column: 1 / -1; }
 </style>

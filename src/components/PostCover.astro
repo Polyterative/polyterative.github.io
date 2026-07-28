@@ -1,0 +1,89 @@
+---
+import Icon from './Icon.astro';
+
+export interface Props {
+  title: string;
+  tags?: string[];
+  cover?: string;
+  variant?: 'thumb' | 'hero';
+}
+
+const { title, tags = [], cover, variant = 'thumb' } = Astro.props;
+
+// Pick a topic icon from the tags, first match wins.
+const iconRules: [RegExp, string][] = [
+  [/home assistant|self-host|homelab|truenas|network|smart home/i, 'monitor'],
+  [/webgpu|three\.js|generative|creative coding|rxjs|visual/i, 'layers'],
+  [/music|ableton|eurorack|modular|audio|acoustic|synth|osc|av\b/i, 'music'],
+  [/mcp|\bai\b|llm|claude|local ai/i, 'tool'],
+  [/figma|design|color theory|interior|\bux\b|space planning/i, 'layers'],
+  [/open data|civic|maps?\b/i, 'map-pin'],
+  [/talon|voice coding|accessibility/i, 'message'],
+  [/python|talon|stream deck|karabiner|productivity|macos|tooling|keyboard/i, 'terminal'],
+  [/typescript|angular|next\.js|tailwind|javascript|open source/i, 'code'],
+];
+const hay = [...tags, title].join(' ');
+const icon = iconRules.find(([re]) => re.test(hay))?.[1] ?? 'book';
+
+// Deterministic hue from title so generated covers stay coherent but distinct.
+const hue = [...title].reduce((h, c) => (h * 31 + c.charCodeAt(0)) % 360, 11);
+const hue2 = (hue + 42) % 360;
+const coverStyle = `--h1:${hue};--h2:${hue2}`;
+const coverLabel = tags[0] ?? 'Post';
+---
+
+<div class:list={['pcover', `pcover--${variant}`, { 'pcover--gen': !cover }]} style={!cover ? coverStyle : undefined}>
+  {cover
+    ? <img class="pcover__img" src={cover} alt={`${title} cover`} loading="lazy" decoding="async" />
+    : (
+      <>
+        <Icon name={icon} size={variant === 'hero' ? 44 : 26} />
+        <span class="pcover__tag">{coverLabel}</span>
+      </>
+    )
+  }
+</div>
+
+<style>
+  .pcover {
+    position: relative;
+    overflow: hidden;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--color-line);
+  }
+  .pcover--thumb { aspect-ratio: 16 / 10; }
+  .pcover--hero { aspect-ratio: 21 / 9; }
+
+  .pcover__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+    display: block;
+    transition: transform 0.4s ease;
+  }
+
+  .pcover--gen {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2);
+    background:
+      radial-gradient(120% 120% at 15% 0%, hsl(var(--h1) 70% 62% / 0.85), transparent 60%),
+      linear-gradient(135deg, hsl(var(--h1) 55% 42%), hsl(var(--h2) 55% 34%));
+  }
+  .pcover--gen :global(.icon) { color: rgba(255, 255, 255, 0.92); }
+  .pcover__tag {
+    font-family: var(--font-mono);
+    font-size: var(--font-size-meta);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.85);
+    padding: 2px 8px;
+    border-radius: var(--radius-pill);
+    background: rgba(0, 0, 0, 0.22);
+    backdrop-filter: blur(2px);
+  }
+  .pcover--hero .pcover__tag { font-size: var(--font-size-sm); padding: 3px 12px; }
+</style>
