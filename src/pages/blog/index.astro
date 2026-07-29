@@ -23,38 +23,38 @@ const years = Object.keys(byYear).sort((a, b) => Number(b) - Number(a));
   description="Posts on engineering, music, generative art, and tooling by Vlady Yakovenko (polyterative)."
 >
   <div class="container container--wide">
-      <header class="page-header">
-        <h1>Posts</h1>
-        <p class="page-desc">
-          Notes on code, sound, and making things.
-          {allPosts.length > 0 && <span class="post-count">{allPosts.length} posts</span>}
-          <a class="rss-link iclink" href="/rss.xml"><Icon name="rss" size={13} />Subscribe</a>
-        </p>
-      </header>
+    <header class="page-header">
+      <h1>Writing</h1>
+      <p class="page-desc">
+        Notes on engineering, tooling, sound, and making things.
+        {allPosts.length > 0 && <span class="post-count">{allPosts.length} posts</span>}
+        <a class="rss-link iclink" href="/rss.xml"><Icon name="rss" size={13} />Subscribe</a>
+      </p>
+    </header>
 
-      {allPosts.length > 0 ? (
-        <div class="posts-by-year">
-          {years.map(year => (
-            <div class="year-group">
-              <h2 class="year-label">{year}</h2>
-              <div class="posts-list">
-                {byYear[year].map(post => (
-                  <PostRow
-                    title={post.data.title}
-                    date={post.data.date}
-                    slug={post.id}
-                    description={post.data.description}
-                    tags={post.data.tags}
-                    cover={post.data.cover}
-                  />
-                ))}
-              </div>
+    {allPosts.length > 0 ? (
+      <div class="posts-by-year">
+        {years.map(year => (
+          <div class="year-group">
+            <h2 class="year-label">{year}</h2>
+            <div class="posts-list">
+              {byYear[year].map(post => (
+                <PostRow
+                  title={post.data.title}
+                  date={post.data.date}
+                  slug={post.id}
+                  description={post.data.description}
+                  tags={post.data.tags}
+                  cover={post.data.cover}
+                />
+              ))}
             </div>
-          ))}
-        </div>
-      ) : (
-        <p class="empty">Nothing published yet — check back soon.</p>
-      )}
+          </div>
+        ))}
+      </div>
+    ) : (
+      <p class="empty">Nothing published yet — check back soon.</p>
+    )}
   </div>
 </BaseLayout>
 

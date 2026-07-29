@@ -8,8 +8,8 @@ export interface Props {
 }
 
 const {
-  title = 'Vlady Yakovenko — UX Engineer, Artist, Musician',
-  description = 'Portfolio of Vlady Yakovenko (polyterative) — UX engineer, generative visual artist, and electronic musician based in Bologna, Italy.',
+  title = 'Vlady Yakovenko — Designer, engineer, musician',
+  description = 'Notes, projects, and ongoing work by Vlady Yakovenko (polyterative) across software, visuals, music, and interaction design.',
   isHome = false,
 } = Astro.props;
 
@@ -35,8 +35,8 @@ const personSchema = {
     'https://www.instagram.com/polyterative/',
     'https://patcher.xyz',
   ],
-  jobTitle: 'UX Engineer',
-  description: 'Medium-agnostic creative exploring intersections of arts, design and code.',
+  jobTitle: 'Product Designer',
+  description: 'Designer working across software, visuals, music, and interaction systems.',
   address: { '@type': 'PostalAddress', addressLocality: 'Bologna', addressCountry: 'IT' },
   email: 'polyterative@outlook.com',
 };
@@ -137,9 +137,10 @@ const personSchema = {
   <footer class="site-footer">
     <div class="container container--wide">
       <div class="footer-inner">
-        <p class="footer-copy">
-          polyterative, Bologna &copy; {new Date().getFullYear()}
-        </p>
+        <div class="footer-copy">
+          <p class="footer-copy__title">Software, notes, music, ongoing work.</p>
+          <p class="footer-copy__meta">Based in Bologna · polyterative &copy; {new Date().getFullYear()} · <a href="mailto:polyterative@outlook.com">polyterative@outlook.com</a></p>
+        </div>
         <ul class="footer-links">
           <li><a class="iclink" href="mailto:polyterative@outlook.com"><Icon name="mail" size={14} />Email</a></li>
           <li><a class="iclink" href="https://github.com/polyterative" target="_blank" rel="noopener"><Icon name="github" size={14} />GitHub</a></li>
@@ -229,7 +230,6 @@ const personSchema = {
   .nav__link--active { color: var(--color-text); }
 
   .nav__links { align-items: center; }
-
   .theme-toggle {
     display: inline-grid;
     place-items: center;
@@ -267,10 +267,20 @@ const personSchema = {
   }
 
   .footer-copy {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+  }
+  .footer-copy__title {
+    font-size: var(--font-size-sm);
+    max-width: 42ch;
+  }
+  .footer-copy__meta {
     font-family: var(--font-mono);
     font-size: var(--font-size-meta);
     color: var(--color-faint);
   }
+  .footer-copy__meta a:hover { color: var(--color-text); }
 
   .footer-links {
     display: flex;

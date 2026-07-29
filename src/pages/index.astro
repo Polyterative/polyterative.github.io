@@ -5,108 +5,119 @@ import PostRow from '../components/PostRow.astro';
 import Icon from '../components/Icon.astro';
 import { getCollection } from 'astro:content';
 
-const posts = (await getCollection('blog', ({ data }) => !data.draft))
+const allPosts = (await getCollection('blog', ({ data }) => !data.draft))
   .sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime())
-  .slice(0, 3);
+;
 
-const projects = [
+const featuredPostIds = [
+  'ai-agents-in-creative-tools-mcp',
+  'impulse-webgpu-generative-visual-engine',
+  'home-assistant-infrastructure',
+];
+
+const featuredPosts = featuredPostIds
+  .map((id) => allPosts.find((post) => post.id === id))
+  .filter(Boolean);
+
+const selectedProjects = [
+  {
+    name: 'Patcher',
+    description: 'Founder-built product for Eurorack musicians: patch editor, rack planner, and community module database shaped around a real workflow pain point.',
+    url: 'https://patcher.xyz',
+    repo: 'https://github.com/polyterative/Patcher',
+    tags: ['Product', 'Angular', 'TypeScript', 'Supabase', 'Open Source'],
+    image: '/projects/patcher.jpg',
+    featured: true,
+  },
+  {
+    name: 'Impulse',
+    description: 'A node-based WebGPU visual engine for live AV performance, built as a transparent TypeScript alternative to opaque proprietary creative tools.',
+    repo: 'https://github.com/polyterative/impulse',
+    tags: ['WebGPU', 'TypeScript', 'Creative Tooling', 'Systems Design'],
+    featured: true,
+  },
+  {
+    name: 'CostaMeno',
+    description: 'Mobile-first utility that turns Italian fuel-price open data into a fast, trustworthy tool with no login, no ads, and no tracking.',
+    url: 'https://costameno.vercel.app',
+    tags: ['Next.js', 'TypeScript', 'Open Data', 'Civic Tech'],
+  },
   {
     name: 'Poly Highlights',
-    description: 'Luminance-corrected syntax highlighting for JetBrains IDEs.',
+    description: 'A developer theme tuned around luminance consistency — small in scope, but a strong signal of design craft applied to technical tooling.',
     repo: 'https://github.com/polyterative/Poly-highlights',
-    tags: ['JetBrains', 'Design', 'Tooling'],
+    tags: ['JetBrains', 'Design Systems', 'Tooling'],
+  },
+];
+
+const currentThemes = [
+  {
+    title: 'Designing dense software',
+    body: 'Usually the point where interfaces start to crowd in on themselves, and structure matters more than style alone.',
   },
   {
-    name: 'POLY_REACTIVE_VISUALS',
-    description: 'Angular + Three.js + RxJS scaffold for audio-reactive generative visuals with OSC support.',
-    url: 'https://reactive-visuals.vercel.app',
-    repo: 'https://github.com/polyterative/POLY_REACTIVE_VISUALS',
-    tags: ['Three.js', 'RxJS', 'OSC'],
+    title: 'Building tools for specific workflows',
+    body: 'Mostly tools shaped around narrow workflows, specific habits, and people who already know what is missing.',
   },
   {
-    name: 'thear',
-    description: 'Translates Claude Code activity into real-time OSC messages for Ableton Live.',
-    repo: 'https://github.com/polyterative/thear',
-    tags: ['Python', 'OSC', 'AI'],
-  },
-  {
-    name: 'Poly Talon Scripts',
-    description: 'Talon Voice configuration for hands-free coding across JetBrains, terminal, and browser.',
-    repo: 'https://github.com/polyterative/Poly-Talon-Scripts',
-    tags: ['Voice Coding', 'Python', 'Talon'],
+    title: 'Thinking through systems in public',
+    body: 'The blog is usually where the same questions reappear in a different form.',
   },
 ];
 ---
 
-<BaseLayout isHome={true}>
+<BaseLayout
+  title="Vlady Yakovenko — Notes, work, and ongoing systems"
+  description="A personal blog and work archive by Vlady Yakovenko, spanning software, tools, visuals, and technical notes."
+  isHome={true}
+>
   <div class="container container--wide">
 
-    <!-- Hero -->
     <section class="hero">
-      <p class="label label--ic"><Icon name="map-pin" size={13} />Bologna, Italy</p>
-      <h1 class="hero__title">UX Engineer.<br />Visual Artist.<br />Electronic Musician.</h1>
-      <p class="hero__bio">
-        Medium-agnostic creative at the intersection of software, generative art, and modular synthesis.
-      </p>
-      <ul class="hero__links">
-        <li><a class="iclink" href="/projects"><Icon name="code" size={14} />Projects</a></li>
-        <li><a class="iclink" href="/music"><Icon name="music" size={14} />Music</a></li>
-        <li><a class="iclink" href="/blog"><Icon name="book" size={14} />Writing</a></li>
-        <li><a class="iclink" href="/about"><Icon name="activity" size={14} />About</a></li>
-      </ul>
-    </section>
-
-    <!-- Featured: Patcher -->
-    <section class="featured-wrap" id="patcher">
-      <div class="panel featured">
-        <div class="featured__head">
-          <span class="label label--ic"><Icon name="star" size={13} />Featured</span>
-          <span class="label">Active — v5.3.7</span>
-        </div>
-        <h2 class="featured__title">
-          <a class="iclink accent-hover" href="https://patcher.xyz" target="_blank" rel="noopener">Patcher<Icon name="arrow-up-right" size={22} /></a>
-        </h2>
-        <p class="featured__desc">
-          A free, open-source workspace for Eurorack musicians — patch editor, rack planner,
-          and community module database in one place.
+      <div class="hero__text">
+        <p class="label label--ic"><Icon name="map-pin" size={13} />Bologna, Italy</p>
+        <h1 class="hero__title">Designer working across software, visuals, and sound.</h1>
+        <p class="hero__bio">
+          I operate at the intersection of design and engineering, shaping experiences where precision, aesthetics, and technical depth converge. With a rigorous standard for quality, I architect interfaces that are structurally sound and visually uncompromising · every decision informed by both system-level thinking and a refined design sensibility.
         </p>
-        <ul class="featured__bullets">
-          <li><Icon name="arrow-right" size={14} />Plan and document your patches — never lose a setup again</li>
-          <li><Icon name="arrow-right" size={14} />Drag-and-drop rack builder with a searchable module database</li>
-          <li><Icon name="arrow-right" size={14} />Browse the community database without creating an account</li>
+        <p class="hero__bio">
+          Years of working across sound, image, and interactive media built a discipline around composition, spatial awareness, and systematic thinking · skills that translate directly into how I approach complex product challenges. That perspective is embedded in everything I design.
+        </p>
+        <ul class="hero__facts">
+          <li class="stat"><Icon name="star" size={13} />design</li>
+          <li class="stat"><Icon name="code" size={13} />code</li>
+          <li class="stat"><Icon name="music" size={13} />sound</li>
         </ul>
-        <ul class="featured__stats">
-          <li class="stat"><Icon name="star" size={13} />35 stars</li>
-          <li class="stat"><Icon name="calendar" size={13} />since 2021</li>
-          <li class="stat"><Icon name="code" size={13} />open source</li>
-        </ul>
-        <div class="featured__actions">
-          <a class="btn iclink" href="https://patcher.xyz" target="_blank" rel="noopener">Open app<Icon name="arrow-up-right" size={14} /></a>
-          <a class="btn-text iclink" href="https://github.com/polyterative/Patcher" target="_blank" rel="noopener"><Icon name="github" size={13} />Source</a>
-          <a class="btn-text iclink" href="https://discord.gg/N6Z32xJR" target="_blank" rel="noopener"><Icon name="message" size={13} />Discord</a>
+        <div class="hero__actions">
+          <a class="btn-text iclink" href="/blog"><Icon name="book" size={13} />Writing</a>
+          <a class="btn-text iclink" href="/projects"><Icon name="code" size={13} />Projects</a>
+          <a class="btn-text iclink" href="/music"><Icon name="music" size={13} />Music</a>
+          <a class="btn-text iclink" href="/about"><Icon name="activity" size={13} />About</a>
+          <a class="btn-text iclink" href="mailto:polyterative@outlook.com"><Icon name="mail" size={13} />Email</a>
         </div>
       </div>
+      <figure class="hero__portrait">
+        <img
+          src="/vlady.jpg"
+          alt="Portrait of Vlady Yakovenko, Paris 2023"
+          width="1200"
+          height="1200"
+          loading="eager"
+          decoding="async"
+        />
+      </figure>
     </section>
 
-    <!-- Projects -->
-    <section class="block" id="work">
-      <header class="block__head">
-        <h2 class="block__title"><Icon name="layers" size={18} />Projects</h2>
-      </header>
-      <ul class="grid">
-        {projects.map(p => <li><ProjectCard {...p} /></li>)}
-      </ul>
-      <a href="/projects" class="more iclink">All projects<Icon name="arrow-right" size={13} /></a>
-    </section>
-
-    <!-- Recent writing -->
-    {posts.length > 0 && (
+    {featuredPosts.length > 0 && (
       <section class="block" id="writing">
         <header class="block__head">
-          <h2 class="block__title"><Icon name="book" size={18} />Recent posts</h2>
+          <h2 class="block__title"><Icon name="book" size={18} />Writing</h2>
+          <p class="block__intro">
+            A few places to begin.
+          </p>
         </header>
         <div class="rows">
-          {posts.map(post => (
+          {featuredPosts.map(post => (
             <PostRow
               title={post.data.title}
               date={post.data.date}
@@ -121,114 +132,93 @@ const projects = [
       </section>
     )}
 
+    <section class="proof" aria-label="Current themes">
+      <header class="proof__head">
+        <h2 class="proof__title">Current themes</h2>
+      </header>
+      <div class="proof__list">
+        {currentThemes.map(signal => (
+          <article class="proof__item">
+            <h3 class="proof__item-title">{signal.title}</h3>
+            <p class="proof__item-body">{signal.body}</p>
+          </article>
+        ))}
+      </div>
+    </section>
+
+    <section class="block" id="work">
+      <header class="block__head">
+        <h2 class="block__title"><Icon name="layers" size={18} />A few things I've made</h2>
+        <p class="block__intro">
+          Not a complete list. Just a few recurring artifacts.
+        </p>
+      </header>
+      <ul class="grid">
+        {selectedProjects.map(p => <li><ProjectCard {...p} /></li>)}
+      </ul>
+      <a href="/projects" class="more iclink">See the full archive<Icon name="arrow-right" size={13} /></a>
+    </section>
+
   </div>
 </BaseLayout>
 
 <style>
-  /* ── Hero ── */
   .hero {
     padding-block: var(--space-24) var(--space-16);
+    display: grid;
+    grid-template-columns: 1fr minmax(0, 340px);
+    align-items: center;
+    gap: var(--space-10);
+    border-bottom: 1px solid var(--color-line);
+  }
+  .hero__text {
     display: flex;
     flex-direction: column;
     gap: var(--space-5);
-    border-bottom: 1px solid var(--color-line);
+    min-width: 0;
+  }
+  .hero__portrait {
+    margin: 0;
+    justify-self: end;
+    width: 100%;
+    max-width: 340px;
+  }
+  .hero__portrait img {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    display: block;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--color-line);
   }
   .hero__title {
-    font-size: clamp(2.2rem, 6vw, 4rem);
-    line-height: 1.05;
-    letter-spacing: -0.035em;
+    font-size: clamp(2.4rem, 6vw, 4.3rem);
+    line-height: 1.03;
+    letter-spacing: -0.045em;
+    max-width: 13ch;
   }
   .hero__bio {
     font-size: var(--font-size-lg);
     color: var(--color-muted);
     line-height: 1.6;
-    max-width: 42ch;
+    max-width: 58ch;
   }
-  .hero__links {
+  .hero__facts {
     display: flex;
-    gap: var(--space-6);
-    list-style: none;
-    flex-wrap: wrap;
-    margin-top: var(--space-2);
-  }
-  .hero__links a {
-    font-size: var(--font-size-sm);
-    color: var(--color-muted);
-  }
-  .hero__links a:hover { color: var(--color-text); }
-
-  /* ── Featured (filled panel) ── */
-  .featured-wrap {
-    padding-block: var(--space-16);
-    border-bottom: 1px solid var(--color-line);
-  }
-  .featured {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-4);
-    max-width: var(--max-w);
-    padding: var(--space-8);
-  }
-  .featured__head {
-    display: flex;
-    justify-content: space-between;
-    gap: var(--space-4);
-  }
-  .featured__title {
-    font-size: clamp(1.8rem, 4vw, 2.6rem);
-    letter-spacing: -0.03em;
-  }
-  .featured__title .icon { color: var(--color-faint); }
-  .featured__desc {
-    font-size: var(--font-size-base);
-    color: var(--color-muted);
-    line-height: 1.65;
-    max-width: 52ch;
-  }
-  .featured__bullets {
-    list-style: none;
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-2);
-  }
-  .featured__bullets li {
-    display: flex;
-    align-items: baseline;
-    gap: var(--space-3);
-    font-size: var(--font-size-sm);
-    color: var(--color-muted);
-    line-height: 1.55;
-  }
-  .featured__bullets .icon { color: var(--color-accent); flex: none; }
-  .featured__stats {
-    display: flex;
-    flex-wrap: wrap;
     gap: var(--space-2);
     list-style: none;
+    flex-wrap: wrap;
+  }
+  .hero__actions {
+    display: flex;
+    gap: var(--space-4) var(--space-5);
+    align-items: center;
+    list-style: none;
+    flex-wrap: wrap;
     margin-top: var(--space-1);
   }
-  .featured__actions {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: var(--space-5);
-    margin-top: var(--space-3);
-  }
 
-  /* ── Buttons ── */
-  .btn {
-    font-size: var(--font-size-sm);
-    font-weight: 500;
-    padding: var(--space-2) var(--space-4);
-    border: 1px solid var(--color-border);
-    background: transparent;
-    color: var(--color-text);
-    border-radius: var(--radius-pill);
-    transition: border-color var(--transition), background var(--transition);
-  }
-  .btn:hover { border-color: var(--color-text); background: var(--color-hover); }
-  .btn .icon { color: var(--color-faint); }
-  .btn:hover .icon { color: var(--color-text); }
   .btn-text {
     font-family: var(--font-mono);
     font-size: var(--font-size-meta);
@@ -236,7 +226,39 @@ const projects = [
   }
   .btn-text:hover { color: var(--color-text); }
 
-  /* ── Blocks ── */
+  .proof {
+    padding-block: var(--space-12);
+    border-bottom: 1px solid var(--color-line);
+  }
+  .proof__head {
+    margin-bottom: var(--space-5);
+  }
+  .proof__title {
+    font-size: 1rem;
+    letter-spacing: -0.015em;
+  }
+  .proof__list {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-6);
+  }
+  .proof__item {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    padding-top: var(--space-4);
+    border-top: 1px solid var(--color-line);
+  }
+  .proof__item-title {
+    font-size: 1rem;
+    line-height: 1.35;
+  }
+  .proof__item-body {
+    font-size: var(--font-size-sm);
+    color: var(--color-muted);
+    line-height: 1.65;
+  }
+
   .block {
     padding-block: var(--space-16);
     border-bottom: 1px solid var(--color-line);
@@ -248,22 +270,24 @@ const projects = [
     gap: var(--space-2);
     margin-bottom: var(--space-8);
   }
+  .block__intro {
+    color: var(--color-muted);
+    line-height: 1.65;
+    max-width: 58ch;
+  }
   .block__title {
     display: flex;
     align-items: center;
     gap: var(--space-3);
   }
-  .block__title .icon { color: var(--color-accent); }
+  .block__title .icon { color: var(--color-accent);   }
 
   .grid {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
     gap: 0 var(--space-8);
     list-style: none;
     max-width: var(--max-w);
-  }
-  @media (max-width: 560px) {
-    .grid { grid-template-columns: 1fr; }
   }
   .rows { display: flex; flex-direction: column; }
 
@@ -277,7 +301,19 @@ const projects = [
   .more .icon { color: var(--color-faint); }
   .more:hover .icon { color: var(--color-accent); }
 
+  @media (max-width: 820px) {
+    .hero {
+      grid-template-columns: 1fr;
+      gap: var(--space-8);
+    }
+    .hero__portrait {
+      order: -1;
+      justify-self: start;
+      max-width: 200px;
+    }
+    .proof__list { grid-template-columns: 1fr; gap: var(--space-4); }
+  }
   @media (max-width: 560px) {
-    .featured { padding: var(--space-5); }
+    .hero { padding-block: var(--space-16) var(--space-12); }
   }
 </style>

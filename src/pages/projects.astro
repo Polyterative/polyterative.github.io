@@ -10,7 +10,56 @@ const sectionIcons: Record<string, string> = {
   talks: 'message',
 };
 
-const sections = [
+const selectedWork = [
+  {
+    name: 'Patcher',
+    role: 'Founder · product direction · UX · frontend architecture',
+    summary: 'An open-source workspace for Eurorack musicians that combines patch documentation, rack planning, and a community-driven module database.',
+    why: 'This is the clearest example of me taking a messy real-world workflow, turning it into a product model, and then shipping the full stack around it over multiple years.',
+    links: [
+      { label: 'Open app', href: 'https://patcher.xyz', icon: 'external' },
+      { label: 'Source', href: 'https://github.com/polyterative/Patcher', icon: 'github' },
+    ],
+    tags: ['Angular', 'TypeScript', 'Supabase', 'PostgreSQL', 'Open Source'],
+  },
+  {
+    name: 'Impulse',
+    role: 'Creative tooling · engine design · rendering architecture',
+    summary: 'A node-based WebGPU visual engine for live AV performance, built in TypeScript as a transparent alternative to closed proprietary visual tools.',
+    why: 'It shows systems design, graphics curiosity, product taste, and a strong bias toward tools that are understandable, versionable, and pleasant to iterate on.',
+    links: [
+      { label: 'Write-up', href: '/blog/impulse-webgpu-generative-visual-engine', icon: 'book' },
+      { label: 'Source', href: 'https://github.com/polyterative/impulse', icon: 'github' },
+    ],
+    tags: ['WebGPU', 'TypeScript', 'Three.js', 'Creative Coding', 'Systems'],
+  },
+  {
+    name: 'CostaMeno',
+    role: 'Product + frontend implementation',
+    summary: 'A mobile-first fuel-price finder that makes public Italian fuel data immediately useful at the moment a driver actually needs it.',
+    why: 'Small project, strong product signal: sharp scope, frictionless UX, trust-first constraints, and a clear point of view against ads, accounts, and tracking.',
+    links: [
+      { label: 'Live app', href: 'https://costameno.vercel.app', icon: 'external' },
+      { label: 'Read the post', href: '/blog/costameno-italian-fuel-price-finder', icon: 'book' },
+    ],
+    tags: ['Next.js', 'TypeScript', 'Open Data', 'Civic Tech'],
+  },
+  {
+    name: 'Poly Highlights',
+    role: 'Design craft for developer tooling',
+    summary: 'A JetBrains theme built around luminance consistency so syntax emphasis feels intentional rather than arbitrary.',
+    why: 'This is not the biggest project here, but it signals the kind of attention I bring to interfaces: perceptual detail, polish, and a willingness to sweat the small things that shape daily UX.',
+    links: [
+      { label: 'Source', href: 'https://github.com/polyterative/Poly-highlights', icon: 'github' },
+      { label: 'Read the post', href: '/blog/poly-highlights-luminance-corrected-theme', icon: 'book' },
+    ],
+    tags: ['JetBrains', 'Design Systems', 'Color Theory', 'Tooling'],
+  },
+];
+
+const selectedNames = new Set(selectedWork.map((project) => project.name));
+
+const archiveSections = [
   {
     id: 'code',
     label: 'Code',
@@ -186,25 +235,62 @@ const sections = [
       },
     ],
   },
-];
+].map((section) => ({
+  ...section,
+  projects: section.projects.filter((project) => !selectedNames.has(project.name)),
+})).filter((section) => section.projects.length > 0);
 ---
 
 <BaseLayout
   title="Projects — Vlady Yakovenko"
-  description="All projects by Vlady Yakovenko (polyterative) — code, music, generative visuals, and talks."
+  description="A public archive of projects, tools, experiments, and related work by Vlady Yakovenko."
 >
   <div class="container container--wide">
     <header class="page-header">
-      <h1>All Work</h1>
-      <p class="page-desc">Code, sound, visuals, and talks — everything in one place.</p>
+      <h1>Work</h1>
+      <p class="page-desc">
+        Public projects, experiments, and a few longer-running things. Not exhaustive, just the pieces that make sense to keep collected here.
+      </p>
       <nav class="index-nav" aria-label="Jump to section">
-        {sections.map((s, i) => (
+        <a href="#selected" class="index-nav__link iclink"><Icon name="star" size={13} />Flagship work</a>
+        {archiveSections.map((s) => (
           <a href={`#${s.id}`} class="index-nav__link iclink"><Icon name={sectionIcons[s.id]} size={13} />{s.label}</a>
         ))}
       </nav>
     </header>
 
-    {sections.map(section => (
+    <section class="selected" id="selected">
+      <header class="selected__head">
+        <h2>A few good entry points</h2>
+        <p class="selected__intro">
+          If you are new here, these are probably the clearest starting points.
+        </p>
+      </header>
+      <div class="studies">
+        {selectedWork.map(project => (
+          <article class="study panel">
+            <div class="study__meta">
+              <h3>{project.name}</h3>
+              <p class="study__role">{project.role}</p>
+            </div>
+            <p class="study__summary">{project.summary}</p>
+            <p class="study__why">{project.why}</p>
+            <ul class="study__tags">
+              {project.tags.map(tag => <li><span class="tag">{tag}</span></li>)}
+            </ul>
+            <div class="study__links">
+              {project.links.map(link => (
+                <a class="iclink" href={link.href} target={link.href.startsWith('http') ? '_blank' : undefined} rel={link.href.startsWith('http') ? 'noopener' : undefined}>
+                  {link.label}<Icon name={link.icon} size={13} />
+                </a>
+              ))}
+            </div>
+          </article>
+        ))}
+      </div>
+    </section>
+
+    {archiveSections.map(section => (
       <section class="domain" id={section.id}>
         <header class="domain__head">
           <span class="label label--ic"><Icon name={sectionIcons[section.id]} size={13} />{section.label}</span>
@@ -219,6 +305,7 @@ const sections = [
         </ul>
       </section>
     ))}
+
   </div>
 </BaseLayout>
 
@@ -248,6 +335,72 @@ const sections = [
   .index-nav__link .icon { color: var(--color-faint); }
   .index-nav__link:hover .icon { color: var(--color-accent); }
 
+  .selected {
+    padding-block: var(--space-12);
+    border-top: 1px solid var(--color-line);
+  }
+  .selected__head {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    max-width: 62ch;
+    margin-bottom: var(--space-6);
+  }
+  .selected__intro {
+    color: var(--color-muted);
+    line-height: 1.65;
+  }
+  .studies {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-4);
+  }
+  .study {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    min-height: 100%;
+  }
+  .study__meta {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+  }
+  .study__role {
+    font-family: var(--font-mono);
+    font-size: var(--font-size-meta);
+    color: var(--color-faint);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  .study__summary {
+    font-size: var(--font-size-base);
+    line-height: 1.65;
+  }
+  .study__why {
+    font-size: var(--font-size-sm);
+    color: var(--color-muted);
+    line-height: 1.65;
+  }
+  .study__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    list-style: none;
+  }
+  .study__links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-4);
+    margin-top: auto;
+  }
+  .study__links a {
+    font-family: var(--font-mono);
+    font-size: var(--font-size-meta);
+    color: var(--color-muted);
+  }
+  .study__links a:hover { color: var(--color-text); }
+
   .domain__head .label .icon { color: var(--color-accent); }
 
   .domain {
@@ -269,4 +422,8 @@ const sections = [
     list-style: none;
   }
   .grid__span { grid-column: 1 / -1; }
+
+  @media (max-width: 800px) {
+    .studies { grid-template-columns: 1fr; }
+  }
 </style>

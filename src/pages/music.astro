@@ -83,13 +83,29 @@ const releases = [
 >
   <div class="container container--wide">
 
-    <header class="page-header">
-      <h1>Discography</h1>
-      <p class="page-desc">
-        Electronic music under the Polyterative alias — experimental techno, modular synthesis, ambient.
-        <a href="https://polyterative.bandcamp.com" target="_blank" rel="noopener" class="bandcamp-link iclink">All releases on Bandcamp<Icon name="external" size={13} /></a>
-      </p>
-    </header>
+    <div class="music-intro">
+      <header class="page-header">
+        <h1>Discography</h1>
+        <p class="page-desc">
+          Electronic music under the Polyterative alias — experimental techno, modular synthesis, ambient.
+          <a href="https://polyterative.bandcamp.com" target="_blank" rel="noopener" class="bandcamp-link iclink">All releases on Bandcamp<Icon name="external" size={13} /></a>
+        </p>
+      </header>
+
+      <figure class="music-hero">
+        <img
+          src="/peraspera-2024.jpg"
+          alt="Vlady Yakovenko performing a modular synthesis live set at perAspera festival, Bologna 2024"
+          width="1400"
+          height="1400"
+          loading="eager"
+          decoding="async"
+        />
+        <figcaption class="music-hero__cap">
+          <Icon name="music" size={12} />Live at perAspera festival — Bologna, 2024
+        </figcaption>
+      </figure>
+    </div>
 
     <ul class="release-grid">
       {releases.map(r => (
@@ -125,11 +141,49 @@ const releases = [
 </BaseLayout>
 
 <style>
+  .music-intro {
+    display: grid;
+    grid-template-columns: 1fr minmax(0, 300px);
+    align-items: center;
+    gap: var(--space-10);
+    padding-block: var(--space-12) var(--space-8);
+  }
+  .music-hero {
+    position: relative;
+    margin: 0;
+    justify-self: end;
+    width: 100%;
+    max-width: 300px;
+    border-radius: var(--radius);
+    overflow: hidden;
+    border: 1px solid var(--color-border);
+  }
+  .music-hero img {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+  .music-hero__cap {
+    position: absolute;
+    left: var(--space-4);
+    bottom: var(--space-4);
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-family: var(--font-mono);
+    font-size: var(--font-size-meta);
+    color: rgba(255, 255, 255, 0.92);
+    padding: 4px 10px;
+    border-radius: var(--radius-pill);
+    background: rgba(0, 0, 0, 0.45);
+    backdrop-filter: blur(3px);
+  }
+  .music-hero__cap :global(.icon) { color: rgba(255, 255, 255, 0.92); }
+
   .page-header {
     display: flex;
     flex-direction: column;
     gap: var(--space-3);
-    padding-block: var(--space-16) var(--space-10);
     max-width: var(--max-w);
   }
   .page-header h1 { font-size: clamp(2rem, 5vw, 3rem); }
@@ -206,6 +260,13 @@ const releases = [
     margin-top: var(--space-1);
   }
 
+  @media (max-width: 640px) {
+    .music-intro {
+      grid-template-columns: 1fr;
+      gap: var(--space-6);
+    }
+    .music-hero { justify-self: start; max-width: 220px; }
+  }
   @media (max-width: 420px) {
     .release-grid { grid-template-columns: 1fr; }
   }

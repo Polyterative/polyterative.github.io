@@ -8,39 +8,39 @@ const experience = [
     org: 'XTEL',
     orgUrl: 'https://xtel.com',
     period: 'Aug 2024 — Present',
-    desc: 'Driving innovation by rethinking platforms and defining product direction for advanced analytics software. Collaborating with cross-functional teams to reimagine user experiences and establish a cohesive design language. Leveraging a frontend engineering background to ensure design decisions are structurally sound and developer-ready.',
+    desc: 'Leading redesign work for advanced analytics software, turning dense enterprise workflows into clearer product directions and a more coherent design language. My engineering background helps keep proposals realistic, implementation-aware, and developer-ready from the start.',
   },
   {
     role: 'Senior Frontend Developer',
     org: 'XTEL',
     orgUrl: 'https://xtel.com',
     period: 'Sep 2021 — Aug 2024',
-    desc: 'Senior developer for promotions optimization analytics in FMCG and retail. TypeScript, Angular, RxJS, SCSS. Close collaboration with data scientists, product managers, and UX teams. Responsible for UI architecture, component design, and coding standards.',
+    desc: 'Owned frontend architecture for promotions-optimization interfaces used in FMCG and retail contexts. Worked across Angular, RxJS, TypeScript, and SCSS while bridging data science, product, and UX on data-heavy workflows where clarity really matters.',
   },
   {
     role: 'Founder',
     org: 'Patcher.xyz',
     orgUrl: 'https://patcher.xyz',
     period: 'Mar 2020 — Present',
-    desc: 'Open-source workspace for Eurorack musicians — patch editor, rack planner, and community module database. Angular + Supabase (PostgreSQL). Active Discord community. Currently v5.3.7.',
+    desc: 'Built and continue to run an open-source product from concept to community: product direction, UX, frontend architecture, backend choices, releases, and user feedback loops. A long-running proof that I like owning hard problems end to end.',
   },
   {
     role: 'Frontend / Android / UX Engineer',
     org: 'Otre Solutions',
     period: 'Aug 2017 — Aug 2021',
-    desc: 'Full-stack product work for manufacturing clients across warehouse management, supply-chain planning, and industrial production monitoring. Angular, RxJS, Kotlin, C#, .NET Core, Firebase.',
+    desc: 'Worked across manufacturing software for warehouse management, supply-chain planning, and production monitoring. The common thread was translating operational complexity into interfaces people could actually use day to day.',
   },
   {
     role: 'Electronic Music Producer & Live Performer',
     org: 'Freelance',
     period: '2012 — Present',
-    desc: 'Experimental techno and modular synthesis. Live performances, sound engineering, and music for clients. Founder of the Polyterative alias.',
+    desc: 'Long-running creative practice in experimental techno, modular synthesis, and live AV performance. It is separate from my software work, but it strongly informs how I think about systems, rhythm, interaction, and tooling.',
   },
   {
     role: 'Android Engineer',
     org: 'GESP',
     period: 'Jun 2016 — Aug 2016',
-    desc: 'R&D for a computer vision project aimed at improving data entry speed for a logistics operator.',
+    desc: 'Early R&D work on a computer-vision project aimed at speeding up logistics data entry — a short engagement, but a useful introduction to product constraints outside straightforward CRUD apps.',
   },
 ];
 
@@ -56,6 +56,13 @@ const currentFocus = [
   { text: 'Maintaining Patcher — open-source Eurorack patch manager, currently v5.3.7', href: 'https://patcher.xyz' },
   { text: 'Music with Ableton Live and Eurorack modular', href: 'https://polyterative.bandcamp.com' },
   { text: 'Voice-driven development with Talon Voice', href: 'https://github.com/polyterative/Poly-Talon-Scripts' },
+];
+
+const profileSnapshot = [
+  { label: 'Practice', value: 'Product design, interface systems, frontend implementation, creative tooling' },
+  { label: 'Background', value: 'Design and engineering, with most recent work spanning analytics software and self-initiated tools' },
+  { label: 'Tools', value: 'TypeScript, Angular, RxJS, Figma, HTML/CSS, Supabase, PostgreSQL' },
+  { label: 'Recurring interests', value: 'Dense software, reactive systems, audiovisual tooling, notation, workflow design' },
 ];
 
 const tools = [
@@ -78,7 +85,7 @@ const links = [
 
 <BaseLayout
   title="About — Vlady Yakovenko"
-  description="Vlady Yakovenko (polyterative) — UX engineer, generative visual artist, and electronic musician based in Bologna, Italy. Background, tools, and current focus."
+  description="Background, current work, and tools used by Vlady Yakovenko across design, software, music, and visual systems."
 >
   <div class="container container--wide">
 
@@ -86,15 +93,28 @@ const links = [
       <h1>Vlady Yakovenko</h1>
       <p class="about-handle">polyterative — Bologna, Italy</p>
       <p class="about-bio">
-        UX engineer and polyglot artist. The same attention to systems, feedback loops,
-        and craft applies whether I'm writing reactive TypeScript, patching a modular synthesizer,
-        or composing a visual set. Most of what I make is free and open source.
+        Designer with a strong engineering background, mostly interested in complex interfaces, technical systems, and tools that need both structural clarity and visual judgment.
       </p>
-      <p class="about-contact">
-        <span class="label">Booking &amp; enquiries</span>
+      <p class="about-supporting">
+        I still make music and visuals, and that practice feeds back into the software work. The through-line is fairly consistent: systems, notation, timing, interaction, and tools that are shaped around how people actually work.
+      </p>
+      <div class="about-contact">
+        <span class="label">Email</span>
         <a href="mailto:polyterative@outlook.com">polyterative@outlook.com</a>
-      </p>
+      </div>
     </header>
+
+    <section class="about-section about-section--first">
+      <h2 class="about-section__title"><Icon name="briefcase" size={17} />Practice</h2>
+      <div class="snapshot-grid">
+        {profileSnapshot.map(item => (
+          <article class="panel snapshot">
+            <span class="label">{item.label}</span>
+            <p>{item.value}</p>
+          </article>
+        ))}
+      </div>
+    </section>
 
     <section class="about-section">
       <h2 class="about-section__title"><Icon name="activity" size={17} />Now</h2>
@@ -190,6 +210,11 @@ const links = [
     color: var(--color-muted);
     max-width: 56ch;
   }
+  .about-supporting {
+    color: var(--color-muted);
+    line-height: 1.7;
+    max-width: 58ch;
+  }
   .about-contact {
     display: flex;
     flex-direction: column;
@@ -207,6 +232,7 @@ const links = [
     border-top: 1px solid var(--color-line);
     max-width: var(--max-w);
   }
+  .about-section--first { padding-top: 0; border-top: none; }
   .about-section__title {
     display: flex;
     align-items: center;
@@ -215,7 +241,22 @@ const links = [
   }
   .about-section__title .icon { color: var(--color-accent); }
 
-  /* Now */
+  .snapshot-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-4);
+  }
+  .snapshot {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+  .snapshot p {
+    font-size: var(--font-size-sm);
+    color: var(--color-muted);
+    line-height: 1.65;
+  }
+
   .now-list {
     list-style: none;
     display: flex;
@@ -239,7 +280,6 @@ const links = [
     transform: translateY(-1px);
   }
 
-  /* Timeline / rows */
   .timeline { display: flex; flex-direction: column; }
   .row {
     display: grid;
@@ -273,10 +313,10 @@ const links = [
   }
 
   @media (max-width: 560px) {
+    .snapshot-grid { grid-template-columns: 1fr; }
     .row { grid-template-columns: 1fr; gap: var(--space-2); }
   }
 
-  /* Tools */
   .tools-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
@@ -291,7 +331,6 @@ const links = [
     list-style: none;
   }
 
-  /* Links */
   .link-list { list-style: none; display: flex; flex-direction: column; }
   .link-list li { border-top: 1px solid var(--color-line); }
   .link-list li:first-child { border-top: none; }
