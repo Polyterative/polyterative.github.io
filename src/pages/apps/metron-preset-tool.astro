@@ -1,0 +1,65 @@
+---
+import AppLayout from '../../layouts/AppLayout.astro';
+import { getApp } from '../../data/apps';
+
+const app = getApp('metron-preset-tool');
+---
+
+<AppLayout
+  app={app}
+  showPublishing={false}
+  description="The METRON Preset Tool is a reverse-engineered terminal viewer and manager for the .WMD preset format of the WMD METRON Eurorack sequencer — an unofficial bridge between code and hardware."
+>
+  <section aria-labelledby="metron-why">
+    <span class="label">Why it exists</span>
+    <h2 id="metron-why">My sequences were trapped in a binary file nobody could read</h2>
+    <p class="lede">
+      The WMD METRON is a deep Eurorack gate and trigger sequencer, and everything you program
+      into it saves to a <code>.WMD</code> preset file — an undocumented binary blob. Your
+      patterns exist, on an SD card, in a format only the hardware understands. No browsing,
+      no diffing, no managing a library of them.
+    </p>
+    <p>
+      That felt wrong to me as both a musician and an engineer. The sequences are mine; I should
+      be able to read them. So I reverse-engineered the format and built a terminal tool around
+      what I found.
+    </p>
+  </section>
+
+  <section aria-labelledby="metron-what">
+    <span class="label">What it does</span>
+    <h2 id="metron-what">Your presets, finally legible</h2>
+    <ul class="pillars">
+      <li>
+        <h3>View</h3>
+        <p>Open a .WMD file in the terminal and see what's inside — patterns and configuration as structured, human-readable data instead of hex.</p>
+      </li>
+      <li>
+        <h3>Manage</h3>
+        <p>Organize a library of presets like the files they are: name them, sort them, keep the good ones, version them in git if you like.</p>
+      </li>
+      <li>
+        <h3>Understand</h3>
+        <p>The decoded format is documented by the code itself — open source, so other METRON owners can build on the same foundation.</p>
+      </li>
+    </ul>
+    <p>
+      It's unofficial and reverse-engineered — independent work, not affiliated with WMD.
+      That's rather the point: when a format matters to its users, someone should make it
+      readable, respectfully.
+    </p>
+  </section>
+
+  <section aria-labelledby="metron-end">
+    <span class="label">Where it is now</span>
+    <h2 id="metron-end">A small key for a small lock</h2>
+    <p>
+      The tool is released, open source, and does its one job. It's the purest crossover in
+      this gallery — code in service of hardware — and a note-to-self made public: no format
+      that holds your creative work should stay opaque just because nobody bothered to look inside.
+    </p>
+    <blockquote>
+      The sequencer still speaks its private dialect. The difference is that now, so do I.
+    </blockquote>
+  </section>
+</AppLayout>

@@ -1,0 +1,77 @@
+---
+import AppLayout from '../../layouts/AppLayout.astro';
+import { getApp } from '../../data/apps';
+
+const app = getApp('impulse');
+---
+
+<AppLayout
+  app={app}
+  showPublishing={false}
+  description="Impulse is a node-based generative visual engine for live AV performance — a transparent, version-controllable TypeScript alternative to closed proprietary tools like TouchDesigner."
+>
+  <section aria-labelledby="impulse-why">
+    <span class="label">Why it exists</span>
+    <h2 id="impulse-why">The standard tool taught me the concepts. Its file format taught me to leave.</h2>
+    <p class="lede">
+      I perform live audiovisual sets — sound and visuals generated and modulated together in
+      real time. For that work, TouchDesigner is the standard. It's powerful, brilliant people
+      use it, and I found it genuinely painful to live with.
+    </p>
+    <p>
+      The UI is dense to the point of being hostile, and everything lives in a proprietary
+      binary format — opaque to version control and closed to AI coding assistants. I build
+      almost nothing without an AI agent in the loop anymore; a tool that locks out that
+      accelerator adds drag to every single session. So I took what TouchDesigner teaches —
+      node-based signal flow, the separation of input, processing, and rendering — and rebuilt
+      it on a foundation where everything is plain TypeScript and the whole structure is
+      transparent.
+    </p>
+  </section>
+
+  <section aria-labelledby="impulse-what">
+    <span class="label">What it does</span>
+    <h2 id="impulse-what">Four layers, one direction of flow</h2>
+    <p>
+      Impulse turns hardware and audio into visuals through a strict top-down pipeline:
+      a <strong>signal layer</strong> ingests MIDI, live audio analysis, and UI values as named
+      streams; a <strong>node graph</strong> — the user-facing part — wires pure transformations
+      between them; an <strong>entity world</strong> simulates position, velocity, lifetime, and
+      color at a fixed tick; and a <strong>render layer</strong> draws in a worker, fully
+      decoupled, so a dropped frame never stalls the simulation.
+    </p>
+    <ul class="pillars">
+      <li>
+        <h3>Runs in the browser</h3>
+        <p>No installer, no driver mismatches, no "does it work on the venue's laptop" moment before a show. You open a URL.</p>
+      </li>
+      <li>
+        <h3>Everything is versionable</h3>
+        <p>Nodes as functions, graph state as JSON, shaders as TypeScript. Patches diff cleanly in git like any other code.</p>
+      </li>
+      <li>
+        <h3>Built for AI-assisted work</h3>
+        <p>A transparent codebase an agent can read and modify. Describe a new node type in natural language, get a working implementation in seconds.</p>
+      </li>
+      <li>
+        <h3>Hardware-first inputs</h3>
+        <p>Web MIDI maps controllers to named signals; Web Audio supplies FFT, amplitude, and beat detection. Drive a parameter from a knob, a kick drum, or both.</p>
+      </li>
+    </ul>
+  </section>
+
+  <section aria-labelledby="impulse-end">
+    <span class="label">Where it is now</span>
+    <h2 id="impulse-end">Built by the performances it's built for</h2>
+    <p>
+      Impulse is in active development, and the roadmap is refreshingly honest: the node library
+      grows in the order my own upcoming sets need it. The architecture and rendering pipeline
+      are solid; the hard, interesting problem right now is making mid-performance patch edits
+      feel instant — the one thing the old tool truly got right, and the bar this one has to clear.
+    </p>
+    <blockquote>
+      I left a tool I couldn't see inside and built one where every moving part is a file I can
+      read. Now my visual instrument evolves at the speed of a conversation.
+    </blockquote>
+  </section>
+</AppLayout>

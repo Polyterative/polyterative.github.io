@@ -6,13 +6,18 @@ export interface Props {
   description: string;
   url?: string;
   repo?: string;
+  /** Internal link to a dedicated app/story page. Title prefers this. */
+  details?: string;
   tags?: string[];
   featured?: boolean;
   image?: string;
   icon?: string;
 }
 
-const { name, description, url, repo, tags = [], featured = false, image, icon = 'code' } = Astro.props;
+const { name, description, url, repo, details, tags = [], featured = false, image, icon = 'code' } = Astro.props;
+const urlIsExternal = url?.startsWith('http');
+const titleHref = details ?? url;
+const titleIsExternal = titleHref?.startsWith('http');
 
 // Deterministic hue from the project name so generated covers stay coherent but distinct.
 const hue = [...name].reduce((h, c) => (h * 31 + c.charCodeAt(0)) % 360, 7);
@@ -34,8 +39,8 @@ const coverLabel = tags[0] ?? 'Project';
     }
   </div>
   <h3 class="project__title">
-    {url
-      ? <a class="accent-hover" href={url} target="_blank" rel="noopener">{name}</a>
+    {titleHref
+      ? <a class="accent-hover" href={titleHref} target={titleIsExternal ? '_blank' : undefined} rel={titleIsExternal ? 'noopener' : undefined}>{name}</a>
       : name
     }
   </h3>
@@ -45,9 +50,10 @@ const coverLabel = tags[0] ?? 'Project';
       {tags.map(t => <li><span class="tag">{t}</span></li>)}
     </ul>
   )}
-  {(url || repo) && (
+  {(url || repo || details) && (
     <div class="project__links">
-      {url && <a class="iclink" href={url} target="_blank" rel="noopener">Live<Icon name="external" size={13} /></a>}
+      {details && <a class="iclink" href={details}>Details<Icon name="arrow-right" size={13} /></a>}
+      {url && <a class="iclink" href={url} target={urlIsExternal ? '_blank' : undefined} rel={urlIsExternal ? 'noopener' : undefined}>{urlIsExternal ? 'Live' : 'Details'}<Icon name={urlIsExternal ? 'external' : 'arrow-right'} size={13} /></a>}
       {repo && <a class="iclink" href={repo} target="_blank" rel="noopener">Source<Icon name="github" size={13} /></a>}
     </div>
   )}

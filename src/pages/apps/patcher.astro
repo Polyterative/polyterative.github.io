@@ -1,0 +1,116 @@
+---
+import AppLayout from '../../layouts/AppLayout.astro';
+import { getApp } from '../../data/apps';
+
+const app = getApp('patcher');
+---
+
+<AppLayout
+  app={app}
+  showPublishing={false}
+  description="Patcher is a free, open-source digital twin workspace for Eurorack musicians — patch documentation, rack planning, module tracking, and a community-maintained hardware database. Live at patcher.xyz since 2021."
+>
+  <section aria-labelledby="patcher-why">
+    <span class="label">Why it exists</span>
+    <h2 id="patcher-why">A patch is a thought you can lose by pulling one cable</h2>
+    <p class="lede">
+      A modular synthesizer holds its music in the cables. The patch — the exact state of every
+      connection and knob — is the composition. And it is completely ephemeral: repatch for the
+      next idea, and the last one is gone unless you wrote it down.
+    </p>
+    <p>
+      For years, "writing it down" meant photographing the rack and burying the photos in a
+      spreadsheet. The Eurorack community was scattered across forums, Reddit, and Discord, with
+      no shared home for the things that actually matter day to day: what your patches were, how
+      other people used the same modules, and a canonical record of the hardware itself. Existing
+      tools were either single-vendor silos or generic note apps that understood nothing about
+      signal flow.
+    </p>
+    <p>
+      Patcher started as my answer to that frustration and grew into something bigger: a
+      <strong>digital twin</strong> of your modular system. Not a sketchpad, not a wishlist — a
+      living, structured record of the racks, modules, and patches you actually have, kept in
+      sync with the physical thing in your studio.
+    </p>
+  </section>
+
+  <section aria-labelledby="patcher-what">
+    <span class="label">What it does</span>
+    <h2 id="patcher-what">One workspace for the whole modular workflow</h2>
+    <p>
+      Everything in Patcher hangs off a community-maintained module database with accurate specs
+      — dimensions, power draw, panels. On top of that sit the tools musicians reach for daily:
+    </p>
+    <ul class="pillars">
+      <li>
+        <h3>Patch documentation</h3>
+        <p>Describe signal routing connection by connection, with live stats for cables, modules, and multiples. Instance-aware patching handles repeated modules, and app-wide auto-save means an idea is never lost to a missed click.</p>
+      </li>
+      <li>
+        <h3>Rack planning</h3>
+        <p>Drag-and-drop placement with live HP, power, and balance analysis — so you find out a rack won't work before you've bought the case, not after.</p>
+      </li>
+      <li>
+        <h3>Module tracking</h3>
+        <p>Your collection as structured data: what you own, what's racked, what's on the shelf. Multi-panel modules, alternate firmware, the lot.</p>
+      </li>
+      <li>
+        <h3>Community discovery</h3>
+        <p>Public profiles, contributor stats, and browsing by module, tag, or musician. See how someone else patches the same oscillator you own — that's where new music comes from.</p>
+      </li>
+    </ul>
+    <div class="shots">
+      <figure>
+        <img src="/apps/patcher/homepage-rack-details.jpg" alt="Patcher rack detail view with HP, power, and balance analysis" loading="lazy" decoding="async" />
+        <figcaption>Rack detail — live HP, power, and balance analysis</figcaption>
+      </figure>
+      <figure>
+        <img src="/apps/patcher/homepage-module-details.jpg" alt="Patcher module detail page from the community database" loading="lazy" decoding="async" />
+        <figcaption>Module pages backed by the community database</figcaption>
+      </figure>
+      <figure class="shots--span">
+        <img src="/apps/patcher/user-area-overview.jpg" alt="Patcher user area overview with racks, patches, and modules" loading="lazy" decoding="async" />
+        <figcaption>The user area — racks, patches, and collection in one place</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section aria-labelledby="patcher-principles">
+    <span class="label">Principles</span>
+    <h2 id="patcher-principles">Free, open, and built with its community</h2>
+    <p>
+      Patcher is free and open source under AGPL-3.0, with no ads, no paywalls, and no account
+      required to browse public content. That isn't a growth tactic — it's the design. A hardware
+      database is only as good as the people maintaining it, and people contribute to commons,
+      not to catalogs they don't own. The database grows because anyone can add to it, and a
+      public open API means the data stays useful beyond the app itself.
+    </p>
+    <p>
+      The first version launched with zero users and broke in three browsers. Shipping it anyway
+      was the right call: feedback from the Bologna Modulare community shaped every feature since.
+      A tool for one person is a script. A tool for a community is a product — and the community
+      has been Patcher's co-designer for years now.
+    </p>
+  </section>
+
+  <section aria-labelledby="patcher-today">
+    <span class="label">Where it is now</span>
+    <h2 id="patcher-today">Five years in, one coherent product</h2>
+    <p>
+      What began in 2021 as a way to stop photographing a rack is now at <strong>v6.5</strong>:
+      a server-rendered Angular application on Supabase and PostgreSQL, with end-to-end test
+      coverage, moderation tooling, manufacturer pages, public profiles, and an onboarding flow
+      that takes a new musician from empty account to documented system in minutes. The releases
+      stopped being about single headline features a while ago — the work now is making the whole
+      thing feel like one instrument.
+    </p>
+    <blockquote>
+      The rack in the corner of my studio has a twin that never forgets a patch. That was the
+      whole point — and now it holds thousands of other people's systems too.
+    </blockquote>
+  </section>
+</AppLayout>
+
+<style>
+  .shots--span { grid-column: 1 / -1; }
+</style>

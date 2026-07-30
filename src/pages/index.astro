@@ -25,43 +25,32 @@ const selectedProjects = [
     description: 'Founder-built product for Eurorack musicians: patch editor, rack planner, and community module database shaped around a real workflow pain point.',
     url: 'https://patcher.xyz',
     repo: 'https://github.com/polyterative/Patcher',
+    details: '/apps/patcher',
     tags: ['Product', 'Angular', 'TypeScript', 'Supabase', 'Open Source'],
     image: '/projects/patcher.jpg',
+    featured: true,
+  },
+  {
+    name: 'Kinetip',
+    description: 'A native macOS driver that makes a pen tablet a first-class pointing device — absolute positioning and context-aware inertial scrolling, built in Swift.',
+    repo: 'https://github.com/Polyterative/Kinetip',
+    details: '/apps/kinetip',
+    tags: ['macOS', 'Swift', 'Realtime', 'Accessibility'],
     featured: true,
   },
   {
     name: 'Impulse',
     description: 'A node-based WebGPU visual engine for live AV performance, built as a transparent TypeScript alternative to opaque proprietary creative tools.',
     repo: 'https://github.com/polyterative/impulse',
+    details: '/apps/impulse',
     tags: ['WebGPU', 'TypeScript', 'Creative Tooling', 'Systems Design'],
-    featured: true,
   },
   {
     name: 'CostaMeno',
     description: 'Mobile-first utility that turns Italian fuel-price open data into a fast, trustworthy tool with no login, no ads, and no tracking.',
     url: 'https://costameno.vercel.app',
+    details: '/apps/costameno',
     tags: ['Next.js', 'TypeScript', 'Open Data', 'Civic Tech'],
-  },
-  {
-    name: 'Poly Highlights',
-    description: 'A developer theme tuned around luminance consistency — small in scope, but a strong signal of design craft applied to technical tooling.',
-    repo: 'https://github.com/polyterative/Poly-highlights',
-    tags: ['JetBrains', 'Design Systems', 'Tooling'],
-  },
-];
-
-const currentThemes = [
-  {
-    title: 'Designing dense software',
-    body: 'Usually the point where interfaces start to crowd in on themselves, and structure matters more than style alone.',
-  },
-  {
-    title: 'Building tools for specific workflows',
-    body: 'Mostly tools shaped around narrow workflows, specific habits, and people who already know what is missing.',
-  },
-  {
-    title: 'Thinking through systems in public',
-    body: 'The blog is usually where the same questions reappear in a different form.',
   },
 ];
 ---
@@ -78,10 +67,10 @@ const currentThemes = [
         <p class="label label--ic"><Icon name="map-pin" size={13} />Bologna, Italy</p>
         <h1 class="hero__title">Designer working across software, visuals, and sound.</h1>
         <p class="hero__bio">
-          I operate at the intersection of design and engineering, shaping experiences where precision, aesthetics, and technical depth converge. With a rigorous standard for quality, I architect interfaces that are structurally sound and visually uncompromising · every decision informed by both system-level thinking and a refined design sensibility.
+          I work at the intersection of design and engineering: interfaces that hold up structurally and read clearly, built with the same care at the system level as at the pixel level.
         </p>
         <p class="hero__bio">
-          Years of working across sound, image, and interactive media built a discipline around composition, spatial awareness, and systematic thinking · skills that translate directly into how I approach complex product challenges. That perspective is embedded in everything I design.
+          Years of making music, visuals, and interactive work taught me composition, timing, and systems thinking — and all of it feeds back into how I design software.
         </p>
         <ul class="hero__facts">
           <li class="stat"><Icon name="star" size={13} />design</li>
@@ -89,6 +78,7 @@ const currentThemes = [
           <li class="stat"><Icon name="music" size={13} />sound</li>
         </ul>
         <div class="hero__actions">
+          <a class="btn-text iclink" href="/apps"><Icon name="layers" size={13} />Apps</a>
           <a class="btn-text iclink" href="/blog"><Icon name="book" size={13} />Writing</a>
           <a class="btn-text iclink" href="/projects"><Icon name="code" size={13} />Projects</a>
           <a class="btn-text iclink" href="/music"><Icon name="music" size={13} />Music</a>
@@ -132,31 +122,20 @@ const currentThemes = [
       </section>
     )}
 
-    <section class="proof" aria-label="Current themes">
-      <header class="proof__head">
-        <h2 class="proof__title">Current themes</h2>
-      </header>
-      <div class="proof__list">
-        {currentThemes.map(signal => (
-          <article class="proof__item">
-            <h3 class="proof__item-title">{signal.title}</h3>
-            <p class="proof__item-body">{signal.body}</p>
-          </article>
-        ))}
-      </div>
-    </section>
-
     <section class="block" id="work">
       <header class="block__head">
         <h2 class="block__title"><Icon name="layers" size={18} />A few things I've made</h2>
         <p class="block__intro">
-          Not a complete list. Just a few recurring artifacts.
+          Not a complete list. Just a few recurring artifacts — each with its full story in the applications gallery.
         </p>
       </header>
       <ul class="grid">
         {selectedProjects.map(p => <li><ProjectCard {...p} /></li>)}
       </ul>
-      <a href="/projects" class="more iclink">See the full archive<Icon name="arrow-right" size={13} /></a>
+      <div class="block__more">
+        <a href="/apps" class="more iclink">Browse the applications<Icon name="arrow-right" size={13} /></a>
+        <a href="/projects" class="more iclink">See the full archive<Icon name="arrow-right" size={13} /></a>
+      </div>
     </section>
 
   </div>
@@ -226,39 +205,6 @@ const currentThemes = [
   }
   .btn-text:hover { color: var(--color-text); }
 
-  .proof {
-    padding-block: var(--space-12);
-    border-bottom: 1px solid var(--color-line);
-  }
-  .proof__head {
-    margin-bottom: var(--space-5);
-  }
-  .proof__title {
-    font-size: 1rem;
-    letter-spacing: -0.015em;
-  }
-  .proof__list {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: var(--space-6);
-  }
-  .proof__item {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-2);
-    padding-top: var(--space-4);
-    border-top: 1px solid var(--color-line);
-  }
-  .proof__item-title {
-    font-size: 1rem;
-    line-height: 1.35;
-  }
-  .proof__item-body {
-    font-size: var(--font-size-sm);
-    color: var(--color-muted);
-    line-height: 1.65;
-  }
-
   .block {
     padding-block: var(--space-16);
     border-bottom: 1px solid var(--color-line);
@@ -297,6 +243,12 @@ const currentThemes = [
     font-size: var(--font-size-meta);
     color: var(--color-muted);
   }
+  .block__more {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-6);
+  }
+  .block__more .more { margin-top: var(--space-6); }
   .more:hover { color: var(--color-text); }
   .more .icon { color: var(--color-faint); }
   .more:hover .icon { color: var(--color-accent); }
@@ -311,7 +263,6 @@ const currentThemes = [
       justify-self: start;
       max-width: 200px;
     }
-    .proof__list { grid-template-columns: 1fr; gap: var(--space-4); }
   }
   @media (max-width: 560px) {
     .hero { padding-block: var(--space-16) var(--space-12); }

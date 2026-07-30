@@ -1,0 +1,72 @@
+---
+import AppLayout from '../../layouts/AppLayout.astro';
+import { getApp } from '../../data/apps';
+
+const app = getApp('thear');
+---
+
+<AppLayout
+  app={app}
+  showPublishing={false}
+  description="thear is a Python daemon that sonifies AI coding sessions: it turns Claude Code activity into real-time OSC messages for Ableton Live, giving you peripheral awareness of what your agents are doing — through sound."
+>
+  <section aria-labelledby="thear-why">
+    <span class="label">Why it exists</span>
+    <h2 id="thear-why">You watch AI work all day. I wanted to hear it.</h2>
+    <p class="lede">
+      Working with AI coding agents is an almost entirely visual experience — you watch tokens
+      appear. Over long stretches that gets dissociative: you lose the thread of what's actually
+      happening. Sound solves this in a way another dashboard can't, because hearing doesn't
+      demand your eyes.
+    </p>
+    <p>
+      thear gives agentic work a soundtrack. It's a small Python daemon that listens to Claude
+      Code's hook events — tool calls, file writes, completions — and emits OSC messages in real
+      time. Ableton Live picks them up through a Max for Live device and turns them into
+      whatever sounds you've designed.
+    </p>
+  </section>
+
+  <section aria-labelledby="thear-what">
+    <span class="label">What it does</span>
+    <h2 id="thear-what">Events become gestures, sessions become music</h2>
+    <ul class="pillars">
+      <li>
+        <h3>Tool calls</h3>
+        <p>Short percussive hits — the tick of an agent actually doing things.</p>
+      </li>
+      <li>
+        <h3>File writes</h3>
+        <p>Filter cutoff modulated by file size — big changes literally sound bigger.</p>
+      </li>
+      <li>
+        <h3>Completions</h3>
+        <p>A long reverb tail released — the audible exhale of a finished task.</p>
+      </li>
+      <li>
+        <h3>Anywhere OSC goes</h3>
+        <p>Ableton is the reference target, but the output is plain OSC — route it to any synth, visual engine, or hardware that listens.</p>
+      </li>
+    </ul>
+    <p>
+      The surprise is how musical it is. File writes cluster rhythmically; long reasoning steps
+      produce slow ambient swells. A busy session has a groove, and a stuck one goes quiet —
+      which turns out to be exactly the signal you want.
+    </p>
+  </section>
+
+  <section aria-labelledby="thear-end">
+    <span class="label">Where it is now</span>
+    <h2 id="thear-end">Peripheral awareness, restored</h2>
+    <p>
+      thear is released and open source. It sits in the same family as my other AI tooling —
+      instruments for <em>living with</em> AI rather than just consuming it — and it's the one
+      that best captures the point: the machine's work becomes ambient, legible, and a little
+      bit beautiful.
+    </p>
+    <blockquote>
+      I stopped staring at the terminal to know what my agents were doing. Now the studio just
+      tells me — in rhythm, swells, and the occasional very satisfying reverb tail.
+    </blockquote>
+  </section>
+</AppLayout>

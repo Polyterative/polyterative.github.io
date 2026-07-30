@@ -17,6 +17,7 @@ const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
 const currentPath = Astro.url.pathname;
 
 const navLinks = [
+  { href: '/apps', label: 'Apps', match: '/apps' },
   { href: '/projects', label: 'Projects', match: '/projects' },
   { href: '/music', label: 'Music', match: '/music' },
   { href: '/blog', label: 'Writing', match: '/blog' },

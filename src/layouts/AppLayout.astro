@@ -1,0 +1,384 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import Icon from '../components/Icon.astro';
+import type { AppEntry } from '../data/apps';
+
+export interface Props {
+  app: AppEntry;
+  description: string;
+  showPublishing?: boolean;
+}
+
+const { app, description, showPublishing = true } = Astro.props;
+
+const isPre = app.status.toLowerCase().includes('pre-release');
+
+const appSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'SoftwareApplication',
+  name: app.name,
+  operatingSystem: app.platform,
+  applicationCategory: 'UtilitiesApplication',
+  description: app.pitch,
+  url: new URL(Astro.url.pathname, Astro.site).toString(),
+  author: {
+    '@type': 'Person',
+    name: 'Vlady Yakovenko',
+    alternateName: 'polyterative',
+    url: 'https://polyterative.github.io',
+  },
+};
+---
+
+<BaseLayout title={`${app.name} — ${app.tagline}`} description={description}>
+  <script slot="head" type="application/ld+json" set:html={JSON.stringify(appSchema)} />
+
+  <article class="container container--wide app-page" style={`--app-h:${app.accentHue}`}>
+    <nav class="crumb" aria-label="Breadcrumb">
+      <a href="/apps" class="iclink"><Icon name="arrow-left" size={13} />All applications</a>
+    </nav>
+
+    <header class="hero">
+      <div class="hero__copy">
+        <p class="hero__kicker">
+          <span class="label">{app.platform}</span>
+          <span class:list={['hero__status', { 'hero__status--pre': isPre }]}>{app.status}</span>
+        </p>
+        <h1>{app.name}</h1>
+        <p class="hero__tagline">{app.tagline}</p>
+        <p class="hero__pitch">{app.pitch}</p>
+        <div class="hero__links">
+          {app.links.map((link) => (
+            <a
+              class="iclink"
+              href={link.href}
+              target={link.href.startsWith('http') ? '_blank' : undefined}
+              rel={link.href.startsWith('http') ? 'noopener' : undefined}
+            >{link.label}<Icon name={link.icon} size={13} /></a>
+          ))}
+        </div>
+        <ul class="hero__tags">
+          {app.tags.map((tag) => <li><span class="tag">{tag}</span></li>)}
+        </ul>
+      </div>
+    </header>
+
+    <figure class="hero-shot" class:list={[{ 'hero-shot--gen': !app.hero }]}>
+      {app.hero
+        ? <img src={app.hero} alt={app.heroAlt} loading="eager" decoding="async" />
+        : (
+          <div class="hero-shot__gen" role="img" aria-label={`${app.name} — generated cover`}>
+            <Icon name={app.icon ?? 'code'} size={44} />
+            <span class="hero-shot__gen-name">{app.name}</span>
+            <span class="hero-shot__gen-tag">{app.platform}</span>
+          </div>
+        )
+      }
+    </figure>
+
+    <div class="app-story">
+      <slot />
+    </div>
+
+    <section class="facts" aria-labelledby="fact-sheet">
+      <header class="facts__head">
+        <span class="label">Fact sheet</span>
+        <h2 id="fact-sheet">{app.name} at a glance</h2>
+      </header>
+      <dl class="facts__grid">
+        {app.facts.map((fact) => (
+          <div class="facts__item">
+            <dt>{fact.label}</dt>
+            <dd>{fact.value}</dd>
+          </div>
+        ))}
+      </dl>
+    </section>
+
+    {showPublishing && (
+      <aside class="publish panel">
+        <div class="publish__copy">
+          <h2>Publishing & partnerships</h2>
+          <p>
+            I design, build, and maintain these applications end-to-end. If you are a publisher,
+            distributor, or platform interested in bringing {app.name} to a wider audience —
+            or in working together on something new — I'd like to hear from you.
+          </p>
+        </div>
+        <div class="publish__actions">
+          <a class="iclink" href="mailto:polyterative@outlook.com"><Icon name="mail" size={14} />polyterative@outlook.com</a>
+          <a class="iclink" href="https://github.com/polyterative" target="_blank" rel="noopener"><Icon name="github" size={14} />github.com/polyterative</a>
+        </div>
+      </aside>
+    )}
+  </article>
+</BaseLayout>
+
+<style>
+  .app-page { padding-block: var(--space-10) var(--space-8); }
+
+  .crumb { margin-bottom: var(--space-8); }
+  .crumb a {
+    font-family: var(--font-mono);
+    font-size: var(--font-size-meta);
+    color: var(--color-muted);
+  }
+  .crumb a:hover { color: var(--color-text); }
+
+  .hero { max-width: 72ch; }
+  .hero__kicker {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    margin-bottom: var(--space-4);
+  }
+  .hero__status {
+    font-family: var(--font-mono);
+    font-size: var(--font-size-meta);
+    color: var(--color-muted);
+  }
+  .hero__status::before {
+    content: '';
+    display: inline-block;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    margin-right: 6px;
+    background: hsl(145 60% 42%);
+    vertical-align: 1px;
+  }
+  .hero__status--pre::before { background: hsl(38 90% 50%); }
+
+  .hero h1 { font-size: clamp(2.2rem, 6vw, 3.6rem); }
+  .hero__tagline {
+    font-size: clamp(1.1rem, 2.4vw, 1.35rem);
+    line-height: 1.4;
+    letter-spacing: -0.015em;
+    margin-top: var(--space-3);
+    color: var(--color-text);
+    text-wrap: balance;
+  }
+  .hero__pitch {
+    margin-top: var(--space-4);
+    color: var(--color-muted);
+    line-height: 1.65;
+    max-width: 62ch;
+  }
+  .hero__links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-5);
+    margin-top: var(--space-5);
+  }
+  .hero__links a {
+    font-family: var(--font-mono);
+    font-size: var(--font-size-sm);
+    color: var(--color-text);
+  }
+  .hero__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    list-style: none;
+    margin-top: var(--space-5);
+  }
+
+  .hero-shot {
+    margin-top: var(--space-8);
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    background:
+      radial-gradient(120% 140% at 12% 0%, hsl(var(--app-h) 60% 55% / 0.14), transparent 55%),
+      var(--color-surface);
+    padding: clamp(var(--space-4), 3vw, var(--space-8));
+  }
+  .hero-shot img {
+    width: 100%;
+    border-radius: calc(var(--radius-sm) - 2px);
+    border: 1px solid var(--color-line);
+    box-shadow: 0 18px 48px -24px rgba(0, 0, 0, 0.35);
+  }
+
+  .hero-shot--gen { padding: 0; }
+  .hero-shot__gen {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-3);
+    min-height: clamp(200px, 32vw, 300px);
+    background:
+      radial-gradient(120% 140% at 15% 0%, hsl(var(--app-h) 65% 58% / 0.85), transparent 62%),
+      linear-gradient(135deg, hsl(var(--app-h) 52% 40%), hsl(calc(var(--app-h) + 42) 52% 30%));
+  }
+  .hero-shot__gen :global(.icon) { color: rgba(255, 255, 255, 0.92); }
+  .hero-shot__gen-name {
+    font-family: var(--font-mono);
+    font-size: var(--font-size-lg);
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    color: rgba(255, 255, 255, 0.95);
+  }
+  .hero-shot__gen-tag {
+    font-family: var(--font-mono);
+    font-size: var(--font-size-meta);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.85);
+    padding: 2px 10px;
+    border-radius: var(--radius-pill);
+    background: rgba(0, 0, 0, 0.22);
+  }
+
+  /* ── Story typography (applies to slotted page content) ── */
+  .app-story {
+    margin-top: var(--space-16);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-12);
+  }
+  .app-story :global(section > h2) {
+    margin-bottom: var(--space-4);
+  }
+  .app-story :global(section > .label) {
+    display: inline-block;
+    margin-bottom: var(--space-2);
+  }
+  .app-story :global(p) {
+    line-height: 1.7;
+    max-width: 66ch;
+  }
+  .app-story :global(p + p) { margin-top: var(--space-4); }
+  .app-story :global(strong) { font-weight: 600; }
+
+  .app-story :global(.lede) {
+    font-size: var(--font-size-lg);
+    line-height: 1.6;
+    letter-spacing: -0.01em;
+  }
+
+  .app-story :global(figure) {
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    background: var(--color-surface);
+  }
+  .app-story :global(figure img) { width: 100%; }
+  .app-story :global(figcaption) {
+    font-family: var(--font-mono);
+    font-size: var(--font-size-meta);
+    color: var(--color-muted);
+    padding: var(--space-3) var(--space-4);
+    border-top: 1px solid var(--color-line);
+  }
+
+  .app-story :global(.shots) {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-4);
+    margin-top: var(--space-6);
+  }
+  .app-story :global(.shots--wide) { grid-template-columns: 1fr; }
+
+  .app-story :global(.pillars) {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr));
+    gap: var(--space-4);
+    list-style: none;
+    margin-top: var(--space-6);
+  }
+  .app-story :global(.pillars li) {
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-sm);
+    background: var(--color-surface);
+    padding: var(--space-5);
+  }
+  .app-story :global(.pillars h3) {
+    font-size: var(--font-size-base);
+    margin-bottom: var(--space-2);
+  }
+  .app-story :global(.pillars p) {
+    font-size: var(--font-size-sm);
+    color: var(--color-muted);
+    line-height: 1.6;
+  }
+
+  .app-story :global(blockquote) {
+    border-left: 2px solid var(--color-accent);
+    padding-left: var(--space-5);
+    font-size: var(--font-size-lg);
+    line-height: 1.55;
+    letter-spacing: -0.01em;
+    max-width: 58ch;
+    text-wrap: balance;
+  }
+
+  /* ── Fact sheet ── */
+  .facts {
+    margin-top: var(--space-16);
+    padding-top: var(--space-10);
+    border-top: 1px solid var(--color-line);
+  }
+  .facts__head {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    margin-bottom: var(--space-6);
+  }
+  .facts__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 220px), 1fr));
+    gap: var(--space-4);
+  }
+  .facts__item {
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-sm);
+    background: var(--color-surface);
+    padding: var(--space-4) var(--space-5);
+  }
+  .facts__item dt {
+    font-family: var(--font-mono);
+    font-size: var(--font-size-meta);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--color-faint);
+    margin-bottom: var(--space-1);
+  }
+  .facts__item dd {
+    font-size: var(--font-size-sm);
+    line-height: 1.5;
+  }
+
+  /* ── Publisher CTA ── */
+  .publish {
+    margin-top: var(--space-10);
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: var(--space-8);
+    flex-wrap: wrap;
+  }
+  .publish__copy h2 { margin-bottom: var(--space-3); }
+  .publish__copy p {
+    color: var(--color-muted);
+    line-height: 1.65;
+    max-width: 58ch;
+  }
+  .publish__actions {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+  .publish__actions a {
+    font-family: var(--font-mono);
+    font-size: var(--font-size-sm);
+    color: var(--color-text);
+  }
+
+  @media (max-width: 720px) {
+    .app-story :global(.shots) { grid-template-columns: 1fr; }
+    .publish { flex-direction: column; align-items: flex-start; }
+  }
+</style>

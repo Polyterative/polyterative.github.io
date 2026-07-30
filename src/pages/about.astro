@@ -52,8 +52,9 @@ const education = {
 };
 
 const currentFocus = [
-  { text: 'Building Impulse — node-based WebGPU visual engine for live AV performance', href: 'https://github.com/polyterative/impulse' },
-  { text: 'Maintaining Patcher — open-source Eurorack patch manager, currently v5.3.7', href: 'https://patcher.xyz' },
+  { text: 'Shipping Kinetip — a native macOS pen-tablet driver, in release hardening', href: '/apps/kinetip' },
+  { text: 'Maintaining Patcher — open-source Eurorack workspace, currently v6.5', href: '/apps/patcher' },
+  { text: 'Building Impulse — node-based visual engine for live AV performance', href: '/apps/impulse' },
   { text: 'Music with Ableton Live and Eurorack modular', href: 'https://polyterative.bandcamp.com' },
   { text: 'Voice-driven development with Talon Voice', href: 'https://github.com/polyterative/Poly-Talon-Scripts' },
 ];
@@ -119,9 +120,12 @@ const links = [
     <section class="about-section">
       <h2 class="about-section__title"><Icon name="activity" size={17} />Now</h2>
       <ul class="now-list">
-        {currentFocus.map(item => (
-          <li><a class="iclink" href={item.href} target="_blank" rel="noopener"><span class="now-dot" aria-hidden="true"></span>{item.text}</a></li>
-        ))}
+        {currentFocus.map(item => {
+          const ext = item.href.startsWith('http');
+          return (
+            <li><a class="iclink" href={item.href} target={ext ? '_blank' : undefined} rel={ext ? 'noopener' : undefined}><span class="now-dot" aria-hidden="true"></span>{item.text}</a></li>
+          );
+        })}
       </ul>
     </section>
 

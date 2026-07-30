@@ -10,55 +10,6 @@ const sectionIcons: Record<string, string> = {
   talks: 'message',
 };
 
-const selectedWork = [
-  {
-    name: 'Patcher',
-    role: 'Founder · product direction · UX · frontend architecture',
-    summary: 'An open-source workspace for Eurorack musicians that combines patch documentation, rack planning, and a community-driven module database.',
-    why: 'This is the clearest example of me taking a messy real-world workflow, turning it into a product model, and then shipping the full stack around it over multiple years.',
-    links: [
-      { label: 'Open app', href: 'https://patcher.xyz', icon: 'external' },
-      { label: 'Source', href: 'https://github.com/polyterative/Patcher', icon: 'github' },
-    ],
-    tags: ['Angular', 'TypeScript', 'Supabase', 'PostgreSQL', 'Open Source'],
-  },
-  {
-    name: 'Impulse',
-    role: 'Creative tooling · engine design · rendering architecture',
-    summary: 'A node-based WebGPU visual engine for live AV performance, built in TypeScript as a transparent alternative to closed proprietary visual tools.',
-    why: 'It shows systems design, graphics curiosity, product taste, and a strong bias toward tools that are understandable, versionable, and pleasant to iterate on.',
-    links: [
-      { label: 'Write-up', href: '/blog/impulse-webgpu-generative-visual-engine', icon: 'book' },
-      { label: 'Source', href: 'https://github.com/polyterative/impulse', icon: 'github' },
-    ],
-    tags: ['WebGPU', 'TypeScript', 'Three.js', 'Creative Coding', 'Systems'],
-  },
-  {
-    name: 'CostaMeno',
-    role: 'Product + frontend implementation',
-    summary: 'A mobile-first fuel-price finder that makes public Italian fuel data immediately useful at the moment a driver actually needs it.',
-    why: 'Small project, strong product signal: sharp scope, frictionless UX, trust-first constraints, and a clear point of view against ads, accounts, and tracking.',
-    links: [
-      { label: 'Live app', href: 'https://costameno.vercel.app', icon: 'external' },
-      { label: 'Read the post', href: '/blog/costameno-italian-fuel-price-finder', icon: 'book' },
-    ],
-    tags: ['Next.js', 'TypeScript', 'Open Data', 'Civic Tech'],
-  },
-  {
-    name: 'Poly Highlights',
-    role: 'Design craft for developer tooling',
-    summary: 'A JetBrains theme built around luminance consistency so syntax emphasis feels intentional rather than arbitrary.',
-    why: 'This is not the biggest project here, but it signals the kind of attention I bring to interfaces: perceptual detail, polish, and a willingness to sweat the small things that shape daily UX.',
-    links: [
-      { label: 'Source', href: 'https://github.com/polyterative/Poly-highlights', icon: 'github' },
-      { label: 'Read the post', href: '/blog/poly-highlights-luminance-corrected-theme', icon: 'book' },
-    ],
-    tags: ['JetBrains', 'Design Systems', 'Color Theory', 'Tooling'],
-  },
-];
-
-const selectedNames = new Set(selectedWork.map((project) => project.name));
-
 const archiveSections = [
   {
     id: 'code',
@@ -67,9 +18,10 @@ const archiveSections = [
     projects: [
       {
         name: 'Patcher',
-        description: 'Free, open-source workspace for Eurorack musicians — patch editor, rack planner, and community module database. Actively maintained since 2021, currently v5.3.7.',
+        description: 'Free, open-source workspace for Eurorack musicians — patch editor, rack planner, and community module database. Actively maintained since 2021, currently v6.5.',
         url: 'https://patcher.xyz',
         repo: 'https://github.com/polyterative/Patcher',
+        details: '/apps/patcher',
         tags: ['Angular', 'TypeScript', 'Supabase', 'PostgreSQL', 'Eurorack'],
         image: '/projects/patcher.jpg',
         featured: true,
@@ -77,29 +29,34 @@ const archiveSections = [
       {
         name: 'Impulse',
         description: 'Node-based generative visual engine for live AV performance — built on WebGPU and TypeScript as a transparent, version-controllable, AI-friendly alternative to TouchDesigner.',
+        details: '/apps/impulse',
         tags: ['WebGPU', 'TypeScript', 'Three.js', 'MIDI', 'Live Performance', 'Creative Coding'],
         featured: true,
       },
       {
         name: 'Kinetip',
         description: 'Native macOS utility that drives a pen tablet in absolute mode with click/drag pass-through and context-aware inertial pan-scrolling — aware of whether the pen landed on scrollable content or controls.',
+        details: '/apps/kinetip',
         tags: ['macOS', 'Swift', 'Pen Tablet', 'UX', 'Accessibility'],
       },
       {
         name: 'Local AI Toolkit',
         description: 'mini-tagger, mini-renamer, and lms-guard — small macOS utilities for living with local LLMs: AI-assisted file tagging and renaming via LM Studio, plus a daemon that unloads idle models to reclaim RAM.',
+        details: '/apps/local-ai-toolkit',
         tags: ['Python', 'Local AI', 'LM Studio', 'macOS', 'Tooling'],
       },
       {
         name: 'METRON Preset Tool',
         description: 'Terminal viewer and manager for WMD METRON .WMD preset files — unofficial and reverse-engineered. A code ↔ Eurorack crossover.',
         repo: 'https://github.com/Polyterative/metron-preset-tool',
+        details: '/apps/metron-preset-tool',
         tags: ['Python', 'Eurorack', 'Reverse Engineering', 'CLI'],
       },
       {
         name: 'CostaMeno',
         description: 'Mobile-first fuel price finder built on Italian Ministry open data — open a URL at the pump and see the cheapest station nearby. No login, no ads, no tracking.',
         url: 'https://costameno.vercel.app',
+        details: '/apps/costameno',
         tags: ['Next.js', 'TypeScript', 'Open Data', 'Civic Tech'],
       },
       {
@@ -126,6 +83,7 @@ const archiveSections = [
         name: 'thear',
         description: 'Sonification of AI coding activity. Python daemon that turns Claude Code activity into real-time OSC messages for Ableton Live.',
         repo: 'https://github.com/polyterative/thear',
+        details: '/apps/thear',
         tags: ['Python', 'OSC', 'Ableton', 'AI', 'Claude'],
       },
       {
@@ -189,6 +147,7 @@ const archiveSections = [
       {
         name: 'Impulse',
         description: 'WebGPU node-based engine for real-time generative visuals in live AV sets — the tool I built to replace TouchDesigner, with a fully transparent TypeScript structure.',
+        details: '/apps/impulse',
         tags: ['WebGPU', 'Generative Art', 'Real-time', 'Live Performance'],
       },
       {
@@ -235,10 +194,7 @@ const archiveSections = [
       },
     ],
   },
-].map((section) => ({
-  ...section,
-  projects: section.projects.filter((project) => !selectedNames.has(project.name)),
-})).filter((section) => section.projects.length > 0);
+];
 ---
 
 <BaseLayout
@@ -249,46 +205,18 @@ const archiveSections = [
     <header class="page-header">
       <h1>Work</h1>
       <p class="page-desc">
-        Public projects, experiments, and a few longer-running things. Not exhaustive, just the pieces that make sense to keep collected here.
+        The full archive: public projects, experiments, and a few longer-running things. Not exhaustive, just the pieces that make sense to keep collected here.
+      </p>
+      <p class="page-note">
+        Looking for the polished software? The <a href="/apps">applications gallery</a> has the flagship apps with stories, screenshots, and fact sheets.
       </p>
       <nav class="index-nav" aria-label="Jump to section">
-        <a href="#selected" class="index-nav__link iclink"><Icon name="star" size={13} />Flagship work</a>
+        <a href="/apps" class="index-nav__link iclink"><Icon name="star" size={13} />Applications</a>
         {archiveSections.map((s) => (
           <a href={`#${s.id}`} class="index-nav__link iclink"><Icon name={sectionIcons[s.id]} size={13} />{s.label}</a>
         ))}
       </nav>
     </header>
-
-    <section class="selected" id="selected">
-      <header class="selected__head">
-        <h2>A few good entry points</h2>
-        <p class="selected__intro">
-          If you are new here, these are probably the clearest starting points.
-        </p>
-      </header>
-      <div class="studies">
-        {selectedWork.map(project => (
-          <article class="study panel">
-            <div class="study__meta">
-              <h3>{project.name}</h3>
-              <p class="study__role">{project.role}</p>
-            </div>
-            <p class="study__summary">{project.summary}</p>
-            <p class="study__why">{project.why}</p>
-            <ul class="study__tags">
-              {project.tags.map(tag => <li><span class="tag">{tag}</span></li>)}
-            </ul>
-            <div class="study__links">
-              {project.links.map(link => (
-                <a class="iclink" href={link.href} target={link.href.startsWith('http') ? '_blank' : undefined} rel={link.href.startsWith('http') ? 'noopener' : undefined}>
-                  {link.label}<Icon name={link.icon} size={13} />
-                </a>
-              ))}
-            </div>
-          </article>
-        ))}
-      </div>
-    </section>
 
     {archiveSections.map(section => (
       <section class="domain" id={section.id}>
@@ -319,6 +247,16 @@ const archiveSections = [
   }
   .page-header h1 { font-size: clamp(2rem, 5vw, 3.2rem); }
   .page-desc { color: var(--color-muted); line-height: 1.6; }
+  .page-note {
+    font-size: var(--font-size-sm);
+    color: var(--color-faint);
+    line-height: 1.6;
+  }
+  .page-note a {
+    color: var(--color-muted);
+    border-bottom: 1px solid var(--color-border);
+  }
+  .page-note a:hover { color: var(--color-text); border-color: var(--color-muted); }
 
   .index-nav {
     display: flex;
@@ -334,72 +272,6 @@ const archiveSections = [
   .index-nav__link:hover { color: var(--color-text); }
   .index-nav__link .icon { color: var(--color-faint); }
   .index-nav__link:hover .icon { color: var(--color-accent); }
-
-  .selected {
-    padding-block: var(--space-12);
-    border-top: 1px solid var(--color-line);
-  }
-  .selected__head {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-2);
-    max-width: 62ch;
-    margin-bottom: var(--space-6);
-  }
-  .selected__intro {
-    color: var(--color-muted);
-    line-height: 1.65;
-  }
-  .studies {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: var(--space-4);
-  }
-  .study {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-4);
-    min-height: 100%;
-  }
-  .study__meta {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-1);
-  }
-  .study__role {
-    font-family: var(--font-mono);
-    font-size: var(--font-size-meta);
-    color: var(--color-faint);
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-  }
-  .study__summary {
-    font-size: var(--font-size-base);
-    line-height: 1.65;
-  }
-  .study__why {
-    font-size: var(--font-size-sm);
-    color: var(--color-muted);
-    line-height: 1.65;
-  }
-  .study__tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-2);
-    list-style: none;
-  }
-  .study__links {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-4);
-    margin-top: auto;
-  }
-  .study__links a {
-    font-family: var(--font-mono);
-    font-size: var(--font-size-meta);
-    color: var(--color-muted);
-  }
-  .study__links a:hover { color: var(--color-text); }
 
   .domain__head .label .icon { color: var(--color-accent); }
 
@@ -422,8 +294,4 @@ const archiveSections = [
     list-style: none;
   }
   .grid__span { grid-column: 1 / -1; }
-
-  @media (max-width: 800px) {
-    .studies { grid-template-columns: 1fr; }
-  }
 </style>

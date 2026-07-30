@@ -1,0 +1,66 @@
+---
+import AppLayout from '../../layouts/AppLayout.astro';
+import { getApp } from '../../data/apps';
+
+const app = getApp('local-ai-toolkit');
+---
+
+<AppLayout
+  app={app}
+  showPublishing={false}
+  description="The Local AI Toolkit — mini-tagger, mini-renamer, and lms-guard — is a set of macOS utilities for living with local LLMs: AI-assisted file tagging and renaming, plus a memory watchdog for LM Studio. Everything stays on your machine."
+>
+  <section aria-labelledby="toolkit-why">
+    <span class="label">Why it exists</span>
+    <h2 id="toolkit-why">Local AI is powerful, and rough exactly where daily life happens</h2>
+    <p class="lede">
+      Running models locally is great — until your machine grinds to a halt because a 14B model
+      you forgot about is still loaded, or until your screenshots folder holds 800 files named
+      <code>Screenshot 2026-03-14 at 09.43.11.png</code> and nothing in them is findable.
+    </p>
+    <p>
+      These are not model problems; they're living-with-models problems. Nobody was building for
+      them, so I did — three small macOS utilities, each doing exactly one job, all running
+      entirely on-device. No uploads, no cloud, no accounts.
+    </p>
+  </section>
+
+  <section aria-labelledby="toolkit-what">
+    <span class="label">What it does</span>
+    <h2 id="toolkit-what">Three tools, one job each</h2>
+    <ul class="pillars">
+      <li>
+        <h3>mini-tagger</h3>
+        <p>A menu-bar watcher: every new screenshot goes to a compact vision model running on the Apple Silicon GPU, comes back with semantic tags, and lands renamed — <em>“(terminal python error traceback)”</em> — in the right folder, name already on your clipboard.</p>
+      </li>
+      <li>
+        <h3>mini-renamer</h3>
+        <p>Human-in-the-loop renaming: drag in images, PDFs, or DOCX and a local LLM proposes a clean filename for each. You review, edit inline, apply. Naming style — kebab-case, snake_case, Title Case — is yours to configure.</p>
+      </li>
+      <li>
+        <h3>lms-guard</h3>
+        <p>A memory watchdog for LM Studio that unloads idle models before your system starts swapping. The most boring tool of the three, and the one that saves the day most often.</p>
+      </li>
+    </ul>
+    <p>
+      The craft is in the edges. macOS writes screenshots via atomic temp-file renames, so the
+      watcher handles both created and moved events; a stability loop waits for the file size to
+      settle before the model ever sees a partial write; and mini-tagger monitors its own memory
+      footprint so the tool that manages your RAM never becomes the problem it solves.
+    </p>
+  </section>
+
+  <section aria-labelledby="toolkit-end">
+    <span class="label">Where it is now</span>
+    <h2 id="toolkit-end">Infrastructure you stop noticing</h2>
+    <p>
+      All three tools run daily on my machine, quietly. Screenshots arrive pre-named and
+      searchable, downloads get sensible names in seconds, and the model that would have eaten
+      the afternoon's RAM was unloaded before I noticed it was idle.
+    </p>
+    <blockquote>
+      The best measure of a utility is how rarely you think about it. These three earned their
+      silence — and my files finally have names that mean something.
+    </blockquote>
+  </section>
+</AppLayout>

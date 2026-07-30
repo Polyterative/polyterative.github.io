@@ -1,0 +1,73 @@
+---
+import AppLayout from '../../layouts/AppLayout.astro';
+import { getApp } from '../../data/apps';
+
+const app = getApp('costameno');
+---
+
+<AppLayout
+  app={app}
+  showPublishing={false}
+  description="CostaMeno is a mobile-first fuel-price finder built on official Italian open data. Open a URL at the pump, see the cheapest station nearby — no login, no ads, no tracking, no GPS permission."
+>
+  <section aria-labelledby="costameno-why">
+    <span class="label">Why it exists</span>
+    <h2 id="costameno-why">Every fuel app in Italy wanted something from me first</h2>
+    <p class="lede">
+      A login wall, a screen of ads, or my GPS coordinates — every existing fuel-price app
+      demanded a toll before answering one simple question. I wanted zero ceremony: open a URL
+      while standing at a pump, see which station nearby is cheapest. That's the whole product.
+    </p>
+    <p>
+      The raw material was hiding in plain sight. The Italian Ministry of Enterprises (MIMIT)
+      publishes a daily open-data CSV of every fuel station in the country — around 23,000
+      stations with prices for benzina, gasolio, GPL, and metano, updated every morning, no API
+      key, no rate limit. Nobody had turned it into something you'd actually want to use at the
+      pump. CostaMeno is that thing.
+    </p>
+  </section>
+
+  <section aria-labelledby="costameno-what">
+    <span class="label">What it does</span>
+    <h2 id="costameno-what">Tap the map, get an answer you can act on</h2>
+    <p>
+      There is no permission prompt. You tap the map where you are — or drag the pin — and the
+      search fires. An adaptive radius starts tight and expands until it finds enough stations:
+      3&nbsp;km in a dense city, wider on an empty highway. Results come back as color-coded pins
+      — green cheap, red expensive, relative to what's actually around you — with medal badges
+      on the three best.
+    </p>
+    <ul class="pillars">
+      <li>
+        <h3>No GPS, by design</h3>
+        <p>Your coordinates never leave the map you tapped. Partly privacy, partly UX — a permission dialog is friction you don't want with a fuel nozzle in hand.</p>
+      </li>
+      <li>
+        <h3>The number that decides</h3>
+        <p>Each station card computes real savings: "drive 4 km to this station and save ~0.90 € on a 50 L fill." Not just a price — a decision.</p>
+      </li>
+      <li>
+        <h3>Fresh public data</h3>
+        <p>MIMIT's daily CSV is fetched and cached at build time, refreshed at runtime. Government open data, made useful at street level.</p>
+      </li>
+      <li>
+        <h3>Nothing between you and it</h3>
+        <p>No account, no ads, no tracking, no install. A URL that answers a question.</p>
+      </li>
+    </ul>
+  </section>
+
+  <section aria-labelledby="costameno-end">
+    <span class="label">Where it is now</span>
+    <h2 id="costameno-end">Small scope, fully kept</h2>
+    <p>
+      CostaMeno is live, free, and deliberately finished in shape: Next.js and Leaflet on top of
+      a clean data pipeline, hosted on Vercel, maintained as the data source evolves. It's also
+      a small proof of a bigger conviction — that public data plus sharp scope plus
+      trust-first design beats another ad-funded app every time.
+    </p>
+    <blockquote>
+      I use it every time I fill up. It does the thing — and it never asks for anything back.
+    </blockquote>
+  </section>
+</AppLayout>

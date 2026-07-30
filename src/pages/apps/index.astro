@@ -1,0 +1,313 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Icon from '../../components/Icon.astro';
+import { featuredApps, moreApps } from '../../data/apps';
+---
+
+<BaseLayout
+  title="Applications — Vlady Yakovenko"
+  description="Software applications designed, built, and maintained by Vlady Yakovenko (polyterative): Patcher, Kinetip, and more. Each with its story, screenshots, and a fact sheet for publishers."
+>
+  <div class="container container--wide">
+    <header class="page-header">
+      <h1>Applications</h1>
+      <p class="page-desc">
+        Software I design, build, and maintain end-to-end — from the first sketch of the problem
+        to the release pipeline. Each application has a dedicated page with the story behind it,
+        screenshots, and a fact sheet.
+      </p>
+      <p class="page-note">
+        Publisher or distributor? Every page ends with the details you need, and
+        <a href="mailto:polyterative@outlook.com">my inbox is open</a>.
+      </p>
+    </header>
+
+    <section class="gallery" aria-label="Application gallery">
+      {featuredApps.map((app, i) => (
+        <article class="showcase" style={`--app-h:${app.accentHue}`}>
+          <a class="showcase__media" href={`/apps/${app.slug}`} aria-label={`${app.name} — view application page`}>
+            <img src={app.hero} alt={app.heroAlt} loading={i === 0 ? 'eager' : 'lazy'} decoding="async" />
+          </a>
+          <div class="showcase__body">
+            <p class="showcase__kicker">
+              <span class="label">{app.platform}</span>
+              <span class="showcase__status">{app.status}</span>
+            </p>
+            <h2 class="showcase__name">
+              <a class="accent-hover" href={`/apps/${app.slug}`}>{app.name}</a>
+            </h2>
+            <p class="showcase__tagline">{app.tagline}</p>
+            <p class="showcase__pitch">{app.pitch}</p>
+            <ul class="showcase__tags">
+              {app.tags.map((tag) => <li><span class="tag">{tag}</span></li>)}
+            </ul>
+            <div class="showcase__links">
+              <a class="iclink showcase__cta" href={`/apps/${app.slug}`}>
+                Story & fact sheet<Icon name="arrow-right" size={13} />
+              </a>
+              {app.links.map((link) => (
+                <a
+                  class="iclink"
+                  href={link.href}
+                  target={link.href.startsWith('http') ? '_blank' : undefined}
+                  rel={link.href.startsWith('http') ? 'noopener' : undefined}
+                >{link.label}<Icon name={link.icon} size={13} /></a>
+              ))}
+            </div>
+          </div>
+        </article>
+      ))}
+    </section>
+
+    <section class="minor" aria-labelledby="more-apps">
+      <header class="minor__head">
+        <span class="label">Also shipping</span>
+        <h2 id="more-apps">More applications</h2>
+        <p class="minor__intro">
+          Smaller in scope, real in use — tools I built, shipped, and still stand behind.
+        </p>
+      </header>
+      <ul class="minor__grid">
+        {moreApps.map((app) => (
+          <li class="minor__card">
+            <p class="minor__kicker">
+              <span class="label">{app.platform}</span>
+              <span class="minor__status">{app.status}</span>
+            </p>
+            <h3 class="minor__name"><a class="accent-hover" href={`/apps/${app.slug}`}>{app.name}</a></h3>
+            <p class="minor__tagline">{app.tagline}</p>
+            <p class="minor__pitch">{app.pitch}</p>
+            <ul class="minor__tags">
+              {app.tags.map((tag) => <li><span class="tag">{tag}</span></li>)}
+            </ul>
+            <div class="minor__links">
+              <a class="iclink minor__cta" href={`/apps/${app.slug}`}>Story & fact sheet<Icon name="arrow-right" size={13} /></a>
+              {app.links.map((link) => (
+                <a
+                  class="iclink"
+                  href={link.href}
+                  target={link.href.startsWith('http') ? '_blank' : undefined}
+                  rel={link.href.startsWith('http') ? 'noopener' : undefined}
+                >{link.label}<Icon name={link.icon} size={13} /></a>
+              ))}
+            </div>
+          </li>
+        ))}
+      </ul>
+    </section>
+
+    <aside class="more">
+      <p>
+        Looking for the experiments, tools, and everything in between?
+        <a class="iclink" href="/projects">Browse all projects<Icon name="arrow-right" size={13} /></a>
+      </p>
+    </aside>
+  </div>
+</BaseLayout>
+
+<style>
+  .page-header {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    padding-block: var(--space-16) var(--space-10);
+    max-width: var(--max-w);
+  }
+  .page-header h1 { font-size: clamp(2rem, 5vw, 3.2rem); }
+  .page-desc { color: var(--color-muted); line-height: 1.65; }
+  .page-note {
+    font-size: var(--font-size-sm);
+    color: var(--color-faint);
+    line-height: 1.6;
+  }
+  .page-note a {
+    color: var(--color-muted);
+    border-bottom: 1px solid var(--color-border);
+  }
+  .page-note a:hover { color: var(--color-text); border-color: var(--color-muted); }
+
+  .gallery {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .showcase {
+    display: grid;
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    gap: clamp(var(--space-6), 4vw, var(--space-12));
+    align-items: center;
+    padding-block: var(--space-12);
+    border-top: 1px solid var(--color-line);
+  }
+  .showcase:nth-child(even) .showcase__media { order: 2; }
+
+  .showcase__media {
+    display: block;
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    background:
+      radial-gradient(130% 140% at 10% 0%, hsl(var(--app-h) 60% 55% / 0.16), transparent 55%),
+      var(--color-surface);
+    padding: clamp(var(--space-4), 2.5vw, var(--space-6));
+    transition: border-color var(--transition);
+  }
+  .showcase__media:hover { border-color: var(--color-border); }
+  .showcase__media img {
+    width: 100%;
+    border-radius: calc(var(--radius-sm) - 2px);
+    border: 1px solid var(--color-line);
+    box-shadow: 0 14px 40px -22px rgba(0, 0, 0, 0.35);
+    transition: transform 0.4s ease;
+  }
+  .showcase__media:hover img { transform: translateY(-3px); }
+
+  .showcase__body {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+  .showcase__kicker {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+  }
+  .showcase__status {
+    font-family: var(--font-mono);
+    font-size: var(--font-size-meta);
+    color: var(--color-faint);
+  }
+  .showcase__name { font-size: clamp(1.5rem, 3vw, 2rem); }
+  .showcase__name a:hover { opacity: 0.65; }
+  .showcase__tagline {
+    font-size: var(--font-size-lg);
+    line-height: 1.45;
+    letter-spacing: -0.01em;
+    text-wrap: balance;
+  }
+  .showcase__pitch {
+    font-size: var(--font-size-sm);
+    color: var(--color-muted);
+    line-height: 1.65;
+    max-width: 52ch;
+  }
+  .showcase__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    list-style: none;
+    margin-top: var(--space-1);
+  }
+  .showcase__links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-5);
+    margin-top: var(--space-3);
+  }
+  .showcase__links a {
+    font-family: var(--font-mono);
+    font-size: var(--font-size-meta);
+    color: var(--color-muted);
+  }
+  .showcase__links a:hover { color: var(--color-text); }
+  .showcase__cta { color: var(--color-text) !important; }
+
+  .minor {
+    padding-block: var(--space-12);
+    border-top: 1px solid var(--color-line);
+  }
+  .minor__head {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    margin-bottom: var(--space-6);
+  }
+  .minor__intro {
+    color: var(--color-muted);
+    font-size: var(--font-size-sm);
+    line-height: 1.6;
+  }
+  .minor__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
+    gap: var(--space-4);
+    list-style: none;
+  }
+  .minor__card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-sm);
+    background: var(--color-surface);
+    padding: var(--space-5);
+  }
+  .minor__kicker {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    margin-bottom: var(--space-1);
+  }
+  .minor__status {
+    font-family: var(--font-mono);
+    font-size: var(--font-size-meta);
+    color: var(--color-faint);
+  }
+  .minor__name { font-size: var(--font-size-lg); }
+  .minor__tagline {
+    font-size: var(--font-size-sm);
+    line-height: 1.5;
+    letter-spacing: -0.005em;
+  }
+  .minor__pitch {
+    font-size: var(--font-size-sm);
+    color: var(--color-muted);
+    line-height: 1.6;
+  }
+  .minor__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    list-style: none;
+    margin-top: var(--space-1);
+  }
+  .minor__links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-4);
+    margin-top: auto;
+    padding-top: var(--space-3);
+  }
+  .minor__links a {
+    font-family: var(--font-mono);
+    font-size: var(--font-size-meta);
+    color: var(--color-muted);
+  }
+  .minor__links a:hover { color: var(--color-text); }
+  .minor__cta { color: var(--color-text) !important; }
+
+  .more {
+    padding-block: var(--space-10);
+    border-top: 1px solid var(--color-line);
+  }
+  .more p {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: var(--space-4);
+    color: var(--color-muted);
+    font-size: var(--font-size-sm);
+  }
+  .more .iclink {
+    font-family: var(--font-mono);
+    font-size: var(--font-size-meta);
+    color: var(--color-text);
+  }
+
+  @media (max-width: 860px) {
+    .showcase { grid-template-columns: 1fr; align-items: start; }
+    .showcase:nth-child(even) .showcase__media { order: 0; }
+  }
+</style>
