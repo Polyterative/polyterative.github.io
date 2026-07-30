@@ -19,6 +19,7 @@ const currentPath = Astro.url.pathname;
 const navLinks = [
   { href: '/apps', label: 'Apps', match: '/apps' },
   { href: '/projects', label: 'Projects', match: '/projects' },
+  { href: '/timeline', label: 'Timeline', match: '/timeline' },
   { href: '/music', label: 'Music', match: '/music' },
   { href: '/blog', label: 'Writing', match: '/blog' },
   { href: '/about', label: 'About', match: '/about' },
@@ -309,8 +310,19 @@ const personSchema = {
   }
   .skip-link:focus { top: var(--space-4); }
 
-  @media (max-width: 460px) {
-    .nav__links { gap: var(--space-4); }
+  @media (max-width: 640px) {
+    .nav {
+      align-items: stretch;
+      flex-direction: column;
+      gap: var(--space-3);
+    }
+    .nav__links {
+      gap: var(--space-4);
+      overflow-x: auto;
+      padding-bottom: 2px;
+      scrollbar-width: none;
+    }
+    .nav__links::-webkit-scrollbar { display: none; }
     .nav__link { font-size: 0.8rem; }
   }
   @media (max-width: 640px) {

@@ -20,5 +20,8 @@ pnpm-debug.log*
 # macOS-specific files
 .DS_Store
 
+# Impeccable session cache
+.impeccable/hook.cache.json
+
 # jetbrains setting folder
 .idea/

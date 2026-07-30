@@ -14,8 +14,10 @@ checklist below so nothing goes stale.
 |---|---|
 | App registry (names, taglines, facts, links, `featured` flag) | `src/data/apps.ts` |
 | Blog posts | `src/content/blog/*.md` (schema in `src/content.config.ts`) |
-| Music releases | `src/pages/music.astro` (`releases` array) |
-| CV / experience / "Now" list | `src/pages/about.astro` |
+| Music releases | `src/data/releases.ts` |
+| CV / experience | `src/data/experience.ts` |
+| Timeline-specific milestones | `src/data/timeline.ts` |
+| About "Now" list | `src/pages/about.astro` |
 | Home selected cards + featured posts | `src/pages/index.astro` |
 | Projects archive | `src/pages/projects.astro` (`archiveSections`) |
 
@@ -50,7 +52,7 @@ Version and status strings are duplicated deliberately — update **all**:
 
 ### Checklist: new music release
 
-- `releases` array in `src/pages/music.astro` + cover in `public/music/`.
+- `releases` array in `src/data/releases.ts` + cover in `public/music/`.
 - Avoid null/dash fields: use honest labels (e.g. `released: 'Unreleased single'`).
 
 ## Page roles (don't blur them)
