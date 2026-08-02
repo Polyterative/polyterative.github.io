@@ -10,7 +10,7 @@ I run my Mac with a pen tablet instead of a mouse or trackpad. All day, for ever
 
 The problem is that macOS never really wanted me to work this way. The vendor driver buries everything in per-model jargon, scrolling is an afterthought, the pointer fights you when it's near a button, and it can quietly stop working after the machine sleeps. For a device I touch thousands of times a day, those interruptions add up.
 
-So I wrote my own driver: [Kinetip](https://github.com/Polyterative/Kinetip). It turns pen input into pointer, drag, pan, and scroll-with-inertia on macOS, and after months of daily use it's more reliable than what came with the hardware.
+So I wrote my own driver: [Kinetip](/apps/kinetip). It turns pen input into pointer, drag, pan, and scroll-with-inertia on macOS, and after months of daily use it's more reliable than what came with the hardware.
 
 ## It started as a hack
 

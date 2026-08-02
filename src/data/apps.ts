@@ -73,7 +73,6 @@ export const apps: AppEntry[] = [
     tags: ['Swift', 'macOS', 'IOKit / HID', 'SwiftUI', 'Realtime'],
     links: [
       { label: 'Read the write-up', href: '/blog/kinetip-native-macos-pen-tablet-driver', icon: 'book' },
-      { label: 'GitHub', href: 'https://github.com/Polyterative/Kinetip', icon: 'github' },
     ],
     facts: [
       { label: 'Platform', value: 'macOS 14+' },
@@ -100,7 +99,6 @@ export const apps: AppEntry[] = [
     tags: ['TypeScript', 'WebGPU', 'Web MIDI', 'Web Audio', 'Live Performance'],
     links: [
       { label: 'Write-up', href: '/blog/impulse-webgpu-generative-visual-engine', icon: 'book' },
-      { label: 'Source', href: 'https://github.com/polyterative/impulse', icon: 'github' },
     ],
     facts: [
       { label: 'Platform', value: 'Web — Chromium with WebGPU' },

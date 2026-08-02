@@ -13,7 +13,7 @@ dying_state entity_pool spawning_logic cascading_errors
 
 That's four tags extracted from a screen that was not going well. The entity world was collapsing — spawned entities refusing to die cleanly, the pool leaking references, new spawns triggering errors in the dying pipeline, the whole thing unraveling in a cascade that made the renderer freeze at exactly the moment I needed to test something else.
 
-This is what building [Impulse](https://github.com/polyterative/impulse) looks like on the inside.
+This is what building [Impulse](/apps/impulse) looks like on the inside.
 
 ## What Impulse is trying to do
 
