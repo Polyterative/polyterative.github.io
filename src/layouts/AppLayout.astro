@@ -38,43 +38,49 @@ const appSchema = {
       <a href="/apps" class="iclink"><Icon name="arrow-left" size={13} />All applications</a>
     </nav>
 
-    <header class="hero">
-      <div class="hero__copy">
-        <p class="hero__kicker">
-          <span class="label">{app.platform}</span>
-          <span class:list={['hero__status', { 'hero__status--pre': isPre }]}>{app.status}</span>
-        </p>
-        <h1>{app.name}</h1>
-        <p class="hero__tagline">{app.tagline}</p>
-        <p class="hero__pitch">{app.pitch}</p>
-        <div class="hero__links">
-          {app.links.map((link) => (
-            <a
-              class="iclink"
-              href={link.href}
-              target={link.href.startsWith('http') ? '_blank' : undefined}
-              rel={link.href.startsWith('http') ? 'noopener' : undefined}
-            >{link.label}<Icon name={link.icon} size={13} /></a>
-          ))}
-        </div>
-        <ul class="hero__tags">
-          {app.tags.map((tag) => <li><span class="tag">{tag}</span></li>)}
-        </ul>
-      </div>
-    </header>
-
-    <figure class="hero-shot" class:list={[{ 'hero-shot--gen': !app.hero }]}>
-      {app.hero
-        ? <img src={app.hero} alt={app.heroAlt} loading="eager" decoding="async" />
-        : (
-          <div class="hero-shot__gen" role="img" aria-label={`${app.name} — generated cover`}>
-            <Icon name={app.icon ?? 'code'} size={44} />
-            <span class="hero-shot__gen-name">{app.name}</span>
-            <span class="hero-shot__gen-tag">{app.platform}</span>
+    {Astro.slots.has('hero') ? (
+      <slot name="hero" />
+    ) : (
+      <>
+        <header class="hero">
+          <div class="hero__copy">
+            <p class="hero__kicker">
+              <span class="label">{app.platform}</span>
+              <span class:list={['hero__status', { 'hero__status--pre': isPre }]}>{app.status}</span>
+            </p>
+            <h1>{app.name}</h1>
+            <p class="hero__tagline">{app.tagline}</p>
+            <p class="hero__pitch">{app.pitch}</p>
+            <div class="hero__links">
+              {app.links.map((link) => (
+                <a
+                  class="iclink"
+                  href={link.href}
+                  target={link.href.startsWith('http') ? '_blank' : undefined}
+                  rel={link.href.startsWith('http') ? 'noopener' : undefined}
+                >{link.label}<Icon name={link.icon} size={13} /></a>
+              ))}
+            </div>
+            <ul class="hero__tags">
+              {app.tags.map((tag) => <li><span class="tag">{tag}</span></li>)}
+            </ul>
           </div>
-        )
-      }
-    </figure>
+        </header>
+
+        <figure class="hero-shot" class:list={[{ 'hero-shot--gen': !app.hero }]}>
+          {app.hero
+            ? <img src={app.hero} alt={app.heroAlt} loading="eager" decoding="async" />
+            : (
+              <div class="hero-shot__gen" role="img" aria-label={`${app.name} — generated cover`}>
+                <Icon name={app.icon ?? 'code'} size={44} />
+                <span class="hero-shot__gen-name">{app.name}</span>
+                <span class="hero-shot__gen-tag">{app.platform}</span>
+              </div>
+            )
+          }
+        </figure>
+      </>
+    )}
 
     <div class="app-story">
       <slot />

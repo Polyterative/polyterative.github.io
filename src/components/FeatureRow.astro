@@ -1,0 +1,94 @@
+---
+export interface Props {
+  eyebrow?: string;
+  heading: string;
+  reverse?: boolean;
+}
+
+const { eyebrow, heading, reverse = false } = Astro.props;
+---
+
+<section class:list={['feature-row', 'reveal', { 'feature-row--reverse': reverse }]} aria-labelledby={`fr-${heading.slice(0, 12).replace(/\s+/g, '-').toLowerCase()}`}>
+  <div class="feature-row__copy">
+    {eyebrow && <span class="label">{eyebrow}</span>}
+    <h2 id={`fr-${heading.slice(0, 12).replace(/\s+/g, '-').toLowerCase()}`}>{heading}</h2>
+    <div class="feature-row__body"><slot /></div>
+  </div>
+  <div class="feature-row__visual">
+    <slot name="visual" />
+  </div>
+</section>
+<script is:inline>
+  (() => {
+    const target = document.currentScript.previousElementSibling;
+    if (!window.__revealObserver) {
+      const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      window.__revealObserver = (!reduced && 'IntersectionObserver' in window)
+        ? new IntersectionObserver((entries) => {
+            for (const entry of entries) {
+              if (entry.isIntersecting) {
+                entry.target.classList.add('reveal--visible');
+                window.__revealObserver.unobserve(entry.target);
+              }
+            }
+          }, { threshold: 0.15 })
+        : null;
+    }
+    if (window.__revealObserver) {
+      target.classList.add('reveal-armed');
+      window.__revealObserver.observe(target);
+    }
+  })();
+</script>
+
+<style>
+  .feature-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: clamp(var(--space-6), 4vw, var(--space-12));
+    align-items: center;
+  }
+  .feature-row--reverse .feature-row__copy { order: 2; }
+  .feature-row--reverse .feature-row__visual { order: 1; }
+
+  .feature-row__copy .label { display: inline-block; margin-bottom: var(--space-2); }
+  .feature-row__copy h2 { margin-bottom: var(--space-4); }
+  .feature-row__body :global(p) { line-height: 1.7; }
+  .feature-row__body :global(p + p) { margin-top: var(--space-4); }
+  .feature-row__body :global(strong) { font-weight: 600; }
+
+  .feature-row__visual :global(figure),
+  .feature-row__visual :global(.window-frame) {
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    background: var(--color-surface);
+  }
+  .feature-row__visual :global(img) { width: 100%; display: block; }
+  .feature-row__visual :global(.two-up) {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-3);
+  }
+  .feature-row__visual :global(figcaption) {
+    font-family: var(--font-mono);
+    font-size: var(--font-size-meta);
+    color: var(--color-muted);
+    padding: var(--space-3) var(--space-4);
+    border-top: 1px solid var(--color-line);
+  }
+
+  .feature-row.reveal-armed {
+    opacity: 0;
+    transform: translateY(18px);
+    transition: opacity 600ms cubic-bezier(0.16, 1, 0.3, 1), transform 600ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .feature-row.reveal-armed.reveal--visible { opacity: 1; transform: none; }
+
+  @media (max-width: 780px) {
+    .feature-row { grid-template-columns: 1fr; }
+    .feature-row--reverse .feature-row__copy,
+    .feature-row--reverse .feature-row__visual { order: initial; }
+    .feature-row__visual :global(.two-up) { grid-template-columns: 1fr; }
+  }
+</style>

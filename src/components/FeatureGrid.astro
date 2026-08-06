@@ -1,0 +1,95 @@
+---
+import Icon from './Icon.astro';
+
+export interface FeatureItem {
+  icon: string;
+  title: string;
+  description: string;
+}
+
+export interface Props {
+  items: FeatureItem[];
+  accentHue: number;
+}
+
+const { items, accentHue } = Astro.props;
+---
+
+<ul class="feature-grid reveal" style={`--app-h:${accentHue}`}>
+  {items.map((item) => (
+    <li>
+      <Icon name={item.icon} size={20} class="feature-grid__icon" />
+      <h3>{item.title}</h3>
+      <p>{item.description}</p>
+    </li>
+  ))}
+</ul>
+<script is:inline>
+  (() => {
+    const target = document.currentScript.previousElementSibling;
+    if (!window.__revealObserver) {
+      const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      window.__revealObserver = (!reduced && 'IntersectionObserver' in window)
+        ? new IntersectionObserver((entries) => {
+            for (const entry of entries) {
+              if (entry.isIntersecting) {
+                entry.target.classList.add('reveal--visible');
+                window.__revealObserver.unobserve(entry.target);
+              }
+            }
+          }, { threshold: 0.15 })
+        : null;
+    }
+    if (window.__revealObserver) {
+      target.classList.add('reveal-armed');
+      window.__revealObserver.observe(target);
+    }
+  })();
+</script>
+
+<style>
+  .feature-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
+    gap: var(--space-4);
+    list-style: none;
+  }
+  .feature-grid li {
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-sm);
+    background: var(--color-surface);
+    padding: var(--space-5);
+    transition: border-color var(--transition), transform var(--transition), box-shadow var(--transition);
+  }
+  .feature-grid li:hover {
+    border-color: hsl(var(--app-h) 50% 55% / 0.5);
+    transform: translateY(-2px);
+    box-shadow: 0 12px 28px -18px rgba(0, 0, 0, 0.35);
+  }
+  .feature-grid__icon {
+    color: hsl(var(--app-h) 55% 42%);
+    margin-bottom: var(--space-3);
+  }
+  :root[data-theme='dark'] .feature-grid__icon { color: hsl(var(--app-h) 70% 65%); }
+  .feature-grid h3 {
+    font-size: var(--font-size-base);
+    margin-bottom: var(--space-2);
+  }
+  .feature-grid p {
+    font-size: var(--font-size-sm);
+    color: var(--color-muted);
+    line-height: 1.6;
+  }
+
+  .feature-grid.reveal-armed li {
+    opacity: 0;
+    transform: translateY(14px);
+    transition: opacity 500ms ease, transform 500ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .feature-grid.reveal-armed.reveal--visible li { opacity: 1; transform: none; }
+  .feature-grid.reveal-armed.reveal--visible li:nth-child(1) { transition-delay: 0ms; }
+  .feature-grid.reveal-armed.reveal--visible li:nth-child(2) { transition-delay: 70ms; }
+  .feature-grid.reveal-armed.reveal--visible li:nth-child(3) { transition-delay: 140ms; }
+  .feature-grid.reveal-armed.reveal--visible li:nth-child(4) { transition-delay: 210ms; }
+  .feature-grid.reveal-armed.reveal--visible li:nth-child(5) { transition-delay: 280ms; }
+</style>

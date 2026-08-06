@@ -1,0 +1,53 @@
+---
+export interface Props {
+  accentHue?: number;
+}
+
+const { accentHue = 210 } = Astro.props;
+---
+
+<figure class="pull-quote" style={accentHue !== undefined ? `--app-h:${accentHue}` : undefined}>
+  <blockquote>
+    <slot />
+  </blockquote>
+</figure>
+
+<style>
+  figure.pull-quote {
+    /* Reset the sitewide .app-story figure/blockquote rules (border, background,
+       overflow:hidden, extra border-left) so this component's own styling applies
+       cleanly instead of stacking on top of markdown-figure defaults. The `figure.`
+       prefix matches the sitewide rule's specificity (class + attr + element) so
+       this override actually wins the cascade. */
+    position: relative;
+    border: none;
+    border-radius: 0;
+    background: none;
+    overflow: visible;
+    margin-top: clamp(var(--space-8), 5vw, var(--space-10));
+    padding-left: clamp(var(--space-5), 3vw, var(--space-7));
+    max-width: 56ch;
+  }
+  figure.pull-quote::before {
+    content: '\201C';
+    position: absolute;
+    left: 0;
+    top: -0.15em;
+    font-size: 2.25rem;
+    line-height: 1;
+    font-family: Georgia, serif;
+    color: hsl(var(--app-h) 55% 45% / 0.35);
+  }
+  .pull-quote blockquote {
+    /* Also reset the sitewide .app-story blockquote border-left/spacing so it
+       doesn't stack with this component's own quote-mark treatment. */
+    margin: 0;
+    border-left: none;
+    padding-left: 0;
+    font-size: clamp(1.05rem, 1.6vw, 1.25rem);
+    line-height: 1.55;
+    letter-spacing: -0.01em;
+    font-weight: 500;
+    text-wrap: balance;
+  }
+</style>

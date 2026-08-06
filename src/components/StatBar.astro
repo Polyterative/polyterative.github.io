@@ -1,0 +1,88 @@
+---
+export interface Stat {
+  value: string;
+  label: string;
+}
+
+export interface Props {
+  stats: Stat[];
+  accentHue: number;
+  heading?: string;
+}
+
+const { stats, accentHue, heading } = Astro.props;
+---
+
+<section class="stat-panel" style={`--app-h:${accentHue}`}>
+  {heading && <p class="stat-panel__heading">{heading}</p>}
+  <div class="stat-panel__grid">
+    {stats.map((stat) => (
+      <div class="stat-panel__item">
+        <span class="stat-panel__value">{stat.value}</span>
+        <span class="stat-panel__label">{stat.label}</span>
+      </div>
+    ))}
+  </div>
+</section>
+
+<style>
+  /* Sits in the normal document flow, using the same panel/border tokens as
+     the fact sheet and feature grid elsewhere on app pages — only the accent
+     glow and larger numerals set it apart as a proof moment. */
+  .stat-panel {
+    position: relative;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    background: var(--color-surface);
+    padding: clamp(var(--space-6), 4vw, var(--space-8));
+    overflow: hidden;
+  }
+  .stat-panel::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(70% 160% at 8% 0%, hsl(var(--app-h) 60% 55% / 0.12), transparent 60%);
+    pointer-events: none;
+  }
+  .stat-panel__heading {
+    position: relative;
+    font-family: var(--font-mono);
+    font-size: var(--font-size-meta);
+    color: var(--color-faint);
+    max-width: 52ch;
+    margin-bottom: var(--space-6);
+  }
+  .stat-panel__grid {
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 170px), 1fr));
+    gap: var(--space-6);
+  }
+  .stat-panel__item {
+    border-left: 1px solid var(--color-line);
+    padding-left: var(--space-5);
+  }
+  .stat-panel__item:first-child { border-left: none; padding-left: 0; }
+  .stat-panel__value {
+    display: block;
+    font-size: clamp(1.7rem, 3.2vw, 2.2rem);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    color: hsl(var(--app-h) 55% 32%);
+  }
+  :root[data-theme='dark'] .stat-panel__value { color: hsl(var(--app-h) 70% 66%); }
+  .stat-panel__label {
+    display: block;
+    margin-top: var(--space-1);
+    font-family: var(--font-mono);
+    font-size: var(--font-size-meta);
+    color: var(--color-muted);
+    line-height: 1.4;
+  }
+
+  @media (max-width: 640px) {
+    .stat-panel__grid { grid-template-columns: repeat(2, 1fr); }
+    .stat-panel__item:nth-child(2n+1) { border-left: none; padding-left: 0; }
+    .stat-panel__item:nth-child(n+3) { margin-top: var(--space-2); }
+  }
+</style>

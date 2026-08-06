@@ -1,14 +1,69 @@
 ---
 import AppLayout from '../../layouts/AppLayout.astro';
+import AppHero from '../../components/AppHero.astro';
+import StatBar from '../../components/StatBar.astro';
+import FeatureGrid from '../../components/FeatureGrid.astro';
+import FeatureRow from '../../components/FeatureRow.astro';
+import PullQuote from '../../components/PullQuote.astro';
 import { getApp } from '../../data/apps';
 
 const app = getApp('kinetip');
+
+const pillars = [
+  {
+    icon: 'zap',
+    title: 'Feather-light',
+    description: '~82MB of memory and under 2% of a single CPU core across a full workday of active use — real daily-driver measurements, not a synthetic benchmark. It won\u2019t compete with your work for your Mac\u2019s resources.',
+  },
+  {
+    icon: 'monitor',
+    title: 'Absolute positioning',
+    description: 'The tablet maps directly to the screen — or to one display, or to a custom active area with a visual editor. Point at a thing and the pointer is on it.',
+  },
+  {
+    icon: 'activity',
+    title: 'Native inertia',
+    description: 'Fling a page and it decays like macOS expects, with re-fling boosts and momentum physics you can preview and tune in the settings window.',
+  },
+  {
+    icon: 'layers',
+    title: 'Per-app policies',
+    description: 'Disable panning in your paint app, force a behavior in a stubborn one, adjust gain per application — exceptions live where the exceptions are.',
+  },
+  {
+    icon: 'tool',
+    title: 'Truthful diagnostics',
+    description: 'The first screen answers whether the tablet, permissions, mapping, and event posting are actually healthy. A failure names its fix; a fallback is never painted as success.',
+  },
+];
+
+const efficiencyStats = [
+  { value: '~82MB', label: 'Memory footprint' },
+  { value: '<2%', label: 'Of a single CPU core, full workday' },
+  { value: '~400ns', label: 'Median report-to-gesture latency' },
+  { value: '120Hz', label: 'Frame-paced to ProMotion displays' },
+];
 ---
 
 <AppLayout
   app={app}
-  description="Kinetip is a native macOS driver that makes a pen tablet a first-class pointing device: absolute positioning, click and drag pass-through, and context-aware pan scrolling with inertia. Built in Swift, tested to release-grade standards."
+  description="Kinetip is a native macOS driver that makes a pen tablet a first-class pointing device: absolute positioning, click and drag pass-through, and context-aware pan scrolling with inertia. Feather-light — around 82MB of memory and under 2% of a single CPU core across a full workday."
 >
+  <Fragment slot="hero">
+    <AppHero
+      app={app}
+      primaryCta={{ label: 'Read the write-up', href: '/blog/kinetip-native-macos-pen-tablet-driver', icon: 'book' }}
+      secondaryCta={{ label: 'Get early access', href: 'mailto:polyterative@outlook.com', icon: 'mail' }}
+      shotBadge="~82MB · <2% of 1 core"
+    />
+  </Fragment>
+
+  <StatBar
+    stats={efficiencyStats}
+    accentHue={app.accentHue}
+    heading="Benchmarked on a Mac Studio, across a full workday of daily-driver use — not a synthetic demo."
+  />
+
   <section aria-labelledby="kinetip-why">
     <span class="label">Why it exists</span>
     <h2 id="kinetip-why">A device you touch thousands of times a day deserves better</h2>
@@ -18,23 +73,20 @@ const app = getApp('kinetip');
       and once absolute positioning rewires your brain, a mouse feels clumsy.
     </p>
     <p>
-      The problem is that macOS never really wanted anyone to work this way. Vendor drivers bury
-      everything in per-model jargon, treat scrolling as an afterthought, fight you when the pen
-      lands near a button, and can quietly stop working after the machine sleeps. Individually,
-      each fault is small. For a device you touch thousands of times a day, the interruptions
-      compound into a real cost — for me, and for every illustrator, editor, and
-      accessibility-minded user who depends on a pen the same way.
+      macOS never really wanted anyone to work this way. Vendor drivers bury everything in
+      per-model jargon, treat scrolling as an afterthought, fight you when the pen lands near a
+      button, and can quietly stop working after the machine sleeps. For a device you touch
+      thousands of times a day, small interruptions compound into a real cost — for me, and for
+      every illustrator, editor, and accessibility-minded user who depends on a pen the same way.
     </p>
     <p>
-      So I wrote the driver I wanted to exist. Kinetip is a clean-room, native macOS driver that
-      turns pen input into precise pointing, dragging, and scrolling — built around how macOS
-      actually behaves, not ported through a compatibility layer.
+      So I wrote the driver I wanted to exist: a clean-room, native macOS driver that turns pen
+      input into precise pointing, dragging, and scrolling — built around how macOS actually
+      behaves, not ported through a compatibility layer.
     </p>
   </section>
 
-  <section aria-labelledby="kinetip-what">
-    <span class="label">What it does</span>
-    <h2 id="kinetip-what">The pen becomes a real pointer — and a better scroll wheel</h2>
+  <FeatureRow eyebrow="What it does" heading="The pen becomes a real pointer — and a better scroll wheel">
     <p>
       Kinetip's signature move is <strong>context-aware pan scrolling</strong>: touch the pen
       down and drag, and the page glides with momentum, like a trackpad fling. The driver knows
@@ -42,77 +94,70 @@ const app = getApp('kinetip');
       scrolls, while a drag on a slider just works as a drag. No modes to toggle, no chords to
       memorize.
     </p>
-    <ul class="pillars">
-      <li>
-        <h3>Absolute positioning</h3>
-        <p>The tablet maps directly to the screen — or to one display, or to a custom active area with a visual editor. Point at a thing and the pointer is on it.</p>
-      </li>
-      <li>
-        <h3>Native inertia</h3>
-        <p>Fling a page and it decays like macOS expects, with re-fling boosts and momentum physics you can preview and tune in the settings window.</p>
-      </li>
-      <li>
-        <h3>Per-app policies</h3>
-        <p>Disable panning in your paint app, force a behavior in a stubborn one, adjust gain per application — exceptions live where the exceptions are.</p>
-      </li>
-      <li>
-        <h3>Truthful diagnostics</h3>
-        <p>The first screen answers whether the tablet, permissions, mapping, and event posting are actually healthy. A failure names its fix; a fallback is never painted as success.</p>
-      </li>
-    </ul>
-    <div class="shots">
-      <figure>
-        <img src="/blog/kinetip/app-gestures.jpg" alt="Kinetip gesture settings" loading="lazy" decoding="async" />
-        <figcaption>Gestures — tap, drag, pan, and long-press behavior</figcaption>
-      </figure>
-      <figure>
-        <img src="/blog/kinetip/app-momentum.jpg" alt="Kinetip momentum physics settings with live preview" loading="lazy" decoding="async" />
-        <figcaption>Momentum — shipping physics with a live preview</figcaption>
-      </figure>
-      <figure>
-        <img src="/blog/kinetip/app-insights.jpg" alt="Kinetip insights view" loading="lazy" decoding="async" />
-        <figcaption>Insights — how the driver is being used, locally</figcaption>
-      </figure>
-      <figure>
-        <img src="/blog/kinetip/app-diagnostics.jpg" alt="Kinetip diagnostics view" loading="lazy" decoding="async" />
-        <figcaption>Diagnostics — device, permission, and pipeline state</figcaption>
-      </figure>
-    </div>
-  </section>
+    <Fragment slot="visual">
+      <div class="two-up">
+        <figure>
+          <img src="/blog/kinetip/app-gestures.jpg" alt="Kinetip gesture settings" loading="lazy" decoding="async" />
+          <figcaption>Gestures</figcaption>
+        </figure>
+        <figure>
+          <img src="/blog/kinetip/app-momentum.jpg" alt="Kinetip momentum physics settings with live preview" loading="lazy" decoding="async" />
+          <figcaption>Momentum, live preview</figcaption>
+        </figure>
+      </div>
+    </Fragment>
+  </FeatureRow>
 
-  <section aria-labelledby="kinetip-how">
-    <span class="label">How it's built</span>
-    <h2 id="kinetip-how">One realtime thread, and everything else stays out of its way</h2>
+  <FeatureGrid items={pillars} accentHue={app.accentHue} />
+
+  <FeatureRow eyebrow="Why it stays out of your way" heading="Built to disappear — from your workflow, and from Activity Monitor" reverse>
     <p>
-      From USB report to posted event, one realtime thread owns the whole input spine: decode,
-      clock remapping, screen mapping, a deterministic gesture state machine, inertia simulation,
-      and event synthesis. That thread never allocates, never takes a lock, and never calls into
-      anything slow. Accessibility probing — the part that figures out what's under the pen —
-      runs off-thread and hands back small snapshots. That single constraint is why the driver
-      stays smooth under load, through sleep and wake, and across device reconnects.
+      Kinetip does one job, on one lightweight thread, and nothing else. Running it all day as
+      my only pointing device, it holds around <strong>82MB of memory</strong> and
+      <strong>under 2% of a single CPU core</strong> — measured across a full workday of real
+      use, not a synthetic benchmark. No background service phoning home, no cloud sync, no idle
+      timers waking the CPU while you work.
     </p>
     <p>
-      Reliability is treated as a feature with a spec. Kinetip ships with over 800 tests across
-      99 suites, seeded property fuzzers that run 100,000+ steps against the gesture reducer and
-      hostile HID descriptors, soak storms that hammer device churn and permission flaps, and a
-      numbered human-gated release checklist. Hardware disconnects are recovered with staged
-      backoff; sleep and wake restore cleanly; permission loss degrades gracefully instead of
-      crashing. Everything runs locally — no network, no telemetry, no account.
+      That efficiency isn't an accident. One realtime thread owns the whole input spine — decode,
+      screen mapping, gesture recognition, inertia, event synthesis — and it never allocates,
+      never takes a lock, never calls into anything slow. Benchmarked on a Mac Studio, turning a
+      raw hardware report into a gesture command takes a median of about <strong>400 nanoseconds</strong>
+      — sub-microsecond, for the whole decode-map-reduce chain. And every update is paced to
+      whatever display you're on, so motion holds up at 60Hz and stays smooth all the way to
+      <strong>ProMotion's 120Hz</strong> — the pen never feels like it's arriving a frame late.
     </p>
-  </section>
+    <p>
+      Reliability is treated as a feature with a spec: 800+ tests, seeded fuzzers, and soak
+      storms that hammer device churn and permission flaps, so the driver recovers cleanly from
+      sleep, wake, and hardware disconnects instead of degrading quietly.
+    </p>
+    <Fragment slot="visual">
+      <div class="two-up">
+        <figure>
+          <img src="/blog/kinetip/app-diagnostics.jpg" alt="Kinetip diagnostics view" loading="lazy" decoding="async" />
+          <figcaption>Diagnostics</figcaption>
+        </figure>
+        <figure>
+          <img src="/blog/kinetip/app-insights.jpg" alt="Kinetip insights view" loading="lazy" decoding="async" />
+          <figcaption>Insights, kept local</figcaption>
+        </figure>
+      </div>
+    </Fragment>
+  </FeatureRow>
 
   <section aria-labelledby="kinetip-end">
     <span class="label">Where it is now</span>
     <h2 id="kinetip-end">The best compliment an input driver can get is silence</h2>
     <p>
-      Kinetip has been my daily driver for months — every line of its own code was written,
-      reviewed, and scrolled with the pen it drives. It is now more reliable than the vendor
-      software that came with the hardware, and the release-hardening milestones are complete,
-      with final acceptance gates in progress ahead of a public 1.0.
+      Kinetip is my daily driver — used, tested, and refined with the same pen it drives. It is
+      now more reliable than the vendor software that came with the hardware, and the
+      release-hardening milestones are complete, with final acceptance gates in progress ahead
+      of a public 1.0.
     </p>
-    <blockquote>
+    <PullQuote accentHue={app.accentHue}>
       The tool I built to fight my tablet driver is now the reason I forget the driver exists.
       For an input device, disappearing is the finish line.
-    </blockquote>
+    </PullQuote>
   </section>
 </AppLayout>
