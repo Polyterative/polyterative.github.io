@@ -110,6 +110,28 @@ const efficiencyStats = [
 
   <FeatureGrid items={pillars} accentHue={app.accentHue} />
 
+  <FeatureRow eyebrow="How it fits you" heading="Every setting is a preset, not a wall of numbers">
+    <p>
+      Kinetip has an absurd number of things you <em>could</em> tune — where the active area
+      sits on your tablet, what each pen button and motion maps to, how scrolling decays, how
+      loud a click feels, which apps get their own rules. Expose all of that as raw values and
+      you don't get power, you get a spreadsheet nobody wants to touch.
+    </p>
+    <p>
+      So every dial here is a named choice instead of a naked number: pick <strong>Wood</strong>
+      or <strong>Silicon</strong> for how a click sounds, not a decay coefficient; drag the
+      active area on a visual map, not four raw coordinates; set a per-app override for the one
+      paint tool that fights you, and leave everything else on sane defaults that already feel
+      right out of the box. Maximum control, without ever making you do the math to get there.
+    </p>
+    <Fragment slot="visual">
+      <figure>
+        <img src="/blog/kinetip/app-sound.jpg" alt="Kinetip sound settings with named material presets — Aluminum, Wood, and Silicon" loading="lazy" decoding="async" />
+        <figcaption>Named presets, not raw parameters</figcaption>
+      </figure>
+    </Fragment>
+  </FeatureRow>
+
   <FeatureRow eyebrow="Why it stays out of your way" heading="Built to disappear — from your workflow, and from Activity Monitor" reverse>
     <p>
       Kinetip does one job, on one lightweight thread, and nothing else. Running it all day as

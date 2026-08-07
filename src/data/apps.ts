@@ -83,6 +83,7 @@ export const apps: AppEntry[] = [
       { label: 'Input path', value: 'Realtime thread — no locks, no allocations' },
       { label: 'Latency', value: 'Median ~400ns per report, hardware to gesture — benchmarked on a Mac Studio' },
       { label: 'Display sync', value: 'Frame-paced to your panel — 60Hz or ProMotion 120Hz' },
+      { label: 'Customization', value: 'Active area, gestures, momentum, sound, and per-app overrides — all named presets, no raw numbers' },
       { label: 'Testing', value: '800+ tests · seeded fuzzers · runtime soak storms' },
       { label: 'Privacy', value: 'Fully local — no network, no telemetry' },
       { label: 'Distribution', value: 'Open to publishing partners' },
