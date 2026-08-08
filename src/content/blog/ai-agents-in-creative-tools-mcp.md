@@ -7,7 +7,7 @@ tags: ["MCP", "AI", "Figma", "Blender", "Claude", "Creative Coding", "Tooling"]
 
 There's a gap between "AI assistant that can write code" and "AI assistant that can participate in your actual workflow." For a developer who spends significant time in creative tools — Figma for design, Blender for 3D — that gap has been frustrating. The assistant can see code. It can't see the canvas.
 
-Model Context Protocol (MCP) is closing that gap. It's a standard that lets AI assistants connect to external tools and services — giving them the ability to read from, write to, and in some cases directly operate software that isn't text.
+**Model Context Protocol** (MCP) is closing that gap. It's a standard that lets AI assistants connect to external tools and services — giving them the ability to read from, write to, and in some cases directly operate software that isn't text.
 
 ## Figma MCP
 
@@ -54,12 +54,12 @@ The fog and atmospheric rendering in the screenshots from that session came from
 
 Both of these tools follow the same pattern: the AI assistant stops being something you talk to in a separate window and becomes something that operates in the same environment you're working in.
 
-This matters more as the tools get more complex. A senior developer can hold a Blender scene or a Figma design system in their head to some degree. The AI assistant, without MCP, can't see any of it — you're narrating a visual environment to something that has no visual channel into it. MCP creates the visual channel.
+This matters more as the tools get more complex. A senior developer can hold a Blender scene or a Figma design system in their head to some degree. The AI assistant, without MCP, can't see any of it — you're narrating a visual environment to something that has no visual channel into it. MCP creates the **visual channel**.
 
 The honest constraint: these integrations are still early. The Figma MCP is production-quality and I use it regularly. The Blender integration requires more setup and the feedback loop is slower — executing a Python script, waiting for a render, assessing the result, iterating. It works, but it's not yet as fluid as working with code.
 
 The direction is clear though. Every creative tool I use regularly is one that I'd like an AI agent to be able to reach into. The ones that don't have MCP integrations yet are just waiting for someone to build them.
 
-The tools that stay text-only are the ones that get left behind.
+*The tools that stay text-only are the ones that get left behind.*
 
 Related: [Three Small Tools for Living with Local AI](/blog/local-ai-toolkit-tagger-renamer-guard) covers a different angle on the same theme — building the plumbing around local models rather than reaching them through a chat window. And [thear](/blog/sonifying-ai-work-thear) is a small example of what happens when you give an AI assistant a non-text output channel.

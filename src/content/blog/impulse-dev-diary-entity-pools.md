@@ -17,11 +17,11 @@ This is what building [Impulse](/apps/impulse) looks like on the inside.
 
 ## What Impulse is trying to do
 
-The goal is a visual engine built specifically for live AV performance — something I can wire to my modular synthesizer via OSC, drive with MIDI from a controller, and run at 4K/60fps on a venue screen while performing. The output should also be distributable as a web gallery where recorded performances play back deterministically.
+The goal is a visual engine built specifically for live AV performance — something I can wire to my modular synthesizer via <span class="caps">OSC</span>, drive with MIDI from a controller, and run at 4K/60fps on a venue screen while performing. The output should also be distributable as a web gallery where recorded performances play back deterministically.
 
 The design constraint I set myself early: **the signal philosophy should be identical to Eurorack**. In modular synthesis, there is no fundamental difference between an audio signal, a control voltage, a gate, a trigger, or a clock. They are all the same thing: a number changing over time, passing through a wire. Impulse is built on this principle. Every node output is a number. Every node input accepts a number. No type enforcement at the wire level. You can patch anything into anything.
 
-This is either elegant or reckless depending on the day.
+*This is either elegant or reckless depending on the day.*
 
 ## The three-thread architecture
 
@@ -33,7 +33,7 @@ Graph Worker       — node evaluation, ~16ms tick interval
 Renderer Worker    — Three.js r174, WebGPU, OffscreenCanvas
 ```
 
-The graph worker runs a synchronous O(N) evaluation sweep every tick. Nodes are topologically sorted using Kahn's algorithm at load time, so evaluation always proceeds in dependency order with no wasted work. The worker sends world state to the renderer via MessageChannel — not through the main thread, which would add a relay hop and destroy the latency budget.
+The graph worker runs a synchronous O(N) evaluation sweep every tick. Nodes are topologically sorted using Kahn's algorithm at load time, so evaluation always proceeds in dependency order with no wasted work. The worker sends world state to the renderer via `MessageChannel` — not through the main thread, which would add a relay hop and destroy the latency budget.
 
 The renderer worker runs Three.js entirely on an OffscreenCanvas. On macOS this maps directly to Metal via the WebGPU adapter. Shaders are written in TSL (Three.js Shading Language) — actual TypeScript instead of GLSL strings — which means the AI agents I use during development can read, modify, and reason about shader code as naturally as any other TypeScript. This was not an accident.
 
@@ -47,7 +47,7 @@ The problem was in the dying pipeline. When an entity's lifetime expired, it was
 
 The cascade happened because none of these components failed loudly. They all continued running, processing subtly wrong data, and the visible output was a freeze rather than a crash — which made it harder to locate.
 
-The fix was boring in the way that most real fixes are: enforce a strict phase separation within each tick. Death cleanup runs first, returns entities to pool, marks pool clean. Only then does spawn logic pull from the pool. The renderer only reads after both phases complete. The order was always implied; I made it explicit and the problem stopped.
+The fix was boring in the way that most real fixes are: enforce a **strict phase separation** within each tick. Death cleanup runs first, returns entities to pool, marks pool clean. Only then does spawn logic pull from the pool. The renderer only reads after both phases complete. The order was always implied; I made it explicit and the problem stopped.
 
 206 tests across 19 files now cover the entity lifecycle, graph evaluation, clock synchronization, and hot-reload behavior. The tests didn't catch this one — it was a timing issue that only surfaced at specific spawn rates. But they've caught many others.
 

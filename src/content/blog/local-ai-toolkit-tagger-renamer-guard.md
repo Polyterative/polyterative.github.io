@@ -5,9 +5,9 @@ date: "2026-03-20"
 tags: ["Python", "Local AI", "LM Studio", "macOS", "Tooling", "Productivity"]
 ---
 
-Running models locally is great until your machine grinds to a halt because you forgot to unload a 14B model — or until you notice your screenshots folder has 800 files named `Screenshot 2026-03-14 at 09.43.11.png` and no way to find anything in them.
+Running models locally is great until your machine grinds to a halt because you forgot to unload a **14B model** — or until you notice your screenshots folder has 800 files named `Screenshot 2026-03-14 at 09.43.11.png` and no way to find anything in them.
 
-I built three small macOS utilities to deal with this. Each does one thing.
+I built three small macOS utilities to deal with this. *Each does one thing.*
 
 ---
 
@@ -45,11 +45,11 @@ There's also a memory monitor that auto-unloads the model when free RAM drops be
 Same idea, different interaction model. You drag files onto a window — images, PDFs, DOCX — and a local LLM proposes a clean filename for each one. You review them one at a time, edit the proposed name inline if needed, then hit Apply.
 
 The file handling per type:
-- **Images** → sent as base64 to the VLM
-- **PDFs** → text extracted with `pdfplumber`; scanned PDFs fall back to first-page image via `pymupdf`
-- **DOCX** → text extracted with `python-docx`
+- Images → sent as base64 to the VLM
+- `PDF` → text extracted with `pdfplumber`; scanned PDFs fall back to first-page image via `pymupdf`
+- `DOCX` → text extracted with `python-docx`
 
-Everything stays on your machine. No uploads. The model runs in LM Studio locally, you configure which one in a TOML file.
+Everything stays on your machine. No uploads. The model runs in LM Studio locally, you configure which one in a `TOML` file.
 
 ```toml
 [model]
@@ -69,7 +69,7 @@ The output style — kebab-case, snake_case, Title Case — is configurable beca
 
 This one is the most utilitarian. LM Studio models are large. If you have a few loaded and then switch to something memory-heavy, the system starts swapping and everything becomes slow.
 
-lms-guard is a macOS menu bar app that polls RAM usage every N seconds. If available memory drops below a threshold *and* the loaded models have been idle for a configurable period, it starts a 10-second countdown and then unloads them. You can cancel, snooze, or pause the guard entirely from the menu.
+lms-guard is a macOS menu bar app that polls RAM usage every N seconds. If available memory drops below a threshold and the loaded models have been idle for a configurable period, it starts a 10-second countdown and then unloads them. You can cancel, snooze, or pause the guard entirely from the menu.
 
 The menu bar icon tells you at a glance what's happening:
 

@@ -9,7 +9,7 @@ When I moved into my new apartment, the first thing I opened was Figma.
 
 This is probably not surprising if you know me. Figma is where I think spatially — where I arrange things, test compositions, compare options side by side. The question of how to configure a room is, at some level, the same kind of problem as designing an interface: you have a bounded space, a set of elements with fixed and flexible properties, and a set of human behaviors you're trying to support or avoid.
 
-So I imported the floor plan, set up a frame at 1:50 scale, and started working.
+So I imported the floor plan, set up a frame at **1:50 scale**, and started working.
 
 ## The floor plan as a canvas
 
@@ -21,17 +21,17 @@ The advantage over paper sketching is immediate: you can duplicate an entire lay
 
 Working through the layouts forced me to articulate why certain configurations felt better. I ended up with a set of principles I've been applying consistently:
 
-**Float elements when possible.** Wall-mounted furniture or pieces with visible legs reveal the floor perimeter. A continuous floor plane reads as a larger room. A piece that disappears into the floor breaks that continuity.
+Float elements when possible. Wall-mounted furniture or pieces with visible legs reveal the floor perimeter. A continuous floor plane reads as a larger room. A piece that disappears into the floor breaks that continuity.
 
-**Consolidate vertical mass.** Tall storage units compress a room visually. One block of tall storage on one wall is fine; distributing tall pieces around the room makes it feel smaller and busier. Keep the rest low and continuous.
+Consolidate vertical mass. Tall storage units compress a room visually. One block of tall storage on one wall is fine; distributing tall pieces around the room makes it feel smaller and busier. Keep the rest low and continuous.
 
-**One clear sightline from entry to window.** Leave at least one meter of open space along the main axis from the front door to the primary window. A room that reads as one continuous volume from entry feels significantly larger than the same dimensions with an obstruction in that path.
+One clear sightline from entry to window. Leave at least one meter of open space along the main axis from the front door to the primary window. A room that reads as one continuous volume from entry feels significantly larger than the same dimensions with an obstruction in that path.
 
-**Limit materials, vary texture.** Three materials maximum: one for surfaces (walls and ceiling), one for the floor, one for accents. Varying texture within a material is fine — varying color between multiple materials creates visual noise.
+Limit materials, vary texture. Three materials maximum: one for surfaces (walls and ceiling), one for the floor, one for accents. Varying texture within a material is fine — varying color between multiple materials creates visual noise.
 
-**Align edges.** Furniture, rugs, and lighting should run parallel to the room's longest wall. Diagonal placement feels dynamic as a concept and chaotic in practice.
+Align edges. Furniture, rugs, and lighting should run parallel to the room's longest wall. Diagonal placement feels dynamic as a concept and chaotic in practice.
 
-**Curtains as architecture, not decoration.** Full-height, wall-to-wall tracks. Stack to one side when open to read the window as a single opening. Curtains that stop at the window frame make the ceiling feel lower and the window feel smaller.
+Curtains as architecture, not decoration. Full-height, wall-to-wall tracks. Stack to one side when open to read the window as a single opening. Curtains that stop at the window frame make the ceiling feel lower and the window feel smaller.
 
 ## The kitchen
 
@@ -43,10 +43,10 @@ The main requests: all drawers below the counter instead of cabinet doors (signi
 
 I settled on a small, explicit color meaning system early:
 
-- **Grey** — structural, supportive, containing
-- **Wood** — warmth, comfort, tactile presence
-- **Yellow accents** — creative areas, good daylight zones
-- **Green** — food-adjacent spaces (kitchen, dining)
+- Grey — structural, supportive, containing
+- Wood — warmth, comfort, tactile presence
+- Yellow accents — creative areas, good daylight zones
+- Green — food-adjacent spaces (kitchen, dining)
 
 This isn't a decoration choice, it's navigation. When you're not consciously deciding what color something should be, you default to what's in front of you. Having a small system means the decisions are already made.
 
@@ -64,6 +64,6 @@ The limitation is that it's a 2D top-down view, which is better for layout than 
 
 The apartment is now configured. Most of the layouts I tested in Figma were discarded. A few principles I thought were rules turned out to be guidelines. One thing I was certain about turned out to be completely wrong once I was standing in the room.
 
-That's design.
+*That's design.*
 
 The acoustic corner of this apartment has its own story — how I treated a square room with polyester panels and a desk rotation. That's [here](/blog/acoustic-treatment-square-room). The home automation layer built on top of the whole space is [here](/blog/home-assistant-infrastructure).

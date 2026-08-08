@@ -7,7 +7,7 @@ tags: ["Design", "Tooling", "Color Theory", "JetBrains"]
 
 Most IDE color themes are designed by eye in isolation: pick colors that look good together, assign them to token types, ship. The result is usually a theme where comments are so dim you skip them, strings are so bright they dominate, and after two hours your eyes ache in ways you can't explain.
 
-Poly Highlights starts from a different constraint: every token color must sit at a consistent perceptual brightness relative to the background.
+Poly Highlights starts from a different constraint: every token color must sit at a **consistent perceptual brightness** relative to the background.
 
 ## The Problem with "Good Enough" Colors
 
@@ -17,7 +17,7 @@ When you pick theme colors by feel, you're implicitly compensating for this, bad
 
 ## Luminance as a Design Constraint
 
-The fix is to compute relative luminance (per WCAG 2.1) for every color and use that as the primary design axis, not hue or saturation.
+The fix is to compute relative luminance (per <span class="caps">WCAG</span> 2.1) for every color and use that as the primary design axis, not hue or saturation.
 
 The formula converts sRGB values to linear light, then weights them by the sensitivity of the human eye to red, green, and blue light:
 
@@ -47,4 +47,4 @@ The theme is updated regularly as JetBrains expands their token system. Each new
 
 After two hours with a luminance-corrected theme, your eyes don't hurt. Comments don't disappear. The token hierarchy is obvious without being garish. It's a very small design intervention with a disproportionate daily impact — most developers spend more time reading code than writing it.
 
-The theme is on GitHub and free to use.
+*The theme is on GitHub and free to use.*

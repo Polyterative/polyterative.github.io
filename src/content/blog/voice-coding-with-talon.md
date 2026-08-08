@@ -5,7 +5,7 @@ date: "2025-02-10"
 tags: ["Voice Coding", "Talon", "Tooling", "Accessibility", "Productivity"]
 ---
 
-I've been using Talon Voice as my primary coding interface for over a year. Not as an experiment — as my daily driver for production TypeScript, Angular, and terminal work. Here's what actually happened.
+I've been using Talon Voice as my **primary coding interface** for over a year. Not as an experiment — as my daily driver for production TypeScript, Angular, and terminal work. Here's what actually happened.
 
 ## Why
 
@@ -13,7 +13,7 @@ Two reasons, one more practical than the other.
 
 The practical one: repetitive strain from keyboard-heavy development. Before voice coding, I had consistent wrist fatigue after long sessions. Voice eliminates the mechanical load entirely.
 
-The less practical one: I was curious whether you could build complex software with your voice at production speed. The answer is yes, with caveats.
+The less practical one: I was curious whether you could build complex software with your voice at production speed. The answer is yes, *with caveats*.
 
 ## What Talon Is
 
@@ -59,7 +59,7 @@ Slow:
 - Anything involving unusual punctuation clusters
 - Switching between voice and manual input mid-flow
 
-The practical workflow is hybrid: voice for navigation, commands, and structure; keyboard for dense expression bodies when speed matters.
+The practical workflow is **hybrid**: voice for navigation, commands, and structure; keyboard for dense expression bodies when speed matters.
 
 ## The Learning Curve
 

@@ -38,7 +38,7 @@ One of the biggest improvements since v5.1.0 is the database and discovery layer
 
 Patcher now has **manufacturer pages** with dedicated browsing, filtering, pagination, and recent activity. That makes the public hardware database more useful as a reference, not just as a support system for patches and racks.
 
-On the module side, there is now support for **store links**, better issue reporting, smarter power defaults, and a fuller moderation workflow. Users can flag problematic entries, and admins now have a proper flow for reviewing, resolving, or deleting those reports.
+On the module side, there is now support for store links, better issue reporting, smarter power defaults, and a fuller moderation workflow. Users can flag problematic entries, and admins now have a proper flow for reviewing, resolving, or deleting those reports.
 
 That work matters because Patcher is only as useful as the quality of the shared data behind it.
 
@@ -48,7 +48,7 @@ Another major area of work was the public-facing layer of the app.
 
 Patcher now includes **server-side rendering**, structured SEO data, improved metadata handling, and better sitemap behavior. In practical terms, this means public content is easier to discover, preview, and share.
 
-There are now also **public profile pages**, which give contributors a more visible presence in the system and help connect patches, racks, and module contributions back to real users.
+There are now also public profile pages, which give contributors a more visible presence in the system and help connect patches, racks, and module contributions back to real users.
 
 This has been an important step toward making Patcher more legible from the outside, not just more useful once logged in.
 
@@ -85,6 +85,6 @@ Patcher started from a simple need: documenting modular patches in a way that wa
 
 That idea is still the core of the project, but the app has grown well beyond patch notes. It is now much closer to what I wanted from the beginning: a digital twin workspace for Eurorack musicians, where patches, racks, modules, public discovery, and personal workflow all belong to the same system.
 
-If you have not looked at it since **v5.1.0**, now is a good time to check back in.
+If you have not looked at it since v5.1.0, now is a good time to check back in.
 
-**https://patcher.xyz**
+https://patcher.xyz

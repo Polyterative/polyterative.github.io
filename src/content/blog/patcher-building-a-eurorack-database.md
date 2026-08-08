@@ -16,7 +16,7 @@ The Eurorack community is fragmented across forums, Reddit, and Discord. There w
 
 - Document and retrieve your own patches
 - Discover how others used the same modules
-- Build a canonical database of modules with accurate specs
+- Build a **canonical database** of modules with accurate specs
 
 Existing tools were either too narrow (single-vendor apps) or too general (plain note apps).
 
@@ -24,15 +24,15 @@ Existing tools were either too narrow (single-vendor apps) or too general (plain
 
 Patcher is an Angular + Supabase app that lets you:
 
-1. **Log your modules** — search a community-maintained database
-2. **Save patches** — describe signal routing, note settings, add photos
-3. **Explore** — browse patches by module, tag, or contributor
+1. Log your modules — search a community-maintained database
+2. Save patches — describe signal routing, note settings, add photos
+3. Explore — browse patches by module, tag, or contributor
 
 The stack was deliberate. Angular gives me the reactive programming model I'm comfortable with (RxJS flows feel natural for event-driven synth UIs). Supabase handles auth and a real-time Postgres backend without infrastructure overhead.
 
 ## On Building in Public
 
-The first version launched with zero users and broke in three different browsers. Shipping it anyway was the right call. Feedback from the Bologna Modulare community shaped every subsequent feature. A tool for one person is a script. A tool for a community is a product.
+The first version launched with zero users and broke in three different browsers. Shipping it anyway was the right call. Feedback from the Bologna Modulare community shaped every subsequent feature. A tool for one person is a script. *A tool for a community is a product.*
 
 Open source matters here too — the module database grows because anyone can contribute. That multiplier effect is worth the maintenance overhead.
 

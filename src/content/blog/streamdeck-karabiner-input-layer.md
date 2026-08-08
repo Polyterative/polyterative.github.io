@@ -7,13 +7,13 @@ tags: ["Productivity", "Tooling", "Stream Deck", "Karabiner", "macOS", "Keyboard
 
 The default keyboard layout was designed in 1873. The symbol positions, the modifier key locations, the total absence of anything useful in the function row — it's a historical artifact we've all agreed to live with. For most tasks this is fine. For writing code and switching between tools constantly, it's a friction tax you pay thousands of times a day without noticing.
 
-I stopped accepting it.
+*I stopped accepting it.*
 
 ## The two layers
 
 My input system has two distinct layers:
 
-**Karabiner** operates at the OS level, below any application. It intercepts keystrokes before anything else sees them and can transform them into anything. This is where I handle remapping, complex modifications, and the hyper key.
+**Karabiner** operates at the OS level, below any application. It intercepts keystrokes before anything else sees them and can transform them into anything. This is where I handle remapping, complex modifications, and the **hyper key**.
 
 **Stream Deck XL** is physical — 32 labeled buttons on a separate device. This is where I handle things that need to be triggered with one deliberate press rather than a key chord, things that benefit from having a visible label, and things I want to reach without moving my hands off the home row.
 
@@ -21,7 +21,7 @@ They solve different problems. Together they cover most of the friction.
 
 ## Karabiner: the hyper key and symbol remapping
 
-The most valuable modification in my Karabiner config is the hyper key. Caps Lock — a key with almost no legitimate use — becomes a simultaneous press of Control + Option + Command + Shift when held. This combination is guaranteed to never conflict with any existing shortcut in any application. Every automation, macro, and custom binding I want globally available lives in the Hyper + [key] namespace.
+The most valuable modification in my Karabiner config is the hyper key. Caps Lock — a key with almost no legitimate use — becomes a simultaneous press of Control + Option + Command + Shift when held. This combination is guaranteed to never conflict with any existing shortcut in any application. Every automation, macro, and custom binding I want globally available lives in the `Hyper + [key]` namespace.
 
 The second most valuable category is symbol remapping. Characters like `[`, `]`, `{`, `}`, `|`, `\` are buried on most keyboards — especially on Italian layouts, where they require Option chords that aren't muscle memory for code. I've remapped these to more accessible positions using home-row layers: hold one modifier, and the home row becomes a symbol row. No hand movement, no mental translation.
 
@@ -52,7 +52,7 @@ I started taking this seriously after experiencing wrist fatigue from extended k
 
 The Stream Deck XL was the significant purchase. Karabiner is free and open source.
 
-Setting up a useful Karabiner configuration takes time — the complex modifications system requires some reading, and the JSON format for custom rules is not immediately intuitive. I would estimate a couple of evenings to get from zero to something genuinely useful, and ongoing refinement after that as you notice remaining friction points.
+Setting up a useful Karabiner configuration takes time — the complex modifications system requires some reading, and the `JSON` format for custom rules is not immediately intuitive. I would estimate a couple of evenings to get from zero to something genuinely useful, and ongoing refinement after that as you notice remaining friction points.
 
 The Stream Deck configuration is faster — the software is drag-and-drop and the profile system for context-switching is straightforward. The ongoing investment is keeping the profiles updated when your workflow changes.
 

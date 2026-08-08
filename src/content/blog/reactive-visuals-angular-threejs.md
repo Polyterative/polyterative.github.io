@@ -5,9 +5,9 @@ date: "2024-08-22"
 tags: ["Creative Coding", "Three.js", "RxJS", "Angular", "OSC"]
 ---
 
-Most creative coding tutorials use `setInterval` or `requestAnimationFrame` callbacks directly. That works for demos. It doesn't scale when you add audio reactivity, OSC input from a modular synth, and UI controls simultaneously.
+Most creative coding tutorials use `setInterval` or `requestAnimationFrame` callbacks directly. That works for demos. It doesn't scale when you add audio reactivity, <span class="caps">OSC</span> input from a modular synth, and UI controls simultaneously.
 
-RxJS solves this cleanly.
+**RxJS** solves this cleanly.
 
 ## The Architecture
 
@@ -33,11 +33,11 @@ When your synth sends an OSC message, that's another stream. Mouse position? Str
 
 Running a local OSC server with `node-osc` and bridging to the browser via WebSocket lets my Eurorack setup directly modulate visual parameters. Moving a physical knob moves something on screen in real time, sub-20ms latency.
 
-The feedback loop between physical hardware and generative software is something I hadn't experienced before. It changes how you perform.
+The feedback loop between physical hardware and generative software is something I hadn't experienced before. *It changes how you perform.*
 
 ## Takeaways
 
-- **Observables compose better than callbacks** at this level of complexity
+- Observables compose better than callbacks at this level of complexity
 - Three.js's imperative API integrates cleanly inside `subscribe()` handlers
 - Angular's DI makes swapping audio backends trivial during development
 

@@ -5,7 +5,7 @@ date: "2026-03-10"
 tags: ["WebGPU", "Three.js", "Creative Coding", "MIDI", "Web Audio", "TypeScript", "Live Performance"]
 ---
 
-I do audiovisual performances — live sets where sound and visuals are generated and modulated together in real time. For this kind of work, TouchDesigner is the standard tool. It's powerful, it has a huge ecosystem, and a lot of brilliant people use it. I also find it genuinely painful to use.
+I do audiovisual performances — live sets where sound and visuals are generated and modulated together in real time. For this kind of work, **TouchDesigner** is the standard tool. It's powerful, it has a huge ecosystem, and a lot of brilliant people use it. I also find it genuinely painful to use.
 
 The UI is dense to the point of being hostile. Everything lives in a proprietary binary format that's opaque to version control and impossible to work on with AI agents. And that last part matters to me now: I build almost nothing without an AI coding assistant in the loop, and if a codebase is effectively closed to that accelerator, I feel the drag immediately.
 
@@ -15,9 +15,9 @@ So I learned what I needed from TouchDesigner — the node-based signal flow mod
 
 TouchDesigner is a native application. Most node-based AV tools are. I chose the browser deliberately.
 
-The practical reason is distribution. A browser-based engine runs on any machine with Chrome — no installer, no driver version mismatches, no "does this work on the venue's laptop" moment right before a show. You open a URL.
+The practical reason is distribution. A browser-based engine runs on any machine with Chrome — no installer, no driver version mismatches, no *"does this work on the venue's laptop"* moment right before a show. You open a URL.
 
-The less obvious reason is AI agent compatibility. A TypeScript codebase in plain files — nodes as functions, graph state as JSON, shaders as TSL — is something an AI assistant can read, reason about, and modify without friction. I can describe a new node type in natural language and have a working implementation in seconds. That's a qualitatively different development speed than a tool that stores its patches in a proprietary binary format. If a codebase is opaque to the tools I use to build everything else, I feel that drag every session.
+The less obvious reason is AI agent compatibility. A TypeScript codebase in plain files — nodes as functions, graph state as `JSON`, shaders as `TSL` — is something an AI assistant can read, reason about, and modify without friction. I can describe a new node type in natural language and have a working implementation in seconds. That's a qualitatively different development speed than a tool that stores its patches in a proprietary binary format. If a codebase is opaque to the tools I use to build everything else, I feel that drag every session.
 
 ## The architecture
 

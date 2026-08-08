@@ -9,7 +9,7 @@ A live modular performance looks improvised from the outside. From the inside, i
 
 ## The patch
 
-Everything starts with the patch — the specific configuration of cables and settings that produces the sound of the set. For the industrial techno material I've been performing, the architecture is built around rhythm and tension rather than melody.
+Everything starts with **the patch** — the specific configuration of cables and settings that produces the sound of the set. For the industrial techno material I've been performing, the architecture is built around rhythm and tension rather than melody.
 
 The core signal chain runs something like: percussion source into a dynamics processor, with the bass voice going through its own path before merging. The sidechain compression is cross-faded rather than hard-triggered, which gives it a more physical, pumping quality. The frequency content is shaped aggressively — the intention is abrasive, evolving, with the kind of rhythmic intensity that comes from my background playing deathcore guitar, now translated into electronic texture.
 
@@ -38,7 +38,7 @@ In 2025, a panel talk at MENT Festival in Ljubljana, then a live slot at Kino Š
 
 ## Soundcheck and the venue relationship
 
-The technical rider exists because venues vary enormously. The table size matters — you need 100×60cm minimum for the modular case, the laptop, and the interface, and there needs to be power within one meter of where you're performing, not across the stage. A technician during soundcheck is non-negotiable; sending audio into an unchecked PA and hoping is not a workflow.
+The **technical rider** exists because venues vary enormously. The table size matters — you need 100×60cm minimum for the modular case, the laptop, and the interface, and there needs to be power within one meter of where you're performing, not across the stage. A technician during soundcheck is non-negotiable; sending audio into an unchecked PA and hoping is not a workflow.
 
 The most common friction is FOH engineers who add reverb or compression to the stereo bus without asking. The modular output is already processed — it has its own spatial character. Additional processing at the desk usually makes things worse. The rider note is there to start that conversation before the soundcheck, not during it.
 

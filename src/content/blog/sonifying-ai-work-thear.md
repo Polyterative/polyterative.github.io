@@ -7,11 +7,11 @@ tags: ["Python", "Ableton", "OSC", "AI", "Tooling"]
 
 I spend a lot of time with AI coding assistants. The experience is largely visual — you watch tokens appear. I wanted to *hear* the work happening.
 
-[thear](https://github.com/polyterative/thear) is a small Python daemon that hooks into Claude Code's activity events and emits OSC messages. Those messages trigger Ableton Live clips and effects in real time.
+[thear](https://github.com/polyterative/thear) is a small Python daemon that hooks into Claude Code's activity events and emits <span class="caps">OSC</span> messages. Those messages trigger Ableton Live clips and effects in real time.
 
 ## How It Works
 
-Claude Code exposes a hooks system that fires events on tool calls, file writes, and completions. thear listens on those hooks and maps events to OSC messages:
+Claude Code exposes a `hooks` system that fires events on tool calls, file writes, and completions. thear listens on those hooks and maps events to OSC messages:
 
 ```python
 # tool_call → trigger a short percussive hit
@@ -23,7 +23,7 @@ Ableton receives these via a Max for Live device and routes them to whatever sou
 
 ## Why
 
-Partly curiosity. Partly because working for long stretches with AI tools can feel dissociative — you lose track of what's happening. Sound gives you a peripheral awareness without demanding visual attention.
+Partly curiosity. Partly because working for long stretches with AI tools can feel dissociative — you lose track of what's happening. Sound gives you a **peripheral awareness** without demanding visual attention.
 
 It's also just fun. The output is surprisingly musical. File writes cluster rhythmically. Long reasoning steps produce slow ambient swells.
 

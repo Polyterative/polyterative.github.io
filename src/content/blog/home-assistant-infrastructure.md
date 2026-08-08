@@ -21,9 +21,9 @@ The server has a UPS. This matters more than it sounds. Home Assistant with its 
 
 TrueNAS hosts several services that run 24/7 alongside Home Assistant:
 
-- **Ad blocking** — network-level, covers every device on the network including TVs and phones, no per-device configuration needed
-- **Offline Wikipedia** — the full Wikipedia available locally, no internet required. Surprisingly useful and genuinely satisfying to have
-- **Self-hosted download management** — handles queued downloads in the background, frees the Mac from the task entirely
+- Ad blocking — network-level, covers every device on the network including TVs and phones, no per-device configuration needed
+- Offline Wikipedia — the full Wikipedia available locally, no internet required. Surprisingly useful and genuinely satisfying to have
+- Self-hosted download management — handles queued downloads in the background, frees the Mac from the task entirely
 
 The AliExpress switches I mentioned aren't glamorous, but they're 2.5GbE and they were cheap. Proper ethernet throughout the apartment via the wall conduits that were already run during construction — I was lucky the previous work left me cable paths to use. The result is a wired backbone that's fast and boring in the best way.
 
@@ -45,17 +45,17 @@ The device mix is deliberately varied: Meross for lighting, IKEA motion and door
 
 Protocol-wise: **Zigbee works great.** The SLZB-06 coordinators I'm using for Zigbee are solid — reliable pairing, good range, no drama.
 
-**Thread and Matter is another story.** I got Thread up and have the SLZB units running as border routers, which is promising. But Matter device commissioning is still not behaving reliably. The IPv6 and DHCPv6 configuration I spent some time on in March got parts of it working but it's not something I'd call solved yet. I'll write more about that separately when I have something conclusive to say.
+*Thread and Matter is another story.* I got Thread up and have the SLZB units running as border routers, which is promising. But Matter device commissioning is still not behaving reliably. The IPv6 and DHCPv6 configuration I spent some time on in March got parts of it working but it's not something I'd call solved yet. I'll write more about that separately when I have something conclusive to say.
 
 ## The Mac trade-off
 
-I love my Mac. The experience of working on it daily is excellent. The one place where the server setup and the Mac don't quite meet gracefully is filesystem compatibility — SMB works but it's not as seamless as I'd like, and some workflows that feel natural on other platforms require an extra step. It's a minor complaint against a setup that otherwise works very well, but worth naming honestly.
+I love my Mac. The experience of working on it daily is excellent. The one place where the server setup and the Mac don't quite meet gracefully is filesystem compatibility — `SMB` works but it's not as seamless as I'd like, and some workflows that feel natural on other platforms require an extra step. It's a minor complaint against a setup that otherwise works very well, but worth naming honestly.
 
 ## Worth it
 
 The total spend on switches was modest — AliExpress, as mentioned. The server hardware was a deliberate investment. The UPS was not optional.
 
-What I have now is a home that adapts to presence, light, weather, and device state — automatically, locally, without subscriptions or clouds. When something breaks, I can debug it. When I want to add something new, I can add it. The configuration lives in version-controlled YAML.
+What I have now is a home that adapts to presence, light, weather, and device state — automatically, locally, without subscriptions or clouds. When something breaks, I can debug it. When I want to add something new, I can add it. The configuration lives in version-controlled `YAML`.
 
 That last part matters more than I expected. Knowing exactly what the system does, and why, is different from having a system that mostly does things you've come to vaguely trust. One feels like infrastructure. The other feels like a service you rent.
 

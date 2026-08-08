@@ -22,11 +22,11 @@ I wanted something built around how macOS actually behaves, not a portability la
 
 Before the war stories, here's the shape of the system, because every decision after this falls out of it. I'll follow one contact from the tablet surface to the screen.
 
-A USB report comes off the tablet and gets decoded into a `PenSample` in raw device counts. A small clock model, `DeviceScanClock`, maps the tablet's own scan-time counter onto the host's monotonic clock, because the two run on unrelated bases and drift apart. The sample is pushed through the active-area transform into screen coordinates, pressure and tilt are normalized, and it becomes a `PenEvent`.
+A <span class="caps">USB</span> report comes off the tablet and gets decoded into a `PenSample` in raw device counts. A small clock model, `DeviceScanClock`, maps the tablet's own scan-time counter onto the host's monotonic clock, because the two run on unrelated bases and drift apart. The sample is pushed through the active-area transform into screen coordinates, pressure and tilt are normalized, and it becomes a `PenEvent`.
 
 From there it reaches the part I care about most: a deterministic gesture reducer, a plain state machine, that turns a stream of `PenEvent`s into `InjectionCommand`s (move, down, drag, scroll, momentum). Scroll commands run through an inertia simulator on a ticker, and an event sink synthesizes real `CGEvent`s and posts them to the window server.
 
-One realtime thread owns that whole spine. It never allocates, never takes a lock, and never calls into accessibility or SwiftUI. Anything slow (asking the accessibility API what's under the pen, sampling a scroll view's position) runs on its own queue and hands back a small value snapshot the realtime thread reads when it's ready. That single constraint is why the driver stays smooth. It's also, as it turned out, where the two worst bugs lived.
+One **realtime thread** owns that whole spine. It never allocates, never takes a lock, and never calls into accessibility or SwiftUI. Anything slow (asking the accessibility API what's under the pen, sampling a scroll view's position) runs on its own queue and hands back a small value snapshot the realtime thread reads when it's ready. That single constraint is why the driver stays smooth. It's also, as it turned out, where the two worst bugs lived.
 
 <figure class="kt-diagram">
 <svg viewBox="0 0 710 720" role="img" aria-labelledby="kt-diag-title" style="width:100%;height:auto;display:block">
