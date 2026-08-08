@@ -211,6 +211,15 @@ const articleSchema = {
   :root[data-theme="dark"] .prose :global(.astro-code span) {
     color: var(--shiki-dark) !important;
   }
+  /* Small caps: letterspaced uppercase in the same sans, reserved for institutional/proper
+     names treated as fixed facts of the world being described (agencies, standards, protocols).
+     Never used on lowercase running text — letterspacing caps only. */
+  .prose :global(.caps) {
+    font-size: 0.85em;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    font-weight: 600;
+  }
   .prose :global(blockquote) {
     border-left: 2px solid var(--color-border);
     padding-left: var(--space-5);
