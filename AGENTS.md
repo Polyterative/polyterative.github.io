@@ -74,3 +74,29 @@ Version and status strings are duplicated deliberately — update **all**:
   card title prefers it).
 - Facts must stay truthful: statuses like "Pre-release" or "Unofficial" are features, not
   weaknesses. Never overstate.
+
+### Blog prose: typographic emphasis
+
+Inspired by [how Blade Runner's title cards use one typeface deliberately](https://randsinrepose.com/archives/blade-runner-title-cards/).
+The article's real point: the theatrical cut (deliberate Goudy Oldstyle, letterspaced caps, one
+red italic word) and the work-print (the lazy default: plain Impact) use the *same* typeface
+options — the difference is that every small choice in the theatrical cut was actually decided,
+not defaulted to. Feeling and readability both come from *obsessing over which small decisions
+to make*, not from adding new fonts or flourish. Four tools, each with one job, within the site's
+existing two typefaces (sans + mono):
+
+| Style | Markdown | Use for | Frequency |
+|---|---|---|---|
+| **Bold** | `**text**` | A key term or fact, on its first meaningful mention only | ~1–3 per post |
+| *Italic* | `*text*` | A tonal beat: aside, closing punchline, quoted UI copy/dialogue, borrowed term | ~1–3 per post |
+| `code` | `` `text` `` | A literal technical artifact: filename, command, config key, data format (CSV, JSON) | as needed, unchanged from normal usage |
+| Small caps | `<span class="caps">TEXT</span>` | An institutional name/acronym treated as a fixed fact of the world (agency, standard, protocol) | ~0–1 per post, rare |
+
+Rules:
+- Never emphasize the same word/phrase twice in one post — emphasis marks a *first* encounter,
+  not importance-by-repetition.
+- Never stack two styles on one span (no bold-italic, no bold small caps).
+- If nothing in a section earns emphasis, leave it plain. Plain prose is the default state;
+  emphasis is the exception that proves it.
+- Small caps CSS utility lives in `src/pages/blog/[slug].astro` (`.prose :global(.caps)`) —
+  letterspaced uppercase in the same sans, never applied to lowercase running text.
