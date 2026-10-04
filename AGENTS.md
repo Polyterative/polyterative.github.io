@@ -107,3 +107,9 @@ Rules:
 - New raster images go in `public/`, then run `node scripts/optimize-images.mjs` (recompresses to ≤1600px and writes a `.webp` sibling). Render them with `src/components/Img.astro` (adds intrinsic size + WebP `<picture>`); raw `<img>` in blog markdown is handled by `src/lib/rehype-images.mjs`.
 - Share cards are generated per post at `/og/<slug>.png` (`src/lib/og.ts`, satori + Departure Mono). Pages can pass `image`, `type`, `noindex`, `breadcrumbs` to `BaseLayout`.
 - Optional `updated:` frontmatter on a post feeds `dateModified` and sitemap `lastmod`.
+
+## Showcase screenshots
+
+`pnpm showcase` rebuilds `/showcase` and post covers from the apps' own snapshot output. Curate in
+`showcase/manifest.mjs`; see `showcase/README.md`. Commit the generated `public/showcase/` and
+`src/data/showcase.generated.json`.
