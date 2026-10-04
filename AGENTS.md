@@ -69,7 +69,8 @@ Version and status strings are duplicated deliberately — update **all**:
 
 - Voice: plain, direct, first person. No hype words, no LinkedIn-speak.
 - Internal links never `target="_blank"`; external always `target="_blank" rel="noopener"`.
-- Design tokens in `src/styles/global.css`; mono font for meta/labels, one accent color.
+- Design language lives in `DESIGN.md` (source of truth for web, PDF, slides, app UI).
+  Tokens in `src/styles/global.css` implement it; mono font for meta/labels, one accent color.
 - `ProjectCard` props: `url` (live/external), `repo`, `details` (internal app page — the
   card title prefers it).
 - Facts must stay truthful: statuses like "Pre-release" or "Unofficial" are features, not

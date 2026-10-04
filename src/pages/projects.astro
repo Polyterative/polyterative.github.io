@@ -2,6 +2,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import ProjectCard from '../components/ProjectCard.astro';
 import Icon from '../components/Icon.astro';
+import { pad } from '../lib/datum';
 
 const sectionIcons: Record<string, string> = {
   code: 'code',
@@ -195,42 +196,59 @@ const archiveSections = [
     ],
   },
 ];
+
+const entryCount = archiveSections.reduce((n, s) => n + s.projects.length, 0);
 ---
 
 <BaseLayout
   title="Projects — Vlady Yakovenko"
   description="A public archive of projects, tools, experiments, and related work by Vlady Yakovenko."
+  serial="PLY-P"
 >
   <div class="container container--wide">
-    <header class="page-header">
-      <h1>Work</h1>
-      <p class="page-desc">
-        The full archive: public projects, experiments, and a few longer-running things. Not exhaustive, just the pieces that make sense to keep collected here.
-      </p>
-      <p class="page-note">
-        Looking for the polished software? The <a href="/apps">applications gallery</a> has the flagship apps with stories, screenshots, and fact sheets.
-      </p>
-      <nav class="index-nav" aria-label="Jump to section">
-        <a href="/apps" class="index-nav__link iclink"><Icon name="star" size={13} />Applications</a>
-        {archiveSections.map((s) => (
-          <a href={`#${s.id}`} class="index-nav__link iclink"><Icon name={sectionIcons[s.id]} size={13} />{s.label}</a>
-        ))}
-      </nav>
+    <header class="page-head">
+      <aside class="page-head__aside">
+        <span class="plate page-head__idx">02</span>
+        <span class="lbl">Entries</span>
+        <span class="data">{entryCount}</span>
+        <span class="lbl">Sections</span>
+        <span class="data">{archiveSections.length}</span>
+      </aside>
+      <div class="page-head__main">
+        <h1>Work</h1>
+        <p class="page-head__lead">
+          The full archive: public projects, experiments, and a few longer-running things. Not exhaustive, just the pieces that make sense to keep collected here.
+        </p>
+        <p class="page-head__note">
+          Looking for the polished software? The <a href="/apps">applications gallery</a> has the flagship apps with stories, screenshots, and fact sheets.
+        </p>
+      </div>
     </header>
 
-    {archiveSections.map(section => (
-      <section class="domain" id={section.id}>
-        <header class="domain__head">
-          <span class="label label--ic"><Icon name={sectionIcons[section.id]} size={13} />{section.label}</span>
-          <h2>{section.title}</h2>
+    <nav class="index-nav" aria-label="Jump to section">
+      <a href="/apps" class="index-nav__link"><span class="lbl">A</span>Applications</a>
+      {archiveSections.map((s, i) => (
+        <a href={`#${s.id}`} class="index-nav__link"><span class="lbl">{pad(i + 1)}</span>{s.label}</a>
+      ))}
+    </nav>
+
+    {archiveSections.map((section, si) => (
+      <section class="sec domain" id={section.id} aria-labelledby={`h-${section.id}`}>
+        <header class="sec__head">
+          <span class="plate sec__idx">{pad(si + 1)}</span>
+          <span class="lbl">{section.label}</span>
+          <h2 class="sec__title" id={`h-${section.id}`}>{section.title}</h2>
+          <span class="lbl">{section.projects.length} {section.projects.length === 1 ? 'entry' : 'entries'}</span>
         </header>
-        <ul class="grid">
-          {section.projects.map(p => (
-            <li class:list={[{ 'grid__span': p.featured }]}>
-              <ProjectCard {...p} icon={sectionIcons[section.id]} />
-            </li>
-          ))}
-        </ul>
+        <div class="sec__body">
+          <ul class="grid">
+            {section.projects.map((p, i) => (
+              <li class:list={[{ 'grid__span': p.featured }]}>
+                <ProjectCard {...p} icon={sectionIcons[section.id]} index={pad(i + 1)} />
+              </li>
+            ))}
+          </ul>
+        </div>
       </section>
     ))}
 
@@ -238,60 +256,36 @@ const archiveSections = [
 </BaseLayout>
 
 <style>
-  .page-header {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-3);
-    padding-block: var(--space-16) var(--space-10);
-    max-width: var(--max-w);
-  }
-  .page-header h1 { font-size: clamp(2rem, 5vw, 3.2rem); }
-  .page-desc { color: var(--color-muted); line-height: 1.6; }
-  .page-note {
-    font-size: var(--font-size-sm);
-    color: var(--color-faint);
-    line-height: 1.6;
-  }
-  .page-note a {
-    color: var(--color-muted);
-    border-bottom: 1px solid var(--color-border);
-  }
-  .page-note a:hover { color: var(--color-text); border-color: var(--color-muted); }
-
   .index-nav {
     display: flex;
     flex-wrap: wrap;
-    gap: var(--space-4);
-    margin-top: var(--space-4);
+    border-top: 1px solid var(--ink);
+    border-bottom: 1px solid var(--rule);
+    margin-bottom: var(--space-12);
   }
   .index-nav__link {
-    font-family: var(--font-mono);
-    font-size: var(--font-size-meta);
-    color: var(--color-muted);
-  }
-  .index-nav__link:hover { color: var(--color-text); }
-  .index-nav__link .icon { color: var(--color-faint); }
-  .index-nav__link:hover .icon { color: var(--color-accent); }
-
-  .domain__head .label .icon { color: var(--color-accent); }
-
-  .domain {
-    padding-block: var(--space-12);
-    border-top: 1px solid var(--color-line);
-    scroll-margin-top: 72px;
-  }
-  .domain__head {
     display: flex;
     flex-direction: column;
-    gap: var(--space-2);
-    margin-bottom: var(--space-6);
+    gap: 2px;
+    min-width: 112px;
+    padding: var(--space-2) var(--space-4) var(--space-3) var(--space-3);
+    border-right: 1px solid var(--rule);
+    font-weight: 500;
+    font-size: var(--fs-control);
+    color: var(--ink);
   }
+  .index-nav__link:first-child { padding-left: 0; }
+  .index-nav__link:hover { background: var(--hover); color: var(--signal-text); }
 
   .grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr));
     gap: 0 var(--space-8);
     list-style: none;
   }
   .grid__span { grid-column: 1 / -1; }
+
+  @media (max-width: 600px) {
+    .index-nav__link { min-width: 0; flex: 1 1 33%; padding-left: var(--space-3); }
+  }
 </style>

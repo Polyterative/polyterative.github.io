@@ -12,49 +12,49 @@ export interface Props {
   featured?: boolean;
   image?: string;
   icon?: string;
+  /** Position in the list it belongs to, e.g. "01". Rendered as a plate. */
+  index?: string;
 }
 
-const { name, description, url, repo, details, tags = [], featured = false, image, icon = 'code' } = Astro.props;
+const { name, description, url, repo, details, tags = [], featured = false, image, icon = 'code', index } = Astro.props;
 const urlIsExternal = url?.startsWith('http');
 const titleHref = details ?? url;
 const titleIsExternal = titleHref?.startsWith('http');
-
-// Deterministic hue from the project name so generated covers stay coherent but distinct.
-const hue = [...name].reduce((h, c) => (h * 31 + c.charCodeAt(0)) % 360, 7);
-const hue2 = (hue + 42) % 360;
-const coverStyle = `--h1:${hue};--h2:${hue2}`;
-const coverLabel = tags[0] ?? 'Project';
 ---
 
 <article class:list={['project', { 'project--featured': featured }]}>
-  <div class="project__cover" class:list={[{ 'project__cover--gen': !image }]} style={!image ? coverStyle : undefined}>
+  <header class="project__head">
+    {index && <span class="plate project__idx">{index}</span>}
+    {tags[0] && <span class="lbl">{tags[0]}</span>}
+  </header>
+  <div class="project__cover crop">
     {image
       ? <img class="project__img" src={image} alt={`${name} preview`} loading="lazy" decoding="async" />
       : (
-        <>
-          <Icon name={icon} size={40} />
-          <span class="project__cover-tag">{coverLabel}</span>
-        </>
+        <div class="gencover project__gen" role="img" aria-label={`${name}: no screenshot`}>
+          <Icon name={icon} size={32} />
+          <span class="lbl gencover__lbl">No image</span>
+        </div>
       )
     }
   </div>
   <h3 class="project__title">
     {titleHref
-      ? <a class="accent-hover" href={titleHref} target={titleIsExternal ? '_blank' : undefined} rel={titleIsExternal ? 'noopener' : undefined}>{name}</a>
+      ? <a href={titleHref} target={titleIsExternal ? '_blank' : undefined} rel={titleIsExternal ? 'noopener' : undefined}>{name}</a>
       : name
     }
   </h3>
   <p class="project__desc">{description}</p>
   {tags.length > 0 && (
-    <ul class="project__tags">
-      {tags.map(t => <li><span class="tag">{t}</span></li>)}
+    <ul class="taglist">
+      {tags.map(t => <li>{t}</li>)}
     </ul>
   )}
   {(url || repo || details) && (
     <div class="project__links">
-      {details && <a class="iclink" href={details}>Details<Icon name="arrow-right" size={13} /></a>}
-      {url && <a class="iclink" href={url} target={urlIsExternal ? '_blank' : undefined} rel={urlIsExternal ? 'noopener' : undefined}>{urlIsExternal ? 'Live' : 'Details'}<Icon name={urlIsExternal ? 'external' : 'arrow-right'} size={13} /></a>}
-      {repo && <a class="iclink" href={repo} target="_blank" rel="noopener">Source<Icon name="github" size={13} /></a>}
+      {details && <a class="act" href={details}>Details<Icon name="arrow-right" size={13} /></a>}
+      {url && <a class="act" href={url} target={urlIsExternal ? '_blank' : undefined} rel={urlIsExternal ? 'noopener' : undefined}>{urlIsExternal ? 'Live' : 'Details'}<Icon name={urlIsExternal ? 'arrow-up-right' : 'arrow-right'} size={13} /></a>}
+      {repo && <a class="act" href={repo} target="_blank" rel="noopener">Source<Icon name="arrow-up-right" size={13} /></a>}
     </div>
   )}
 </article>
@@ -64,22 +64,27 @@ const coverLabel = tags[0] ?? 'Project';
     display: flex;
     flex-direction: column;
     gap: var(--space-3);
-    padding: var(--space-5) 0;
-    border-top: 1px solid var(--color-line);
+    padding: var(--space-3) 0 var(--space-8);
+    border-top: 1px solid var(--rule);
     height: 100%;
   }
 
+  .project__head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: var(--space-3);
+    min-height: 16px;
+  }
+  .project__idx { font-size: 24px; color: var(--ink); }
+
   .project__cover {
-    position: relative;
     aspect-ratio: 16 / 10;
-    border-radius: var(--radius-sm);
-    overflow: hidden;
-    border: 1px solid var(--color-line);
-    margin-bottom: var(--space-1);
+    border: 1px solid var(--rule);
+    background: var(--hover);
+    margin: var(--space-2) 0 var(--space-1);
   }
   .project--featured .project__cover { aspect-ratio: 21 / 9; }
-
-  .project__cover--gen { aspect-ratio: 2 / 1; }
 
   .project__img {
     width: 100%;
@@ -87,64 +92,28 @@ const coverLabel = tags[0] ?? 'Project';
     object-fit: cover;
     object-position: top center;
     display: block;
-    transition: transform 0.4s ease;
   }
-  .project:hover .project__img { transform: scale(1.02); }
-
-  .project__cover--gen {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: var(--space-3);
-    background:
-      radial-gradient(120% 120% at 15% 0%, hsl(var(--h1) 70% 62% / 0.85), transparent 60%),
-      linear-gradient(135deg, hsl(var(--h1) 55% 42%), hsl(var(--h2) 55% 34%));
-  }
-  .project__cover--gen :global(.icon) { color: rgba(255, 255, 255, 0.92); }
-  .project__cover-tag {
-    font-family: var(--font-mono);
-    font-size: var(--font-size-meta);
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
-    color: rgba(255, 255, 255, 0.85);
-    padding: 2px 8px;
-    border-radius: var(--radius-pill);
-    background: rgba(0, 0, 0, 0.22);
-    backdrop-filter: blur(2px);
-  }
+  .project__gen { width: 100%; height: 100%; }
 
   .project__title {
-    font-size: var(--font-size-base);
+    font-size: 19px;
     font-weight: 600;
-    letter-spacing: -0.01em;
+    letter-spacing: -0.015em;
   }
-  .project__title a:hover { opacity: 0.6; }
+  .project__title a:hover { color: var(--signal-text); }
 
   .project__desc {
-    font-size: var(--font-size-sm);
-    color: var(--color-muted);
-    line-height: 1.6;
-    max-width: 52ch;
-  }
-
-  .project__tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-2);
-    list-style: none;
+    font-size: 15px;
+    color: var(--ink-2);
+    line-height: 1.55;
+    max-width: 56ch;
   }
 
   .project__links {
     display: flex;
-    gap: var(--space-4);
+    flex-wrap: wrap;
+    gap: var(--space-2) var(--space-5);
     margin-top: auto;
     padding-top: var(--space-2);
   }
-  .project__links a {
-    font-family: var(--font-mono);
-    font-size: var(--font-size-meta);
-    color: var(--color-muted);
-  }
-  .project__links a:hover { color: var(--color-text); }
 </style>

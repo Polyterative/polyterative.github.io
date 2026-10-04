@@ -1,7 +1,8 @@
 ---
 import BaseLayout from './BaseLayout.astro';
 import Icon from '../components/Icon.astro';
-import type { AppEntry } from '../data/apps';
+import { apps, type AppEntry } from '../data/apps';
+import { pad, parseStatus, pillClass } from '../lib/datum';
 
 export interface Props {
   app: AppEntry;
@@ -11,7 +12,13 @@ export interface Props {
 
 const { app, description, showPublishing = true } = Astro.props;
 
-const isPre = app.status.toLowerCase().includes('pre-release');
+const status = parseStatus(app.status);
+const appIndex = apps.indexOf(app) + 1;
+const position = `${pad(appIndex)}/${pad(apps.length)}`;
+const serial = `PLY-A-${pad(appIndex)}`;
+const isExternal = (href: string) => href.startsWith('http');
+// The one signal-filled control: only when the first link actually opens the app/site.
+const primaryIsVisit = app.links[0] ? isExternal(app.links[0].href) && app.links[0].icon === 'external' : false;
 
 const appSchema = {
   '@context': 'https://schema.org',
@@ -30,12 +37,13 @@ const appSchema = {
 };
 ---
 
-<BaseLayout title={`${app.name} — ${app.tagline}`} description={description}>
+<BaseLayout title={`${app.name} — ${app.tagline}`} description={description} serial={serial}>
   <script slot="head" type="application/ld+json" set:html={JSON.stringify(appSchema)} />
 
-  <article class="container container--wide app-page" style={`--app-h:${app.accentHue}`}>
+  <article class="container container--wide app-page">
     <nav class="crumb" aria-label="Breadcrumb">
-      <a href="/apps" class="iclink"><Icon name="arrow-left" size={13} />All applications</a>
+      <a href="/apps" class="act"><Icon name="arrow-left" size={13} />All applications</a>
+      <span class="lbl">{serial}</span>
     </nav>
 
     {Astro.slots.has('hero') ? (
@@ -43,38 +51,49 @@ const appSchema = {
     ) : (
       <>
         <header class="hero">
-          <div class="hero__copy">
-            <p class="hero__kicker">
-              <span class="label">{app.platform}</span>
-              <span class:list={['hero__status', { 'hero__status--pre': isPre }]}>{app.status}</span>
-            </p>
-            <h1>{app.name}</h1>
-            <p class="hero__tagline">{app.tagline}</p>
-            <p class="hero__pitch">{app.pitch}</p>
-            <div class="hero__links">
-              {app.links.map((link) => (
-                <a
-                  class="iclink"
-                  href={link.href}
-                  target={link.href.startsWith('http') ? '_blank' : undefined}
-                  rel={link.href.startsWith('http') ? 'noopener' : undefined}
-                >{link.label}<Icon name={link.icon} size={13} /></a>
-              ))}
+          <div class="hero__kicker">
+            <span class="plate hero__idx" title="Position in the applications registry">{position}</span>
+            <div class="hero__state">
+              <span class="lbl">{app.platform}</span>
+              <span class="hero__status">
+                <span class={pillClass(status.tone)}>{status.head}</span>
+                {status.rest && <span class="data">{status.rest}</span>}
+              </span>
             </div>
-            <ul class="hero__tags">
-              {app.tags.map((tag) => <li><span class="tag">{tag}</span></li>)}
-            </ul>
           </div>
+          <h1>{app.name}</h1>
+          <p class="hero__tagline">{app.tagline}</p>
+          <p class="hero__pitch">{app.pitch}</p>
+          <div class="hero__links">
+            {app.links.map((link, i) => (
+              <a
+                class:list={['btn', { 'btn--primary': i === 0 && primaryIsVisit }]}
+                href={link.href}
+                target={isExternal(link.href) ? '_blank' : undefined}
+                rel={isExternal(link.href) ? 'noopener' : undefined}
+              >{link.label}<Icon name={isExternal(link.href) ? 'arrow-up-right' : 'arrow-right'} size={14} /></a>
+            ))}
+          </div>
+          <ul class="taglist hero__tags">
+            {app.tags.map((tag) => <li>{tag}</li>)}
+          </ul>
         </header>
 
-        <figure class="hero-shot" class:list={[{ 'hero-shot--gen': !app.hero }]}>
+        <figure class="hero-shot">
           {app.hero
-            ? <img src={app.hero} alt={app.heroAlt} loading="eager" decoding="async" />
+            ? (
+              <>
+                <div class="hero-shot__frame crop">
+                  <img src={app.hero} alt={app.heroAlt} loading="eager" decoding="async" />
+                </div>
+                <figcaption class="figcap"><span class="lbl">Fig. 01</span><span>{app.heroAlt}</span></figcaption>
+              </>
+            )
             : (
-              <div class="hero-shot__gen" role="img" aria-label={`${app.name} — generated cover`}>
-                <Icon name={app.icon ?? 'code'} size={44} />
-                <span class="hero-shot__gen-name">{app.name}</span>
-                <span class="hero-shot__gen-tag">{app.platform}</span>
+              <div class="gencover hero-shot__gen crop" role="img" aria-label={`${app.name}: no screenshot yet`}>
+                <Icon name={app.icon ?? 'code'} size={40} />
+                <span class="lbl gencover__lbl">{app.platform}</span>
+                <span class="lbl gencover__idx">No screenshot</span>
               </div>
             )
           }
@@ -87,23 +106,31 @@ const appSchema = {
     </div>
 
     <section class="facts" aria-labelledby="fact-sheet">
-      <header class="facts__head">
-        <span class="label">Fact sheet</span>
-        <h2 id="fact-sheet">{app.name} at a glance</h2>
-      </header>
-      <dl class="facts__grid">
-        {app.facts.map((fact) => (
-          <div class="facts__item">
-            <dt>{fact.label}</dt>
-            <dd>{fact.value}</dd>
-          </div>
-        ))}
-      </dl>
+      <div class="facts__class">
+        <span class="lbl">Fact sheet · {serial}</span>
+        <span class={pillClass(status.tone)}>{status.head}</span>
+      </div>
+      <div class="facts__layout">
+        <header class="facts__head">
+          <span class="plate facts__idx">FS</span>
+          <h2 id="fact-sheet">{app.name} at a glance</h2>
+          <span class="lbl">{app.facts.length} fields</span>
+        </header>
+        <dl class="htbl facts__grid">
+          {app.facts.map((fact, i) => (
+            <div>
+              <dt><span class="n">{pad(i + 1)}</span>{fact.label}</dt>
+              <dd>{fact.value}</dd>
+            </div>
+          ))}
+        </dl>
+      </div>
     </section>
 
     {showPublishing && (
-      <aside class="publish panel">
+      <aside class="publish">
         <div class="publish__copy">
+          <span class="lbl">Publishing</span>
           <h2>Publishing & partnerships</h2>
           <p>
             I design, build, and maintain these applications end-to-end. If you are a publisher,
@@ -112,8 +139,8 @@ const appSchema = {
           </p>
         </div>
         <div class="publish__actions">
-          <a class="iclink" href="mailto:polyterative@outlook.com"><Icon name="mail" size={14} />polyterative@outlook.com</a>
-          <a class="iclink" href="https://github.com/polyterative" target="_blank" rel="noopener"><Icon name="github" size={14} />github.com/polyterative</a>
+          <a class="act" href="mailto:polyterative@outlook.com"><Icon name="mail" size={14} />polyterative@outlook.com</a>
+          <a class="act" href="https://github.com/polyterative" target="_blank" rel="noopener"><Icon name="github" size={14} />github.com/polyterative</a>
         </div>
       </aside>
     )}
@@ -121,271 +148,225 @@ const appSchema = {
 </BaseLayout>
 
 <style>
-  .app-page { padding-block: var(--space-10) var(--space-8); }
+  .app-page { padding-block: var(--space-6) var(--space-8); }
 
-  .crumb { margin-bottom: var(--space-8); }
-  .crumb a {
-    font-family: var(--font-mono);
-    font-size: var(--font-size-meta);
-    color: var(--color-muted);
+  .crumb {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: var(--space-4);
+    margin-bottom: var(--space-10);
   }
-  .crumb a:hover { color: var(--color-text); }
 
+  /* ── Default hero ── */
   .hero { max-width: 72ch; }
   .hero__kicker {
     display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: var(--space-3);
-    margin-bottom: var(--space-4);
+    align-items: flex-start;
+    gap: var(--space-4);
+    padding-bottom: var(--space-3);
+    margin-bottom: var(--space-5);
+    border-bottom: 1px solid var(--rule);
   }
-  .hero__status {
-    font-family: var(--font-mono);
-    font-size: var(--font-size-meta);
-    color: var(--color-muted);
-  }
-  .hero__status::before {
-    content: '';
-    display: inline-block;
-    width: 7px;
-    height: 7px;
-    border-radius: 50%;
-    margin-right: 6px;
-    background: hsl(145 60% 42%);
-    vertical-align: 1px;
-  }
-  .hero__status--pre::before { background: hsl(38 90% 50%); }
+  .hero__idx { font-size: 32px; color: var(--ink); }
+  .hero__state { display: flex; flex-direction: column; gap: var(--space-2); min-width: 0; }
+  .hero__status { display: flex; align-items: center; flex-wrap: wrap; gap: var(--space-2) var(--space-3); }
 
-  .hero h1 { font-size: clamp(2.2rem, 6vw, 3.6rem); }
   .hero__tagline {
-    font-size: clamp(1.1rem, 2.4vw, 1.35rem);
-    line-height: 1.4;
+    font-size: var(--fs-lead);
+    line-height: 1.35;
     letter-spacing: -0.015em;
-    margin-top: var(--space-3);
-    color: var(--color-text);
+    margin-top: var(--space-4);
     text-wrap: balance;
   }
   .hero__pitch {
     margin-top: var(--space-4);
-    color: var(--color-muted);
-    line-height: 1.65;
+    color: var(--ink-2);
+    line-height: 1.6;
     max-width: 62ch;
   }
   .hero__links {
     display: flex;
     flex-wrap: wrap;
-    gap: var(--space-5);
-    margin-top: var(--space-5);
-  }
-  .hero__links a {
-    font-family: var(--font-mono);
-    font-size: var(--font-size-sm);
-    color: var(--color-text);
-  }
-  .hero__tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-2);
-    list-style: none;
-    margin-top: var(--space-5);
-  }
-
-  .hero-shot {
-    margin-top: var(--space-8);
-    border: 1px solid var(--color-line);
-    border-radius: var(--radius-sm);
-    overflow: hidden;
-    background:
-      radial-gradient(120% 140% at 12% 0%, hsl(var(--app-h) 60% 55% / 0.14), transparent 55%),
-      var(--color-surface);
-    padding: clamp(var(--space-4), 3vw, var(--space-8));
-  }
-  .hero-shot img {
-    width: 100%;
-    border-radius: calc(var(--radius-sm) - 2px);
-    border: 1px solid var(--color-line);
-    box-shadow: 0 18px 48px -24px rgba(0, 0, 0, 0.35);
-  }
-
-  .hero-shot--gen { padding: 0; }
-  .hero-shot__gen {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
     gap: var(--space-3);
-    min-height: clamp(200px, 32vw, 300px);
-    background:
-      radial-gradient(120% 140% at 15% 0%, hsl(var(--app-h) 65% 58% / 0.85), transparent 62%),
-      linear-gradient(135deg, hsl(var(--app-h) 52% 40%), hsl(calc(var(--app-h) + 42) 52% 30%));
+    margin-top: var(--space-6);
   }
-  .hero-shot__gen :global(.icon) { color: rgba(255, 255, 255, 0.92); }
-  .hero-shot__gen-name {
-    font-family: var(--font-mono);
-    font-size: var(--font-size-lg);
-    font-weight: 500;
-    letter-spacing: -0.01em;
-    color: rgba(255, 255, 255, 0.95);
-  }
-  .hero-shot__gen-tag {
-    font-family: var(--font-mono);
-    font-size: var(--font-size-meta);
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-    color: rgba(255, 255, 255, 0.85);
-    padding: 2px 10px;
-    border-radius: var(--radius-pill);
-    background: rgba(0, 0, 0, 0.22);
-  }
+  .hero__tags { margin-top: var(--space-5); }
 
-  /* ── Story typography (applies to slotted page content) ── */
+  .hero-shot { margin-top: var(--space-10); }
+  .hero-shot__frame { border: 1px solid var(--rule); background: var(--hover); }
+  .hero-shot__frame img { width: 100%; }
+  .hero-shot__gen { min-height: clamp(200px, 30vw, 300px); border: 1px solid var(--rule); }
+
+  /* ── Story (slotted page content). Sections get a numbered gutter. ── */
   .app-story {
+    counter-reset: story;
     margin-top: var(--space-16);
     display: flex;
     flex-direction: column;
-    gap: var(--space-12);
+    gap: var(--space-16);
   }
-  .app-story :global(section > h2) {
-    margin-bottom: var(--space-4);
+  .app-story > :global(section:not(.feature-row):not(.readout)) {
+    display: grid;
+    grid-template-columns: var(--gutter) minmax(0, 1fr);
+    column-gap: var(--space-6);
+    border-top: 1px solid var(--rule);
+    padding-top: var(--space-6);
   }
-  .app-story :global(section > .label) {
-    display: inline-block;
-    margin-bottom: var(--space-2);
+  .app-story > :global(section:not(.feature-row):not(.readout) > *) { grid-column: 2; }
+  .app-story > :global(section:not(.feature-row):not(.readout) > .label) {
+    grid-column: 1;
+    grid-row: 1 / span 40;
+    align-self: start;
   }
-  .app-story :global(p) {
-    line-height: 1.7;
-    max-width: 66ch;
+  .app-story > :global(section > .label)::before {
+    counter-increment: story;
+    content: counter(story, decimal-leading-zero);
+    display: block;
+    font-family: var(--f-plate);
+    font-size: 40px;
+    line-height: 1;
+    letter-spacing: 0;
+    color: var(--ink);
+    margin-bottom: var(--space-3);
   }
+  .app-story :global(.feature-row__copy > .label)::before {
+    counter-increment: story;
+    content: counter(story, decimal-leading-zero) " · ";
+  }
+  .app-story :global(section > h2) { margin-bottom: var(--space-4); }
+  .app-story :global(p) { line-height: 1.6; max-width: 66ch; }
   .app-story :global(p + p) { margin-top: var(--space-4); }
   .app-story :global(strong) { font-weight: 600; }
 
   .app-story :global(.lede) {
-    font-size: var(--font-size-lg);
-    line-height: 1.6;
+    font-size: var(--fs-lead);
+    line-height: 1.45;
     letter-spacing: -0.01em;
   }
 
-  .app-story :global(figure) {
-    border: 1px solid var(--color-line);
-    border-radius: var(--radius-sm);
-    overflow: hidden;
-    background: var(--color-surface);
-  }
-  .app-story :global(figure img) { width: 100%; }
+  .app-story :global(figure) { margin: 0; }
+  .app-story :global(figure img) { width: 100%; border: 1px solid var(--rule); background: var(--hover); }
   .app-story :global(figcaption) {
-    font-family: var(--font-mono);
-    font-size: var(--font-size-meta);
-    color: var(--color-muted);
-    padding: var(--space-3) var(--space-4);
-    border-top: 1px solid var(--color-line);
+    font-family: var(--f-mono);
+    font-size: var(--fs-meta);
+    color: var(--ink-2);
+    padding-top: var(--space-2);
   }
 
   .app-story :global(.shots) {
+    counter-reset: fig 1;
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: var(--space-4);
-    margin-top: var(--space-6);
+    gap: var(--space-6) var(--space-4);
+    margin-top: var(--space-8);
+  }
+  .app-story :global(.shots figcaption)::before {
+    counter-increment: fig;
+    content: "FIG. " counter(fig, decimal-leading-zero) "  ";
+    font-weight: 500;
+    font-size: var(--fs-micro);
+    letter-spacing: 0.06em;
+    color: var(--ink-3);
+    white-space: pre;
   }
   .app-story :global(.shots--wide) { grid-template-columns: 1fr; }
 
+  /* Pillars: a row of modules with hairline seams. */
   .app-story :global(.pillars) {
+    counter-reset: pillar;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr));
-    gap: var(--space-4);
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 230px), 1fr));
+    gap: 1px;
+    background: var(--rule);
+    border: 1px solid var(--rule);
     list-style: none;
     margin-top: var(--space-6);
   }
   .app-story :global(.pillars li) {
-    border: 1px solid var(--color-line);
-    border-radius: var(--radius-sm);
-    background: var(--color-surface);
-    padding: var(--space-5);
+    background-color: var(--bg);
+    padding: var(--space-4) var(--space-4) var(--space-5);
   }
-  .app-story :global(.pillars h3) {
-    font-size: var(--font-size-base);
-    margin-bottom: var(--space-2);
+  .app-story :global(.pillars li)::before {
+    counter-increment: pillar;
+    content: counter(pillar, decimal-leading-zero);
+    display: block;
+    font-family: var(--f-mono);
+    font-weight: 500;
+    font-size: var(--fs-micro);
+    letter-spacing: 0.06em;
+    color: var(--ink-3);
+    margin-bottom: var(--space-3);
   }
-  .app-story :global(.pillars p) {
-    font-size: var(--font-size-sm);
-    color: var(--color-muted);
-    line-height: 1.6;
-  }
+  .app-story :global(.pillars h3) { font-size: 17px; margin-bottom: var(--space-2); }
+  .app-story :global(.pillars p) { font-size: 15px; color: var(--ink-2); line-height: 1.55; }
 
   .app-story :global(blockquote) {
-    border-left: 2px solid var(--color-accent);
-    padding-left: var(--space-5);
+    border-left: 1px solid var(--ink);
+    padding: var(--space-3) 0 0 var(--space-5);
     margin-top: var(--space-8);
-    font-size: var(--font-size-lg);
-    line-height: 1.55;
-    letter-spacing: -0.01em;
-    max-width: 58ch;
+    font-size: var(--fs-lead);
+    font-weight: 500;
+    line-height: 1.4;
+    letter-spacing: -0.015em;
+    max-width: 56ch;
     text-wrap: balance;
   }
 
-  /* ── Fact sheet ── */
-  .facts {
-    margin-top: var(--space-16);
-    padding-top: var(--space-10);
-    border-top: 1px solid var(--color-line);
-  }
-  .facts__head {
+  /* ── Fact sheet: a filed form ── */
+  .facts { margin-top: var(--space-24); }
+  .facts__class {
     display: flex;
-    flex-direction: column;
-    gap: var(--space-2);
-    margin-bottom: var(--space-6);
-  }
-  .facts__grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(min(100%, 220px), 1fr));
-    gap: var(--space-4);
-  }
-  .facts__item {
-    border: 1px solid var(--color-line);
-    border-radius: var(--radius-sm);
-    background: var(--color-surface);
-    padding: var(--space-4) var(--space-5);
-  }
-  .facts__item dt {
-    font-family: var(--font-mono);
-    font-size: var(--font-size-meta);
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    color: var(--color-faint);
-    margin-bottom: var(--space-1);
-  }
-  .facts__item dd {
-    font-size: var(--font-size-sm);
-    line-height: 1.5;
-  }
-
-  /* ── Publisher CTA ── */
-  .publish {
-    margin-top: var(--space-10);
-    display: flex;
-    align-items: flex-end;
     justify-content: space-between;
-    gap: var(--space-8);
-    flex-wrap: wrap;
-  }
-  .publish__copy h2 { margin-bottom: var(--space-3); }
-  .publish__copy p {
-    color: var(--color-muted);
-    line-height: 1.65;
-    max-width: 58ch;
-  }
-  .publish__actions {
-    display: flex;
-    flex-direction: column;
+    align-items: center;
     gap: var(--space-3);
+    flex-wrap: wrap;
+    padding-bottom: var(--space-2);
   }
-  .publish__actions a {
-    font-family: var(--font-mono);
-    font-size: var(--font-size-sm);
-    color: var(--color-text);
+  .facts__layout {
+    display: grid;
+    grid-template-columns: var(--gutter) minmax(0, 1fr);
+    gap: var(--space-6);
+    border-top: 1px solid var(--ink);
+    padding-top: var(--space-5);
   }
+  .facts__head { display: flex; flex-direction: column; gap: var(--space-3); }
+  .facts__idx { font-size: 40px; color: var(--ink); }
+  .facts__head h2 { font-size: 20px; letter-spacing: -0.015em; }
+  .facts__grid { border-top: 1px solid var(--rule); }
+  .facts__grid > div { grid-template-columns: minmax(0, 0.38fr) minmax(0, 1fr); }
 
+  /* ── Publisher contact ── */
+  .publish {
+    margin-top: var(--space-16);
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: end;
+    gap: var(--space-8);
+    border-top: 1px solid var(--rule);
+    padding-top: var(--space-6);
+  }
+  .publish__copy { display: flex; flex-direction: column; gap: var(--space-3); }
+  .publish__copy h2 { font-size: clamp(1.4rem, 2.4vw, 1.75rem); }
+  .publish__copy p { color: var(--ink-2); line-height: 1.6; max-width: 58ch; }
+  .publish__actions { display: flex; flex-direction: column; gap: var(--space-3); align-items: flex-start; }
+
+  @media (max-width: 860px) {
+    .app-story > :global(section:not(.feature-row):not(.readout)) { grid-template-columns: 1fr; }
+    .app-story > :global(section:not(.feature-row):not(.readout) > *),
+    .app-story > :global(section:not(.feature-row):not(.readout) > .label) { grid-column: 1; grid-row: auto; }
+    .app-story > :global(section > .label) { margin-bottom: var(--space-3); }
+    .app-story > :global(section > .label)::before { display: inline; font-size: 28px; margin: 0 var(--space-3) 0 0; vertical-align: -4px; }
+    .facts__layout { grid-template-columns: 1fr; }
+    .facts__head { flex-direction: row; align-items: baseline; flex-wrap: wrap; }
+    .facts__idx { font-size: 28px; }
+  }
   @media (max-width: 720px) {
     .app-story :global(.shots) { grid-template-columns: 1fr; }
-    .publish { flex-direction: column; align-items: flex-start; }
+    .publish { grid-template-columns: 1fr; align-items: start; }
+    .crumb .lbl { display: none; }
+  }
+  @media (max-width: 480px) {
+    .facts__grid > div { grid-template-columns: 1fr; gap: 2px; }
   }
 </style>

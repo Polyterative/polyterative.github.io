@@ -6,83 +6,69 @@ export interface Stat {
 
 export interface Props {
   stats: Stat[];
-  accentHue: number;
+  /** Kept for API compatibility; Datum readouts are monochrome. */
+  accentHue?: number;
   heading?: string;
 }
 
-const { stats, accentHue, heading } = Astro.props;
+const { stats, heading } = Astro.props;
 ---
 
-<section class="stat-panel" style={`--app-h:${accentHue}`}>
-  {heading && <p class="stat-panel__heading">{heading}</p>}
-  <div class="stat-panel__grid">
-    {stats.map((stat) => (
-      <div class="stat-panel__item">
-        <span class="stat-panel__value">{stat.value}</span>
-        <span class="stat-panel__label">{stat.label}</span>
+<section class="readout" aria-label="Measurements">
+  <div class="readout__head">
+    <span class="lbl">Readout</span>
+    {heading && <p class="data readout__note">{heading}</p>}
+  </div>
+  <dl class="readout__grid">
+    {stats.map((stat, i) => (
+      <div class="readout__item">
+        <dt class="lbl"><span class="readout__n">{String(i + 1).padStart(2, '0')}</span>{stat.label}</dt>
+        <dd class="plate readout__value">{stat.value}</dd>
       </div>
     ))}
-  </div>
+  </dl>
 </section>
 
 <style>
-  /* Sits in the normal document flow, using the same panel/border tokens as
-     the fact sheet and feature grid elsewhere on app pages — only the accent
-     glow and larger numerals set it apart as a proof moment. */
-  .stat-panel {
-    position: relative;
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-sm);
-    background: var(--color-surface);
-    padding: clamp(var(--space-6), 4vw, var(--space-8));
-    overflow: hidden;
+  /* An instrument readout: label above value, hairline cells, Departure numerals. */
+  .readout {
+    border-top: 1px solid var(--ink);
+    border-bottom: 1px solid var(--rule);
   }
-  .stat-panel::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: radial-gradient(70% 160% at 8% 0%, hsl(var(--app-h) 60% 55% / 0.12), transparent 60%);
-    pointer-events: none;
+  .readout__head {
+    display: flex;
+    gap: var(--space-4);
+    align-items: baseline;
+    flex-wrap: wrap;
+    padding-block: var(--space-2) var(--space-3);
+    border-bottom: 1px solid var(--rule);
   }
-  .stat-panel__heading {
-    position: relative;
-    font-family: var(--font-mono);
-    font-size: var(--font-size-meta);
-    color: var(--color-faint);
-    max-width: 52ch;
-    margin-bottom: var(--space-6);
-  }
-  .stat-panel__grid {
-    position: relative;
+  .readout__note { max-width: 70ch; }
+  .readout__grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(min(100%, 170px), 1fr));
-    gap: var(--space-6);
   }
-  .stat-panel__item {
-    border-left: 1px solid var(--color-line);
-    padding-left: var(--space-5);
+  .readout__item {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: var(--space-4);
+    padding: var(--space-3) var(--space-4) var(--space-4);
+    border-right: 1px solid var(--rule);
   }
-  .stat-panel__item:first-child { border-left: none; padding-left: 0; }
-  .stat-panel__value {
-    display: block;
-    font-size: clamp(1.7rem, 3.2vw, 2.2rem);
-    font-weight: 600;
-    letter-spacing: -0.02em;
-    color: hsl(var(--app-h) 55% 32%);
-  }
-  :root[data-theme='dark'] .stat-panel__value { color: hsl(var(--app-h) 70% 66%); }
-  .stat-panel__label {
-    display: block;
-    margin-top: var(--space-1);
-    font-family: var(--font-mono);
-    font-size: var(--font-size-meta);
-    color: var(--color-muted);
-    line-height: 1.4;
+  .readout__item:first-child { padding-left: 0; }
+  .readout__item:last-child { border-right: 0; }
+  .readout__n { color: var(--ink-3); margin-right: 6px; }
+  .readout__value {
+    font-size: clamp(28px, 3.4vw, 40px);
+    color: var(--ink);
   }
 
   @media (max-width: 640px) {
-    .stat-panel__grid { grid-template-columns: repeat(2, 1fr); }
-    .stat-panel__item:nth-child(2n+1) { border-left: none; padding-left: 0; }
-    .stat-panel__item:nth-child(n+3) { margin-top: var(--space-2); }
+    .readout__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .readout__item { padding-left: var(--space-3); }
+    .readout__item:nth-child(2n + 1) { padding-left: 0; }
+    .readout__item:nth-child(2n) { border-right: 0; }
+    .readout__item:nth-child(-n + 2) { border-bottom: 1px solid var(--rule); }
   }
 </style>

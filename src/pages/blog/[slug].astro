@@ -3,6 +3,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import Icon from '../../components/Icon.astro';
 import PostCover from '../../components/PostCover.astro';
 import { getCollection, render } from 'astro:content';
+import { isoDots, pad } from '../../lib/datum';
 
 export async function getStaticPaths() {
   const posts = (await getCollection('blog', ({ data }) => !data.draft))
@@ -14,15 +15,20 @@ export async function getStaticPaths() {
       post,
       prev: posts[index + 1] ?? null,
       next: posts[index - 1] ?? null,
+      // Post number in the archive, oldest = 1.
+      number: posts.length - index,
     },
   }));
 }
 
-const { post, prev, next } = Astro.props;
+const { post, prev, next, number } = Astro.props;
+const postNo = pad(number, 3);
+const serial = `PLY-W-${postNo}`;
 const { Content } = await render(post);
 
 const dateObj = new Date(post.data.date);
-const formatted = dateObj.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+const formatted = dateObj.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' });
+const stamp = isoDots(post.data.date);
 
 const wordCount = post.body?.split(/\s+/).length ?? 0;
 const readingTime = Math.max(1, Math.round(wordCount / 200));
@@ -46,135 +52,114 @@ const articleSchema = {
 <BaseLayout
   title={`${post.data.title} — Vlady Yakovenko`}
   description={post.data.description}
+  serial={serial}
 >
   <script slot="head" type="application/ld+json" set:html={JSON.stringify(articleSchema)} />
   <article class="post">
     <div class="container container--wide">
-      <header class="post__header">
-        <div class="post__meta">
-          <a class="post__back iclink" href="/blog"><Icon name="arrow-left" size={13} />Writing</a>
-          <span class="sep">/</span>
-          <time class="post__metaitem" datetime={post.data.date}><Icon name="calendar" size={12} />{formatted}</time>
-          <span class="sep">/</span>
-          <span class="post__metaitem"><Icon name="book" size={12} />{readingTime} min read</span>
+      <nav class="post__crumb" aria-label="Breadcrumb">
+        <a class="act" href="/blog"><Icon name="arrow-left" size={13} />Writing</a>
+      </nav>
+
+      <header class="page-head post__header">
+        <aside class="page-head__aside">
+          <span class="lbl">No.</span>
+          <span class="plate page-head__idx post__no">{postNo}</span>
+          <span class="lbl">Published</span>
+          <time class="data" datetime={post.data.date} title={formatted}>{stamp}</time>
+          <span class="lbl">Reading</span>
+          <span class="data">{readingTime} min · {wordCount.toLocaleString('en-US')} words</span>
+        </aside>
+        <div class="page-head__main">
+          <h1 class="post__title">{post.data.title}</h1>
+          {post.data.description && (
+            <p class="page-head__lead post__desc">{post.data.description}</p>
+          )}
+          {post.data.tags.length > 0 && (
+            <ul class="taglist">
+              {post.data.tags.map(t => <li>{t}</li>)}
+            </ul>
+          )}
         </div>
-        <h1 class="post__title">{post.data.title}</h1>
-        {post.data.description && (
-          <p class="post__desc">{post.data.description}</p>
-        )}
-        {post.data.tags.length > 0 && (
-          <ul class="post__tags">
-            {post.data.tags.map(t => <li><span class="tag">{t}</span></li>)}
-          </ul>
-        )}
       </header>
 
-      <div class="post__cover">
-        <PostCover title={post.data.title} tags={post.data.tags} cover={post.data.cover} variant="hero" />
-      </div>
+      <div class="post__column">
+        <figure class="post__cover">
+          <div class="crop">
+            <PostCover title={post.data.title} tags={post.data.tags} cover={post.data.cover} variant="hero" />
+          </div>
+        </figure>
 
-      <div class="prose">
-        <Content />
-      </div>
+        <div class="prose">
+          <Content />
+        </div>
 
-      <nav class="post-nav" aria-label="Post navigation">
-        <div class="post-nav__item">
-          {prev && (
-            <>
-              <span class="label label--ic"><Icon name="arrow-left" size={12} />Older</span>
-              <a href={`/blog/${prev.id}`} class="post-nav__link accent-hover">{prev.data.title}</a>
-            </>
-          )}
-        </div>
-        <div class="post-nav__item post-nav__item--next">
-          {next && (
-            <>
-              <span class="label label--ic">Newer<Icon name="arrow-right" size={12} /></span>
-              <a href={`/blog/${next.id}`} class="post-nav__link accent-hover">{next.data.title}</a>
-            </>
-          )}
-        </div>
-      </nav>
+        <nav class="post-nav" aria-label="Post navigation">
+          <div class="post-nav__item">
+            {prev && (
+              <>
+                <span class="lbl">Older · No. {pad(number - 1, 3)}</span>
+                <a href={`/blog/${prev.id}`} class="post-nav__link"><Icon name="arrow-left" size={13} />{prev.data.title}</a>
+              </>
+            )}
+          </div>
+          <div class="post-nav__item post-nav__item--next">
+            {next && (
+              <>
+                <span class="lbl">Newer · No. {pad(number + 1, 3)}</span>
+                <a href={`/blog/${next.id}`} class="post-nav__link">{next.data.title}<Icon name="arrow-right" size={13} /></a>
+              </>
+            )}
+          </div>
+        </nav>
+      </div>
     </div>
   </article>
 </BaseLayout>
 
 <style>
-  .post__header {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-4);
-    padding-block: var(--space-16) var(--space-10);
-    border-bottom: 1px solid var(--color-line);
-    max-width: var(--max-w);
-  }
-  .post__meta {
-    display: flex;
-    align-items: baseline;
-    gap: var(--space-3);
-    flex-wrap: wrap;
-    font-family: var(--font-mono);
-    font-size: var(--font-size-meta);
-    color: var(--color-muted);
-  }
-  .post__back:hover { color: var(--color-text); }
-  .post__back .icon { color: var(--color-faint); }
-  .post__back:hover .icon { color: var(--color-accent); }
-  .post__metaitem {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--space-1);
-  }
-  .post__metaitem .icon { color: var(--color-faint); }
-  .sep { color: var(--color-faint); }
-
+  .post__crumb { padding-top: var(--space-6); }
+  .post__header { padding-block: var(--space-8) var(--space-10); border-bottom: 1px solid var(--rule); }
+  .post__no { margin-bottom: var(--space-3); }
   .post__title {
-    font-size: clamp(1.9rem, 4.5vw, 3rem);
+    font-size: clamp(2.2rem, 5vw, 3.6rem);
     letter-spacing: -0.035em;
-    line-height: 1.1;
+    line-height: 1.02;
+    max-width: 20ch;
   }
-  .post__desc {
-    font-size: var(--font-size-lg);
-    color: var(--color-muted);
-    line-height: 1.6;
-    max-width: 54ch;
-  }
-  .post__tags {
-    display: flex;
-    gap: var(--space-2);
-    list-style: none;
-    flex-wrap: wrap;
-  }
+  .post__desc { max-width: 54ch; }
 
-  .post__cover {
+  /* The reading column hangs under the title, the gutter stays for annotation. */
+  .post__column {
+    margin-left: calc(var(--gutter) + var(--space-6));
     max-width: var(--max-w);
-    margin-block: var(--space-8) 0;
   }
 
-  /* ── Prose ── */
+  .post__cover { margin: var(--space-10) 0 0; }
+
+  /* ── Prose: plain and calm. No marks in here. ── */
   .prose {
     display: flex;
     flex-direction: column;
     gap: var(--space-5);
     padding-block: var(--space-12);
-    max-width: var(--max-w);
   }
   .prose :global(h2) {
-    font-size: 1.3rem;
+    font-size: 1.5rem;
     letter-spacing: -0.02em;
     line-height: 1.2;
     margin-top: var(--space-6);
     padding-top: var(--space-6);
-    border-top: 1px solid var(--color-line);
+    border-top: 1px solid var(--rule);
   }
   .prose :global(h3) {
-    font-size: 1.1rem;
+    font-size: 1.15rem;
     margin-top: var(--space-3);
   }
   .prose :global(p) {
-    font-size: var(--font-size-base);
-    line-height: 1.8;
-    max-width: 68ch;
+    font-size: var(--fs-body);
+    line-height: 1.65;
+    max-width: 66ch;
   }
   .prose :global(ul), .prose :global(ol) {
     padding-left: var(--space-5);
@@ -183,33 +168,39 @@ const articleSchema = {
     gap: var(--space-2);
   }
   .prose :global(li) {
-    font-size: var(--font-size-base);
-    line-height: 1.75;
-    max-width: 65ch;
+    font-size: var(--fs-body);
+    line-height: 1.6;
+    max-width: 64ch;
   }
+  .prose :global(li::marker) { color: var(--ink-3); }
   .prose :global(a) {
     text-decoration: underline;
-    text-decoration-color: var(--color-border);
+    text-decoration-color: var(--rule-strong);
+    text-decoration-thickness: 1px;
     text-underline-offset: 3px;
-    transition: text-decoration-color var(--transition);
   }
-  .prose :global(a:hover) { text-decoration-color: var(--color-text); }
+  .prose :global(a:hover) { color: var(--signal-text); text-decoration-color: currentColor; }
+  .prose :global(strong) { font-weight: 600; }
   .prose :global(code) {
-    font-size: 0.85em;
-    padding: 1px 5px;
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius);
+    font-size: 0.82em;
+    padding: 1px 4px;
+    border: 1px solid var(--rule);
+    background: var(--surface);
   }
   .prose :global(pre) { margin-block: var(--space-3); }
-  .prose :global(pre code) { border: none; padding: 0; font-size: 0.875rem; }
-  /* Shiki dual-theme: light values are in inline `color`/`background-color` (no override needed).
-     Dark theme swaps to the --shiki-dark / --shiki-dark-bg CSS variables. */
-  :root[data-theme="dark"] .prose :global(.astro-code) {
-    color: var(--shiki-dark) !important;
-    background-color: var(--shiki-dark-bg) !important;
-  }
+  .prose :global(pre code) { border: none; padding: 0; font-size: 13px; background: none; }
+  /* Shiki dual-theme: light values are inline. Code blocks sit on the Datum surface in both themes;
+     the dark theme swaps token colours to --shiki-dark. Both the OS path and the toggle path are covered. */
+  .prose :global(.astro-code) { background-color: var(--surface) !important; }
+  :root[data-theme="dark"] .prose :global(.astro-code),
   :root[data-theme="dark"] .prose :global(.astro-code span) {
     color: var(--shiki-dark) !important;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .prose :global(.astro-code),
+    :root:not([data-theme="light"]) .prose :global(.astro-code span) {
+      color: var(--shiki-dark) !important;
+    }
   }
   /* Small caps: letterspaced uppercase in the same sans, reserved for institutional/proper
      names treated as fixed facts of the world being described (agencies, standards, protocols).
@@ -221,18 +212,20 @@ const articleSchema = {
     font-weight: 600;
   }
   .prose :global(blockquote) {
-    border-left: 2px solid var(--color-border);
+    border-left: 1px solid var(--ink);
     padding-left: var(--space-5);
-    color: var(--color-muted);
+    color: var(--ink-2);
     margin-block: var(--space-2);
   }
   .prose :global(blockquote p) { max-width: none; }
   .prose :global(hr) {
     border: none;
-    border-top: 1px solid var(--color-line);
+    border-top: 1px solid var(--rule);
     margin-block: var(--space-8);
   }
-  .prose :global(img) { border-radius: var(--radius); border: 1px solid var(--color-border); }
+  .prose :global(img) { border: 1px solid var(--rule); }
+  .prose :global(figure) { margin: 0; }
+  .prose :global(figcaption) { font-family: var(--f-mono); font-size: var(--fs-meta); color: var(--ink-2); }
   .prose :global(.post-gallery) {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -242,17 +235,14 @@ const articleSchema = {
   .prose :global(.post-gallery figure) { margin: 0; }
   .prose :global(.post-gallery img) { width: 100%; height: auto; }
 
-  /* ── Mind notes: personal decision-making, sprinkled through the story ── */
+  /* ── Mind notes: personal decision-making asides. Neutral hairline box; the tag says which kind. ── */
   .prose :global(.mind) {
-    --mind: var(--color-accent);
-    --mind-bg: var(--color-accent-weak);
-    position: relative;
     display: flex;
     flex-direction: column;
     gap: var(--space-2);
-    border: 1px solid color-mix(in srgb, var(--mind) 38%, var(--color-border));
-    border-radius: var(--radius-sm);
-    background: var(--mind-bg);
+    border: 1px solid var(--rule);
+    border-left: 2px solid var(--ink-2);
+    background: var(--surface);
     padding: var(--space-4) var(--space-5);
     margin-block: var(--space-4);
   }
@@ -261,48 +251,48 @@ const articleSchema = {
     align-items: center;
     gap: 7px;
     align-self: flex-start;
-    font-family: var(--font-mono);
-    font-size: 0.7rem;
-    font-weight: 600;
-    letter-spacing: 0.09em;
+    font-family: var(--f-mono);
+    font-size: var(--fs-micro);
+    font-weight: 500;
+    letter-spacing: 0.06em;
     text-transform: uppercase;
-    color: var(--mind);
+    color: var(--ink-3);
   }
   .prose :global(.mind__tag svg) { width: 14px; height: 14px; flex-shrink: 0; }
   .prose :global(.mind p) {
     margin: 0;
     max-width: none;
-    line-height: 1.7;
+    line-height: 1.6;
   }
   .prose :global(.mind p + p) { margin-top: var(--space-2); }
-  .prose :global(.mind--design) {
-    --mind: #a855f7;
-    --mind-bg: color-mix(in srgb, #a855f7 9%, transparent);
-  }
-  .prose :global(.mind--code) {
-    --mind: #14b8a6;
-    --mind-bg: color-mix(in srgb, #14b8a6 9%, transparent);
-  }
 
   /* ── Post navigation ── */
   .post-nav {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: var(--space-6);
-    padding-block: var(--space-8);
-    border-top: 1px solid var(--color-line);
-    max-width: var(--max-w);
+    padding-block: var(--space-4) var(--space-8);
+    border-top: 1px solid var(--ink);
   }
   .post-nav__item { display: flex; flex-direction: column; gap: var(--space-2); }
   .post-nav__item--next { text-align: right; align-items: flex-end; }
   .post-nav__link {
-    font-size: var(--font-size-sm);
+    display: inline-flex;
+    align-items: baseline;
+    gap: var(--space-2);
+    font-size: 15px;
     font-weight: 500;
-    max-width: 28ch;
-    line-height: 1.4;
+    max-width: 30ch;
+    line-height: 1.35;
   }
-  .post-nav__link:hover { opacity: 0.6; }
+  .post-nav__link :global(.icon) { flex: none; color: var(--ink-3); }
+  .post-nav__link:hover { color: var(--signal-text); }
+  .post-nav__link:hover :global(.icon) { color: currentColor; }
 
+  @media (max-width: 860px) {
+    .post__column { margin-left: 0; }
+    .post__no { margin-bottom: 0; }
+  }
   @media (max-width: 480px) {
     .post-nav { grid-template-columns: 1fr; }
     .post-nav__item--next { text-align: left; align-items: flex-start; }

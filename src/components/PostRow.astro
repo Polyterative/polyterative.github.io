@@ -1,6 +1,6 @@
 ---
-import Icon from './Icon.astro';
 import PostCover from './PostCover.astro';
+import { isoDots } from '../lib/datum';
 
 export interface Props {
   title: string;
@@ -11,18 +11,20 @@ export interface Props {
   compact?: boolean;
   wordCount?: number;
   cover?: string;
+  /** Post number in the archive, oldest = 001. */
+  index?: string;
 }
 
-const { title, date, slug, description, tags = [], compact = false, wordCount, cover } = Astro.props;
-const dateObj = new Date(date);
-const formatted = dateObj.toLocaleDateString('en-US', { year: 'numeric', month: 'short' });
+const { title, date, slug, description, tags = [], compact = false, wordCount, cover, index } = Astro.props;
+const stamp = isoDots(date);
 const readingTime = wordCount ? Math.max(1, Math.round(wordCount / 200)) : null;
 ---
 
 <article class:list={['post-row', { 'post-row--compact': compact }]}>
   <div class="post-row__meta">
-    <time class="post-row__date" datetime={date}><Icon name="calendar" size={12} />{formatted}</time>
-    {!compact && readingTime && <span class="post-row__rt">{readingTime} min read</span>}
+    {index && <span class="lbl">No. {index}</span>}
+    <time class="data post-row__date" datetime={date}>{stamp}</time>
+    {!compact && readingTime && <span class="data post-row__rt">{readingTime} min read</span>}
   </div>
   {!compact && (
     <a class="post-row__cover" href={`/blog/${slug}`} aria-hidden="true" tabindex="-1">
@@ -30,13 +32,13 @@ const readingTime = wordCount ? Math.max(1, Math.round(wordCount / 200)) : null;
     </a>
   )}
   <div class="post-row__body">
-    <h2 class="post-row__title">
-      <a class="accent-hover" href={`/blog/${slug}`}>{title}</a>
-    </h2>
+    <h3 class="post-row__title">
+      <a href={`/blog/${slug}`}>{title}</a>
+    </h3>
     {!compact && description && <p class="post-row__desc">{description}</p>}
     {!compact && tags.length > 0 && (
-      <ul class="post-row__tags">
-        {tags.map(t => <li><span class="tag">{t}</span></li>)}
+      <ul class="taglist">
+        {tags.map(t => <li>{t}</li>)}
       </ul>
     )}
   </div>
@@ -45,75 +47,58 @@ const readingTime = wordCount ? Math.max(1, Math.round(wordCount / 200)) : null;
 <style>
   .post-row {
     display: grid;
-    grid-template-columns: 120px 168px 1fr;
+    grid-template-columns: 112px 168px minmax(0, 1fr);
     gap: var(--space-6);
     padding-block: var(--space-5);
-    border-top: 1px solid var(--color-line);
+    border-top: 1px solid var(--rule);
     align-items: start;
   }
-  .post-row--compact { grid-template-columns: 80px 1fr; padding-block: var(--space-4); align-items: baseline; }
+  .post-row--compact { grid-template-columns: 112px minmax(0, 1fr); padding-block: var(--space-4); align-items: baseline; }
 
   .post-row__cover { display: block; }
-  .post-row__cover :global(.pcover) { transition: border-color var(--transition); }
-  .post-row:hover .post-row__cover :global(.pcover__img) { transform: scale(1.03); }
+  .post-row__cover:hover :global(.pcover) { border-color: var(--ink); }
 
   .post-row__meta {
     display: flex;
     flex-direction: column;
-    gap: var(--space-1);
+    gap: 2px;
   }
-  .post-row__date {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--space-2);
-    font-family: var(--font-mono);
-    font-size: var(--font-size-meta);
-    color: var(--color-faint);
-    white-space: nowrap;
-  }
-  .post-row__date .icon { color: var(--color-faint); }
-  .post-row__rt {
-    font-family: var(--font-mono);
-    font-size: var(--font-size-meta);
-    color: var(--color-faint);
-  }
+  .post-row__date { color: var(--ink); white-space: nowrap; }
+  .post-row__rt { color: var(--ink-3); }
 
   .post-row__body {
     display: flex;
     flex-direction: column;
     gap: var(--space-2);
+    min-width: 0;
   }
   .post-row__title {
-    font-size: 1.05rem;
+    font-size: 19px;
     font-weight: 600;
     letter-spacing: -0.015em;
-    line-height: 1.3;
+    line-height: 1.25;
   }
-  .post-row__title a:hover { opacity: 0.6; }
+  .post-row__title a:hover { color: var(--signal-text); }
 
   .post-row__desc {
-    font-size: var(--font-size-sm);
-    color: var(--color-muted);
-    line-height: 1.6;
-    max-width: 58ch;
-  }
-  .post-row__tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-2);
-    list-style: none;
+    font-size: 15px;
+    color: var(--ink-2);
+    line-height: 1.55;
+    max-width: 60ch;
   }
 
   @media (max-width: 720px) {
-    .post-row { grid-template-columns: 140px 1fr; gap: var(--space-4) var(--space-5); }
+    .post-row { grid-template-columns: 132px minmax(0, 1fr); gap: var(--space-3) var(--space-5); }
     .post-row__cover { grid-row: 1 / 3; order: -1; }
-    .post-row__meta { grid-column: 2; }
+    .post-row__meta { grid-column: 2; flex-direction: row; flex-wrap: wrap; gap: var(--space-1) var(--space-3); align-items: baseline; }
     .post-row__body { grid-column: 2; }
+    .post-row--compact .post-row__meta { grid-column: 1; flex-direction: column; }
   }
   @media (max-width: 480px) {
     .post-row { grid-template-columns: 1fr; gap: var(--space-3); }
     .post-row__cover, .post-row__meta, .post-row__body { grid-column: 1; }
     .post-row__cover { grid-row: auto; }
-    .post-row--compact { grid-template-columns: 1fr; }
+    .post-row--compact { grid-template-columns: 1fr; gap: var(--space-2); }
+    .post-row--compact .post-row__meta { grid-column: 1; flex-direction: row; }
   }
 </style>

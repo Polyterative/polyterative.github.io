@@ -2,6 +2,7 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import PostRow from '../../components/PostRow.astro';
 import Icon from '../../components/Icon.astro';
+import { isoDots, pad } from '../../lib/datum';
 import { getCollection } from 'astro:content';
 
 const allPosts = (await getCollection('blog', ({ data }) => !data.draft))
@@ -16,28 +17,47 @@ const byYear = allPosts.reduce<Record<string, typeof allPosts>>((acc, post) => {
 }, {});
 
 const years = Object.keys(byYear).sort((a, b) => Number(b) - Number(a));
+
+// Post number in the archive (oldest = 001).
+const postNumber = (id: string) => pad(allPosts.length - allPosts.findIndex((p) => p.id === id), 3);
+const latest = allPosts[0];
 ---
 
 <BaseLayout
   title="Writing — Vlady Yakovenko"
   description="Posts on engineering, music, generative art, and tooling by Vlady Yakovenko (polyterative)."
+  serial="PLY-W"
 >
   <div class="container container--wide">
-    <header class="page-header">
-      <h1>Writing</h1>
-      <p class="page-desc">
-        Notes on engineering, tooling, sound, and making things.
-        {allPosts.length > 0 && <span class="post-count">{allPosts.length} posts</span>}
-        <a class="rss-link iclink" href="/rss.xml"><Icon name="rss" size={13} />Subscribe</a>
-      </p>
+    <header class="page-head">
+      <aside class="page-head__aside">
+        <span class="plate page-head__idx">05</span>
+        <span class="lbl">Posts</span>
+        <span class="data">{allPosts.length}</span>
+        {latest && (
+          <>
+            <span class="lbl">Latest</span>
+            <time class="data" datetime={latest.data.date}>{isoDots(latest.data.date)}</time>
+          </>
+        )}
+        <span class="lbl">Feed</span>
+        <a class="data rss-link" href="/rss.xml"><Icon name="rss" size={12} />rss.xml</a>
+      </aside>
+      <div class="page-head__main">
+        <h1>Writing</h1>
+        <p class="page-head__lead">Notes on engineering, tooling, sound, and making things.</p>
+      </div>
     </header>
 
     {allPosts.length > 0 ? (
       <div class="posts-by-year">
         {years.map(year => (
-          <div class="year-group">
-            <h2 class="year-label">{year}</h2>
-            <div class="posts-list">
+          <section class="sec year-group" aria-labelledby={`y-${year}`}>
+            <header class="sec__head">
+              <h2 class="plate sec__idx" id={`y-${year}`}>{year}</h2>
+              <span class="lbl">{byYear[year].length} {byYear[year].length === 1 ? 'post' : 'posts'}</span>
+            </header>
+            <div class="sec__body posts-list">
               {byYear[year].map(post => (
                 <PostRow
                   title={post.data.title}
@@ -46,10 +66,11 @@ const years = Object.keys(byYear).sort((a, b) => Number(b) - Number(a));
                   description={post.data.description}
                   tags={post.data.tags}
                   cover={post.data.cover}
+                  index={postNumber(post.id)}
                 />
               ))}
             </div>
-          </div>
+          </section>
         ))}
       </div>
     ) : (
@@ -59,54 +80,12 @@ const years = Object.keys(byYear).sort((a, b) => Number(b) - Number(a));
 </BaseLayout>
 
 <style>
-  .page-header {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-3);
-    padding-block: var(--space-16) var(--space-10);
-    max-width: var(--max-w);
-  }
-  .page-header h1 { font-size: clamp(2rem, 5vw, 3rem); }
-  .page-desc {
-    color: var(--color-muted);
-    display: flex;
-    align-items: baseline;
-    gap: var(--space-4);
-    flex-wrap: wrap;
-  }
-  .post-count {
-    font-family: var(--font-mono);
-    font-size: var(--font-size-meta);
-    color: var(--color-faint);
-  }
-  .rss-link {
-    font-family: var(--font-mono);
-    font-size: var(--font-size-meta);
-    color: var(--color-muted);
-  }
-  .rss-link:hover { color: var(--color-text); }
-  .rss-link .icon { color: var(--color-faint); }
-  .rss-link:hover .icon { color: var(--color-accent); }
+  .rss-link { display: inline-flex; align-items: center; gap: var(--space-2); color: var(--ink); align-self: flex-start; border-bottom: 1px solid var(--rule-strong); }
+  .rss-link:hover { color: var(--signal-text); border-color: currentColor; }
+  .rss-link :global(.icon) { color: var(--ink-3); }
 
-  .posts-by-year {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-12);
-    max-width: 880px;
-  }
-  .year-group { display: flex; flex-direction: column; }
-  .year-label {
-    font-family: var(--font-mono);
-    font-size: var(--font-size-meta);
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: var(--color-faint);
-    padding-bottom: var(--space-3);
-    border-bottom: 1px solid var(--color-border);
-    font-weight: 400;
-  }
-
-  .posts-list { display: flex; flex-direction: column; }
-  .year-group .post-row:first-child { border-top: none; }
-  .empty { color: var(--color-muted); }
+  .year-group h2.sec__idx { font-weight: 400; letter-spacing: 0; }
+  .posts-list { gap: 0; }
+  .posts-list :global(.post-row:first-child) { border-top: 1px solid var(--ink); }
+  .empty { color: var(--ink-2); }
 </style>

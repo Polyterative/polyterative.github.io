@@ -1,29 +1,35 @@
 ---
-import Icon from '../components/Icon.astro';
+import { getCollection } from 'astro:content';
+import { apps } from '../data/apps';
+import { releases } from '../data/releases';
+import { sections, sectionFor, isoDots } from '../lib/datum';
 
 export interface Props {
   title?: string;
   description?: string;
   isHome?: boolean;
+  /** Document serial shown in the classification line, e.g. "PLY-W-019". Derived by the page from real data. */
+  serial?: string;
 }
 
 const {
   title = 'Vlady Yakovenko — Designer, engineer, musician',
   description = 'Notes, projects, and ongoing work by Vlady Yakovenko (polyterative) across software, visuals, music, and interaction design.',
   isHome = false,
+  serial,
 } = Astro.props;
 
 const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
 const currentPath = Astro.url.pathname;
+const section = sectionFor(currentPath);
 
-const navLinks = [
-  { href: '/apps', label: 'Apps', match: '/apps' },
-  { href: '/projects', label: 'Projects', match: '/projects' },
-  { href: '/timeline', label: 'Timeline', match: '/timeline' },
-  { href: '/music', label: 'Music', match: '/music' },
-  { href: '/blog', label: 'Writing', match: '/blog' },
-  { href: '/about', label: 'About', match: '/about' },
-];
+// Footer readout: real counts from the repo's data files, and the build date.
+const postCount = (await getCollection('blog', ({ data }) => !data.draft)).length;
+const buildDate = new Date();
+const buildStamp = isoDots(buildDate);
+const docSerial = serial ?? `PLY-${section.code}`;
+
+const navLinks = sections.map((s, i) => ({ ...s, index: String(i + 1).padStart(2, '0') }));
 
 const personSchema = {
   '@context': 'https://schema.org',
@@ -66,29 +72,36 @@ const personSchema = {
   <meta name="twitter:title" content={title} />
   <meta name="twitter:description" content={description} />
 
-  <!-- Theme color (kept in sync by the resolver below) -->
-  <meta name="theme-color" content="#f6f6f4" id="theme-color-meta" />
+  <!-- Theme color (kept in sync by the resolver below): Paper bg / Instrument bg -->
+  <meta name="theme-color" content="#EDEDEA" id="theme-color-meta" />
 
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   <link rel="alternate" type="application/rss+xml" title="polyterative — Writing" href="/rss.xml" />
 
-  <!-- Pre-paint theme resolver: light by default, dark in the evening or by choice. Runs before first paint to avoid a flash. -->
+  <!-- Fonts: Departure Mono (self-hosted, OFL) for plates ≥20px; IBM Plex Mono (OFL) for all small mono. -->
+  <link rel="preload" href="/fonts/DepartureMono-Regular.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&display=swap" />
+
+  <!-- Pre-paint theme resolver: follows the OS (Paper / Instrument) unless the visitor chose one.
+       Runs before first paint to avoid a flash. CSS also handles the no-JS case via prefers-color-scheme. -->
   <script is:inline>
     (function () {
       try {
         var params = new URLSearchParams(location.search);
         var override = params.get('theme');
         var mode = override || localStorage.getItem('theme') || 'auto';
+        if (mode !== 'auto' && mode !== 'light' && mode !== 'dark') mode = 'auto';
         var resolved = mode;
         if (mode === 'auto') {
-          var h = new Date().getHours();
-          resolved = (h >= 19 || h < 7) ? 'dark' : 'light';
+          resolved = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
         }
         var el = document.documentElement;
         el.dataset.theme = resolved;
         el.dataset.themeMode = mode;
         var m = document.getElementById('theme-color-meta');
-        if (m) m.setAttribute('content', resolved === 'dark' ? '#15202b' : '#f6f6f4');
+        if (m) m.setAttribute('content', resolved === 'dark' ? '#0A0A0A' : '#EDEDEA');
       } catch (e) {}
     })();
   </script>
@@ -105,30 +118,47 @@ const personSchema = {
 
   <header class="site-header">
     <div class="container container--wide">
-      <nav class="nav" aria-label="Main navigation">
-        <a href="/" class="nav__logo">polyterative</a>
-        <ul class="nav__links">
-          {navLinks.map(link => {
-            const isActive = link.match && currentPath.startsWith(link.match);
-            return (
-              <li>
-                <a
-                  href={link.href}
-                  class:list={['nav__link', { 'nav__link--active': isActive }]}
-                  aria-current={isActive ? 'page' : undefined}
-                >{link.label}</a>
-              </li>
-            );
-          })}
-          <li>
-            <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Toggle color theme" title="Theme: auto">
-              <span class="theme-toggle__ic theme-toggle__ic--auto"><Icon name="monitor" size={16} /></span>
-              <span class="theme-toggle__ic theme-toggle__ic--light"><Icon name="sun" size={16} /></span>
-              <span class="theme-toggle__ic theme-toggle__ic--dark"><Icon name="moon" size={16} /></span>
-            </button>
-          </li>
-        </ul>
-      </nav>
+      <div class="classline">
+        <span class="lbl classline__l">Vlady Yakovenko · Personal archive</span>
+        <span class="lbl classline__r">
+          <span>§{section.index} {section.label}</span>
+          <span class="classline__sep" aria-hidden="true">·</span>
+          <span>{docSerial}</span>
+          <span class="classline__sep" aria-hidden="true">·</span>
+          <span class="inv">Public</span>
+        </span>
+      </div>
+      <div class="titleblock">
+        <a href="/" class="titleblock__name" aria-label="polyterative — home">
+          <span class="lbl">00 · Index</span>
+          <span class="titleblock__word">polyterative</span>
+        </a>
+        <nav class="titleblock__nav" aria-label="Main navigation">
+          <ul class="nav__links">
+            {navLinks.map(link => {
+              const isActive = currentPath === link.href || currentPath.startsWith(`${link.href}/`);
+              return (
+                <li>
+                  <a
+                    href={link.href}
+                    class:list={['nav__link', { 'nav__link--active': isActive }]}
+                    aria-current={isActive ? 'page' : undefined}
+                  >
+                    <span class="lbl" aria-hidden="true">{link.index}</span>
+                    <span class="nav__text">{link.label}</span>
+                  </a>
+                </li>
+              );
+            })}
+          </ul>
+        </nav>
+        <div class="titleblock__theme">
+          <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Colour theme: follow system. Click to change.">
+            <span class="lbl" aria-hidden="true">Theme</span>
+            <span class="theme-toggle__val" id="theme-toggle-val">Auto</span>
+          </button>
+        </div>
+      </div>
     </div>
   </header>
 
@@ -138,43 +168,58 @@ const personSchema = {
 
   <footer class="site-footer">
     <div class="container container--wide">
+      <div class="footstrip">
+        <div><span class="lbl">Page</span><span class="data">{currentPath}</span></div>
+        <div><span class="lbl">Section</span><span class="data">§{section.index} {section.label}</span></div>
+        <div><span class="lbl">Doc</span><span class="data">{docSerial}</span></div>
+        <div><span class="lbl">Built</span><span class="data"><time datetime={buildDate.toISOString().slice(0, 10)}>{buildStamp}</time></span></div>
+        <div><span class="lbl">Record</span><span class="data">{postCount} posts · {apps.length} apps · {releases.length} releases</span></div>
+        <div><span class="lbl">Base</span><span class="data">Bologna, IT</span></div>
+      </div>
       <div class="footer-inner">
-        <div class="footer-copy">
-          <p class="footer-copy__title">Software, notes, music, ongoing work.</p>
-          <p class="footer-copy__meta">Based in Bologna · polyterative &copy; {new Date().getFullYear()} · <a href="mailto:polyterative@outlook.com">polyterative@outlook.com</a></p>
-        </div>
+        <p class="footer-copy">Software, notes, music, ongoing work.</p>
         <ul class="footer-links">
-          <li><a class="iclink" href="mailto:polyterative@outlook.com"><Icon name="mail" size={14} />Email</a></li>
-          <li><a class="iclink" href="https://github.com/polyterative" target="_blank" rel="noopener"><Icon name="github" size={14} />GitHub</a></li>
-          <li><a class="iclink" href="https://polyterative.bandcamp.com" target="_blank" rel="noopener"><Icon name="music" size={14} />Bandcamp</a></li>
-          <li><a class="iclink" href="https://www.instagram.com/polyterative/" target="_blank" rel="noopener"><Icon name="instagram" size={14} />Instagram</a></li>
-          <li><a class="iclink" href="https://patcher.xyz" target="_blank" rel="noopener"><Icon name="external" size={14} />patcher.xyz</a></li>
+          <li><a class="act" href="mailto:polyterative@outlook.com">Email</a></li>
+          <li><a class="act" href="https://github.com/polyterative" target="_blank" rel="noopener">GitHub</a></li>
+          <li><a class="act" href="https://polyterative.bandcamp.com" target="_blank" rel="noopener">Bandcamp</a></li>
+          <li><a class="act" href="https://www.instagram.com/polyterative/" target="_blank" rel="noopener">Instagram</a></li>
+          <li><a class="act" href="https://patcher.xyz" target="_blank" rel="noopener">patcher.xyz</a></li>
+          <li><a class="act" href="/rss.xml">RSS</a></li>
         </ul>
       </div>
+      <p class="footer-meta lbl">polyterative &copy; {buildDate.getFullYear()} · polyterative@outlook.com</p>
     </div>
   </footer>
 
   <script is:inline>
     (function () {
       var order = ['auto', 'light', 'dark'];
+      var names = { auto: 'Auto', light: 'Paper', dark: 'Instrument' };
       var btn = document.getElementById('theme-toggle');
+      var val = document.getElementById('theme-toggle-val');
       if (!btn) return;
       var el = document.documentElement;
       var meta = document.getElementById('theme-color-meta');
+      var mq = window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)') : null;
 
       function resolve(mode) {
         if (mode !== 'auto') return mode;
-        var h = new Date().getHours();
-        return (h >= 19 || h < 7) ? 'dark' : 'light';
+        return mq && mq.matches ? 'dark' : 'light';
       }
       function apply(mode) {
         var resolved = resolve(mode);
         el.dataset.theme = resolved;
         el.dataset.themeMode = mode;
-        btn.setAttribute('title', 'Theme: ' + mode);
-        if (meta) meta.setAttribute('content', resolved === 'dark' ? '#15202b' : '#f6f6f4');
+        if (val) val.textContent = names[mode];
+        btn.setAttribute('aria-label', 'Colour theme: ' + (mode === 'auto' ? 'follow system (' + names[resolved] + ')' : names[mode]) + '. Click to change.');
+        if (meta) meta.setAttribute('content', resolved === 'dark' ? '#0A0A0A' : '#EDEDEA');
       }
       apply(el.dataset.themeMode || 'auto');
+
+      if (mq) {
+        var onChange = function () { if ((el.dataset.themeMode || 'auto') === 'auto') apply('auto'); };
+        if (mq.addEventListener) mq.addEventListener('change', onChange); else if (mq.addListener) mq.addListener(onChange);
+      }
 
       btn.addEventListener('click', function () {
         var current = el.dataset.themeMode || 'auto';
@@ -192,73 +237,125 @@ const personSchema = {
 </style>
 
 <style>
-  .site-header {
-    position: sticky;
-    top: 0;
-    z-index: var(--z-header);
-    background: var(--color-bg);
-    border-bottom: 1px solid var(--color-line);
-    padding-block: var(--space-4);
-  }
+  /* ── Header: a title block, not a sticky toolbar ── */
+  .site-header { padding-top: var(--space-4); }
 
-  .nav {
+  .classline {
     display: flex;
-    align-items: baseline;
     justify-content: space-between;
-    gap: var(--space-6);
+    align-items: baseline;
+    gap: var(--space-3);
+    flex-wrap: wrap;
+    padding-bottom: var(--space-2);
   }
+  .classline__r { display: inline-flex; align-items: baseline; gap: var(--space-2); flex-wrap: wrap; }
+  .classline__sep { color: var(--rule-strong); }
 
-  .nav__logo {
-    font-family: var(--font-mono);
-    font-size: 0.9rem;
-    font-weight: 500;
-    letter-spacing: -0.02em;
-    color: var(--color-text);
-    flex-shrink: 0;
+  .titleblock {
+    display: grid;
+    grid-template-columns: var(--gutter) minmax(0, 1fr) auto;
+    border-top: 1px solid var(--ink);
+    border-bottom: 1px solid var(--rule);
   }
-  .nav__logo:hover { opacity: 0.6; }
+  .titleblock > * { min-width: 0; }
+
+  .titleblock__name {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: var(--space-2) var(--space-3) var(--space-3) 0;
+    border-right: 1px solid var(--rule);
+  }
+  .titleblock__word {
+    font-size: 22px;
+    font-weight: 600;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+    color: var(--ink);
+  }
+  .titleblock__name:hover .titleblock__word { color: var(--signal-text); }
 
   .nav__links {
     display: flex;
     list-style: none;
-    gap: var(--space-5);
+    height: 100%;
   }
-
+  .nav__links li { display: flex; }
   .nav__link {
-    font-size: var(--font-size-sm);
-    color: var(--color-muted);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 2px;
+    min-width: 88px;
+    padding: var(--space-2) var(--space-4) var(--space-3) var(--space-3);
+    border-right: 1px solid var(--rule);
+    color: var(--ink-2);
+    position: relative;
   }
-  .nav__link:hover { color: var(--color-text); }
-  .nav__link--active { color: var(--color-text); }
+  .nav__text {
+    font-family: var(--f-grotesk);
+    font-weight: 500;
+    font-size: var(--fs-control);
+    line-height: 1.2;
+  }
+  .nav__link:hover { color: var(--ink); background: var(--hover); }
+  .nav__link--active { color: var(--ink); }
+  .nav__link--active .lbl { color: var(--signal-text); }
+  .nav__link--active::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -1px;
+    height: 2px;
+    background: var(--signal);
+  }
 
-  .nav__links { align-items: center; }
+  .titleblock__theme { display: flex; border-left: 1px solid var(--rule); }
   .theme-toggle {
-    display: inline-grid;
-    place-items: center;
-    width: 30px;
-    height: 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 2px;
+    min-width: 104px;
+    min-height: 40px;
+    padding: var(--space-2) 0 var(--space-3) var(--space-3);
     background: transparent;
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-pill);
-    color: var(--color-muted);
+    border: 0;
+    color: var(--ink);
     cursor: pointer;
-    transition: color var(--transition), border-color var(--transition), background var(--transition);
+    text-align: left;
   }
-  .theme-toggle:hover { color: var(--color-text); border-color: var(--color-muted); }
-  .theme-toggle__ic { display: none; grid-area: 1 / 1; line-height: 0; }
-  :root[data-theme-mode="auto"]  .theme-toggle__ic--auto  { display: block; }
-  :root[data-theme-mode="light"] .theme-toggle__ic--light { display: block; }
-  :root[data-theme-mode="dark"]  .theme-toggle__ic--dark  { display: block; }
-  /* pre-hydration fallback: show auto glyph */
-  :root:not([data-theme-mode]) .theme-toggle__ic--auto { display: block; }
+  .theme-toggle__val {
+    font-family: var(--f-grotesk);
+    font-weight: 500;
+    font-size: var(--fs-control);
+    line-height: 1.2;
+  }
+  .theme-toggle:hover { background: var(--hover); }
 
   .site-main { flex: 1; }
 
-  .site-footer {
-    border-top: 1px solid var(--color-line);
-    padding-block: var(--space-8);
-    margin-top: var(--space-24);
+  /* ── Footer strip: fixed position, real metadata ── */
+  .site-footer { margin-top: var(--space-24); padding-bottom: var(--space-8); }
+  .footstrip {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    border-top: 1px solid var(--ink);
+    border-bottom: 1px solid var(--rule);
   }
+  .footstrip > div {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: var(--space-2) var(--space-3) var(--space-3);
+    border-right: 1px solid var(--rule);
+    min-width: 0;
+  }
+  .footstrip > div:first-child { padding-left: 0; }
+  .footstrip > div:last-child { border-right: 0; }
+  .footstrip .data { overflow-wrap: anywhere; color: var(--ink); }
 
   .footer-inner {
     display: flex;
@@ -266,66 +363,54 @@ const personSchema = {
     justify-content: space-between;
     flex-wrap: wrap;
     gap: var(--space-4);
+    padding-top: var(--space-5);
   }
-
-  .footer-copy {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-1);
-  }
-  .footer-copy__title {
-    font-size: var(--font-size-sm);
-    max-width: 42ch;
-  }
-  .footer-copy__meta {
-    font-family: var(--font-mono);
-    font-size: var(--font-size-meta);
-    color: var(--color-faint);
-  }
-  .footer-copy__meta a:hover { color: var(--color-text); }
-
-  .footer-links {
-    display: flex;
-    list-style: none;
-    gap: var(--space-5);
-    flex-wrap: wrap;
-  }
-  .footer-links a {
-    font-family: var(--font-mono);
-    font-size: var(--font-size-meta);
-    color: var(--color-muted);
-  }
-  .footer-links a:hover { color: var(--color-text); }
+  .footer-copy { font-size: 15px; color: var(--ink-2); }
+  .footer-links { display: flex; list-style: none; gap: var(--space-3) var(--space-5); flex-wrap: wrap; }
+  .footer-meta { margin-top: var(--space-5); }
 
   .skip-link {
     position: absolute;
     top: -100px;
     left: var(--space-4);
     z-index: var(--z-skip);
-    background: var(--color-text);
-    color: var(--color-bg);
+    background: var(--ink);
+    color: var(--bg);
     padding: var(--space-2) var(--space-4);
-    border-radius: var(--radius);
-    font-size: var(--font-size-sm);
+    font-size: var(--fs-control);
+    font-weight: 500;
   }
   .skip-link:focus { top: var(--space-4); }
 
-  @media (max-width: 640px) {
-    .nav {
-      align-items: stretch;
-      flex-direction: column;
-      gap: var(--space-3);
-    }
-    .nav__links {
-      gap: var(--space-4);
+  @media (max-width: 1000px) {
+    .titleblock { grid-template-columns: auto minmax(0, 1fr) auto; }
+    .titleblock__name { padding-right: var(--space-4); }
+    .nav__link { min-width: 0; padding-inline: var(--space-3); }
+  }
+
+  @media (max-width: 760px) {
+    .classline__l { display: none; }
+    .classline { justify-content: flex-start; }
+    .titleblock { grid-template-columns: minmax(0, 1fr) auto; }
+    .titleblock__name { border-right: 0; }
+    .titleblock__nav {
+      grid-column: 1 / -1;
+      grid-row: 2;
+      border-top: 1px solid var(--rule);
       overflow-x: auto;
-      padding-bottom: 2px;
       scrollbar-width: none;
     }
-    .nav__links::-webkit-scrollbar { display: none; }
-    .nav__link { font-size: 0.8rem; }
-  }
-  @media (max-width: 640px) {
+    .titleblock__nav::-webkit-scrollbar { display: none; }
+    .nav__link { padding: var(--space-2) var(--space-3) var(--space-3); }
+    .nav__links li:first-child .nav__link { padding-left: 0; }
+    .titleblock__theme { grid-column: 2; grid-row: 1; }
+    .theme-toggle { min-width: 96px; }
+
+    .footstrip { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .footstrip > div { border-bottom: 1px solid var(--rule); padding-left: var(--space-3); }
+    .footstrip > div:nth-child(2n) { border-right: 0; }
+    .footstrip > div:nth-child(2n + 1) { padding-left: 0; }
+    .footstrip > div:nth-last-child(-n + 2) { border-bottom: 0; }
     .footer-inner { flex-direction: column; align-items: flex-start; gap: var(--space-3); }
   }
 </style>

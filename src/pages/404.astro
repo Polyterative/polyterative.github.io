@@ -6,35 +6,58 @@ import Icon from '../components/Icon.astro';
 <BaseLayout
   title="Page not found — Vlady Yakovenko"
   description="This page doesn't exist."
+  serial="ERR-404"
 >
-  <div class="container">
+  <div class="container container--wide">
     <section class="notfound">
-      <p class="label">Error 404</p>
-      <h1 class="notfound__title">Page not found</h1>
-      <p class="notfound__desc">This URL doesn't exist. Maybe it moved, or was never here.</p>
-      <a href="/" class="notfound__link iclink"><Icon name="arrow-left" size={13} />Back to home</a>
+      <div class="titlecard" aria-hidden="true">
+        <span class="lbl">Error</span>
+        <b>404</b>
+      </div>
+      <div class="notfound__body">
+        <span class="pill pill--alert">Not found</span>
+        <h1 class="notfound__title">Page not found</h1>
+        <p class="notfound__desc">This URL doesn't exist. Maybe it moved, or was never here.</p>
+        <a href="/" class="btn"><Icon name="arrow-left" size={14} />Back to home</a>
+      </div>
     </section>
   </div>
 </BaseLayout>
 
 <style>
-  .notfound {
+  .notfound { padding-block: var(--space-10) var(--space-12); }
+
+  /* Title card: a numeral set huge and cropped by the frame (DESIGN.md §10). */
+  .titlecard {
+    overflow: hidden;
+    border-top: 1px solid var(--ink);
+    border-bottom: 1px solid var(--ink);
+    padding-top: var(--space-2);
+  }
+  .titlecard .lbl { display: block; margin-bottom: var(--space-2); }
+  .titlecard b {
+    display: block;
+    font-size: clamp(140px, 34vw, 420px);
+    font-weight: 700;
+    letter-spacing: -0.06em;
+    line-height: 0.78;
+    margin-left: -0.05em;
+    margin-bottom: -0.1em;
+    white-space: nowrap;
+  }
+
+  .notfound__body {
     display: flex;
     flex-direction: column;
+    align-items: flex-start;
     gap: var(--space-4);
-    padding-block: var(--space-24);
-    min-height: 40vh;
-    justify-content: center;
+    padding-top: var(--space-8);
+    margin-left: calc(var(--gutter) + var(--space-6));
   }
   .notfound__title { font-size: clamp(2rem, 5vw, 3rem); }
-  .notfound__desc { color: var(--color-muted); }
-  .notfound__link {
-    font-family: var(--font-mono);
-    font-size: var(--font-size-meta);
-    color: var(--color-muted);
-    margin-top: var(--space-2);
+  .notfound__desc { color: var(--ink-2); }
+
+  @media (max-width: 860px) {
+    .notfound__body { margin-left: 0; }
   }
-  .notfound__link:hover { color: var(--color-text); }
-  .notfound__link .icon { color: var(--color-faint); }
-  .notfound__link:hover .icon { color: var(--color-accent); }
 </style>

@@ -1,66 +1,164 @@
-/* ── Design tokens ── */
+/* ─────────────────────────────────────────────────────────────────────────
+   Datum — design tokens for the web (DESIGN.md rev 0.3 is the source of truth).
+   Paper = light, Instrument = dark. The site follows the OS; the header toggle
+   writes data-theme="light" | "dark" on <html> to override it.
+   ───────────────────────────────────────────────────────────────────────── */
+
+@font-face {
+  font-family: "Departure Mono";
+  src: url("/fonts/DepartureMono-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
-  /* Type */
-  --font-sans: "Helvetica Neue", Helvetica, Arial, system-ui, sans-serif;
-  --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-  --font-size-meta: 0.75rem;   /* mono labels, dates, tags */
-  --font-size-sm:   0.875rem;  /* secondary body */
-  --font-size-base: 1rem;
-  --font-size-lg:   1.125rem;
+  /* Material: inline SVG feTurbulence tiles (DESIGN.md §7). k = ink-coloured, w = white. */
+  --tex-grain-k: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n' x='0' y='0'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0.1 0 0 0 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url%28%23n%29'/%3E%3C/svg%3E");
+  --tex-grain-w: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n' x='0' y='0'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0.075 0 0 0 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url%28%23n%29'/%3E%3C/svg%3E");
+  --tex-mottle-k: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='900' height='900'%3E%3Cfilter id='n' x='0' y='0'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.006' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0.06 0 0 0 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url%28%23n%29'/%3E%3C/svg%3E");
+  --tex-mottle-w: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='900' height='900'%3E%3Cfilter id='n' x='0' y='0'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.006' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0.04 0 0 0 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url%28%23n%29'/%3E%3C/svg%3E");
+  --tex-ink-k: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n' x='0' y='0'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0.16 0 0 0 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url%28%23n%29'/%3E%3C/svg%3E");
+  --tex-ink-w: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n' x='0' y='0'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0.12 0 0 0 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url%28%23n%29'/%3E%3C/svg%3E");
 
-  /* Color — LIGHT is the default base. Warm off-white, one blue accent. */
-  --color-bg:      #f6f6f4;
-  --color-surface: #ffffff;
-  --color-text:    #16160f;
-  --color-muted:   #5c5c55;
-  --color-faint:   #8a8a82;
-  --color-border:  #dcdcd6;
-  --color-line:    #e8e8e2;
-  --color-hover:   #eeeeea;
-  --color-accent:      #1366c9;
-  --color-accent-ink:  #0f4f9e;
-  --color-accent-weak: rgba(19, 102, 201, 0.10);
+  /* ── Paper (light) ── §4.5 */
+  --bg:          #EDEDEA;
+  --surface:     #F7F7F5;
+  --hover:       #E2E2DE;
+  --ink:         #111111;
+  --ink-2:       #55554F;
+  --ink-3:       #686862;
+  --rule:        #CFCFCA;
+  --rule-strong: #B4B4AE;
+  --signal:      #EA562A;
+  --signal-text: #B83A14;
+  --signal-weak: #F5DED6;
+  --on-signal:   #111111;
+  --moss:        #55664A;
+  --moss-weak:   #DDE1D3;
+  --on-moss:     #F7F7F5;
+  --live:        #0E7A41;
+  --alert:       #D11A1A;
+  --cold:        #2650D9;
 
-  /* Spacing */
+  --grain:        var(--tex-grain-k);
+  --mottle:       var(--tex-mottle-k);
+  --ink-on-ink:   var(--tex-ink-w);   /* grain for solid ink slabs */
+  --ink-on-fill:  var(--tex-ink-k);   /* grain for signal / light fills */
+
+  color-scheme: light;
+
+  /* ── Type (three fonts, no fourth) ── §5 */
+  --f-grotesk: "Helvetica Neue", "Neue Haas Grotesk Text", Helvetica, Arial, sans-serif;
+  --f-plate:   "Departure Mono", "IBM Plex Mono", ui-monospace, monospace; /* 20px and up only */
+  --f-mono:    "IBM Plex Mono", ui-monospace, Menlo, monospace;            /* every small mono string */
+
+  --fs-micro:   11px;  /* labels, pills, ticks */
+  --fs-meta:    13px;  /* dates, captions, data, code */
+  --fs-control: 14px;  /* buttons, tabs, nav */
+  --fs-body:    17px;
+  --fs-lead:    21px;
+
+  /* Spacing — 4px base */
   --space-1:  0.25rem;
   --space-2:  0.5rem;
   --space-3:  0.75rem;
   --space-4:  1rem;
   --space-5:  1.25rem;
   --space-6:  1.5rem;
+  --space-7:  1.75rem;
   --space-8:  2rem;
   --space-10: 2.5rem;
   --space-12: 3rem;
   --space-16: 4rem;
   --space-24: 6rem;
 
-  --radius: 0;          /* base stays sharp */
-  --radius-sm: 8px;     /* panels */
-  --radius-pill: 999px; /* stat chips */
-
   /* Layout */
-  --max-w:      680px;
-  --max-w-wide: 1040px;
+  --max-w:      680px;   /* reading column */
+  --max-w-wide: 1200px;  /* page frame */
+  --gutter:     200px;   /* annotation column, like a title block */
 
-  --transition: 150ms ease;
+  --transition: 140ms ease-out;
 
   --z-header: 20;
   --z-skip:   100;
+
+  /* ── Legacy aliases. Only inline content in Markdown posts still uses these;
+        components use the Datum names above. ── */
+  --color-bg:          var(--bg);
+  --color-surface:     var(--surface);
+  --color-hover:       var(--hover);
+  --color-text:        var(--ink);
+  --color-muted:       var(--ink-2);
+  --color-faint:       var(--ink-3);
+  --color-border:      var(--rule-strong);
+  --color-line:        var(--rule);
+  --color-accent:      var(--signal);
+  --color-accent-ink:  var(--signal-text);
+  --color-accent-weak: var(--signal-weak);
+  --color-accent-soft: transparent;
+  --font-sans:         var(--f-grotesk);
+  --font-mono:         var(--f-mono);
+  --font-size-meta:    0.75rem;
+  --font-size-sm:      0.875rem;
+  --font-size-base:    1rem;
+  --font-size-lg:      1.125rem;
 }
 
-/* ── Dark — Twitter "Dim" blue ── */
+/* ── Instrument (dark) — OS preference, unless the visitor picked Paper ── */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg:          #0A0A0A;
+    --surface:     #141414;
+    --hover:       #1C1C1B;
+    --ink:         #E8E8E4;
+    --ink-2:       #9A9A94;
+    --ink-3:       #808079;
+    --rule:        #2A2A28;
+    --rule-strong: #3A3A36;
+    --signal:      #EB6137;
+    --signal-text: #F0724C;
+    --signal-weak: #33170F;
+    --on-signal:   #0A0A0A;
+    --moss:        #8FA27A;
+    --moss-weak:   #1A2016;
+    --on-moss:     #0A0A0A;
+    --live:        #3DDC84;
+    --alert:       #FF4545;
+    --cold:        #6B93FF;
+    --grain:       var(--tex-grain-w);
+    --mottle:      var(--tex-mottle-w);
+    --ink-on-ink:  var(--tex-ink-k);
+    --ink-on-fill: var(--tex-ink-k);
+    color-scheme: dark;
+  }
+}
+
+/* ── Instrument (dark) — explicit choice from the toggle ── */
 :root[data-theme="dark"] {
-  --color-bg:      #15202b;
-  --color-surface: #1e2732;
-  --color-text:    #f7f9f9;
-  --color-muted:   #8b98a5;
-  --color-faint:   #5f6e7c;
-  --color-border:  #38444d;
-  --color-line:    #273340;
-  --color-hover:   #22303c;
-  --color-accent:      #1d9bf0;
-  --color-accent-ink:  #4bb0f5;
-  --color-accent-weak: rgba(29, 155, 240, 0.15);
+  --bg:          #0A0A0A;
+  --surface:     #141414;
+  --hover:       #1C1C1B;
+  --ink:         #E8E8E4;
+  --ink-2:       #9A9A94;
+  --ink-3:       #808079;
+  --rule:        #2A2A28;
+  --rule-strong: #3A3A36;
+  --signal:      #EB6137;
+  --signal-text: #F0724C;
+  --signal-weak: #33170F;
+  --on-signal:   #0A0A0A;
+  --moss:        #8FA27A;
+  --moss-weak:   #1A2016;
+  --on-moss:     #0A0A0A;
+  --live:        #3DDC84;
+  --alert:       #FF4545;
+  --cold:        #6B93FF;
+  --grain:       var(--tex-grain-w);
+  --mottle:      var(--tex-mottle-w);
+  --ink-on-ink:  var(--tex-ink-k);
+  --ink-on-fill: var(--tex-ink-k);
+  color-scheme: dark;
 }
 
 /* ── Reset ── */
@@ -74,34 +172,38 @@ html {
 }
 
 body {
-  font-family: var(--font-sans);
-  background: var(--color-bg);
-  color: var(--color-text);
-  line-height: 1.6;
+  font-family: var(--f-grotesk);
+  font-size: var(--fs-body);
+  line-height: 1.55;
+  color: var(--ink);
+  background-color: var(--bg);
+  /* Grain + mottle live on the ground only; content sits on top and never gets noise. */
+  background-image: var(--grain), var(--mottle);
+  background-size: 220px 220px, 900px 900px;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  transition: background-color 200ms ease, color 200ms ease;
+  overflow-x: clip;
 }
 
 @supports (scrollbar-color: auto) {
-  * { scrollbar-color: var(--color-border) transparent; scrollbar-width: thin; }
+  * { scrollbar-color: var(--rule-strong) transparent; scrollbar-width: thin; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  * { transition: none !important; animation: none !important; }
+  *, *::before, *::after { transition: none !important; animation: none !important; scroll-behavior: auto !important; }
 }
 
 /* ── Typography ── */
 h1, h2, h3, h4 {
-  line-height: 1.12;
+  line-height: 1.1;
   letter-spacing: -0.02em;
   font-weight: 600;
   text-wrap: balance;
 }
-h1 { font-size: clamp(1.9rem, 4.5vw, 2.9rem); letter-spacing: -0.03em; }
-h2 { font-size: clamp(1.3rem, 2.6vw, 1.6rem); }
-h3 { font-size: 1.1rem; }
+h1 { font-size: clamp(2.6rem, 6.5vw, 4.5rem); letter-spacing: -0.035em; line-height: 0.98; }
+h2 { font-size: clamp(1.5rem, 2.6vw, 2rem); }
+h3 { font-size: 1.1rem; letter-spacing: -0.01em; }
 h4 { font-size: 1rem; }
 
 p { max-width: 66ch; }
@@ -109,28 +211,30 @@ p { max-width: 66ch; }
 a {
   color: inherit;
   text-decoration: none;
-  transition: color var(--transition), opacity var(--transition), border-color var(--transition);
+  transition: color var(--transition), border-color var(--transition), background-color var(--transition);
 }
 
-::selection { background: var(--color-accent); color: #fff; }
+::selection { background: var(--signal-weak); color: var(--ink); }
 
 :focus-visible {
-  outline: 2px solid var(--color-accent);
-  outline-offset: 3px;
-  border-radius: 2px;
+  outline: 2px solid var(--signal);
+  outline-offset: 2px;
+  border-radius: 0;
 }
 
-code, pre { font-family: var(--font-mono); font-size: 0.85em; }
+code, pre, kbd, samp { font-family: var(--f-mono); font-size: 0.85em; }
 pre {
-  background: transparent;
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius);
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: 0;
   padding: var(--space-4) var(--space-5);
   overflow-x: auto;
-  line-height: 1.7;
+  line-height: 1.6;
 }
 
 img { display: block; max-width: 100%; }
+
+button { font: inherit; color: inherit; }
 
 /* ── Layout ── */
 .container {
@@ -140,40 +244,254 @@ img { display: block; max-width: 100%; }
   padding-inline: var(--space-6);
 }
 .container--wide { max-width: var(--max-w-wide); }
-
-.section { padding-block: var(--space-12); }
-
-.divider {
-  border: none;
-  height: 1px;
-  background: var(--color-line);
-  margin-block: var(--space-16);
+@media (max-width: 600px) {
+  .container { padding-inline: var(--space-4); }
 }
 
-/* ── Meta label (mono, uppercase) ── */
-.label {
-  font-family: var(--font-mono);
-  font-size: 0.6875rem;
-  letter-spacing: 0.05em;
+/* ─────────────────────────────────────────────────────────────────────────
+   Datum utilities
+   ───────────────────────────────────────────────────────────────────────── */
+
+/* Label: Plex 500 caps, the silkscreen voice. `.label` is the older name. */
+.lbl, .label {
+  font-family: var(--f-mono);
+  font-weight: 500;
+  font-size: var(--fs-micro);
+  letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: var(--color-faint);
+  color: var(--ink-3);
+  line-height: 1.3;
+}
+.label--ic, .lbl--ic { display: inline-flex; align-items: center; gap: var(--space-2); }
+
+/* Data: Plex 400, sentence case, tabular figures. */
+.data, .tag {
+  font-family: var(--f-mono);
+  font-weight: 400;
+  font-size: var(--fs-meta);
+  font-variant-numeric: tabular-nums;
+  color: var(--ink-2);
+  line-height: 1.45;
 }
 
-/* label with a small leading icon */
-.label--ic {
+/* Plate: Departure Mono. Never below 20px. */
+.plate {
+  font-family: var(--f-plate);
+  font-weight: 400;
+  letter-spacing: 0;
+  line-height: 1;
+  font-size: 28px;
+  font-variant-numeric: tabular-nums;
+}
+
+.muted { color: var(--ink-2); }
+
+/* Inline tag list: data separated by middots, no boxes. */
+.taglist {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 var(--space-2);
+  list-style: none;
+}
+.taglist li { font-family: var(--f-mono); font-size: var(--fs-meta); color: var(--ink-3); line-height: 1.5; }
+.taglist li:not(:last-child)::after { content: "·"; margin-left: var(--space-2); color: var(--ink-3); }
+
+/* Inverted label: outputs, results, totals. Solid ink block, bg-coloured text.
+   No grain: it is text and small (DESIGN.md §7). Use .slab for large ink fills. */
+.inv {
+  display: inline-block;
+  background-color: var(--ink);
+  color: var(--bg);
+  font-family: var(--f-mono);
+  font-weight: 500;
+  font-size: var(--fs-micro);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 2px 6px;
+  line-height: 1.3;
+}
+
+/* Status pill: Plex caps in a 1px box. Tone only for real statuses. */
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--f-mono);
+  font-weight: 500;
+  font-size: var(--fs-micro);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  line-height: 1.2;
+  padding: 3px 7px;
+  border: 1px solid currentColor;
+  color: var(--ink-2);
+  white-space: nowrap;
+}
+.pill::before { content: ""; width: 6px; height: 6px; background: currentColor; flex: none; }
+.pill--live   { color: var(--live); }
+.pill--alert  { color: var(--alert); }
+.pill--cold   { color: var(--cold); }
+.pill--signal { color: var(--signal-text); }
+
+/* Buttons: grotesk 500, sentence case, sharp, 40px target. One signal fill per view. */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-height: 40px;
+  padding: 9px 14px;
+  font-family: var(--f-grotesk);
+  font-weight: 500;
+  font-size: var(--fs-control);
+  letter-spacing: -0.005em;
+  line-height: 1.2;
+  color: var(--ink);
+  background-color: transparent;
+  border: 1px solid var(--rule-strong);
+  border-radius: 0;
+  cursor: pointer;
+}
+.btn:hover { border-color: var(--ink); }
+.btn .icon { width: 14px; height: 14px; }
+.btn--primary {
+  color: var(--on-signal);
+  background-color: var(--signal);
+  border-color: var(--signal);
+}
+.btn--primary:hover { border-color: var(--ink); }
+
+/* Text action link: grotesk 500, used for "Details", "Source", etc. */
+.act {
   display: inline-flex;
   align-items: center;
   gap: var(--space-2);
+  font-family: var(--f-grotesk);
+  font-weight: 500;
+  font-size: var(--fs-control);
+  color: var(--ink);
+  border-bottom: 1px solid var(--rule-strong);
+  padding-bottom: 1px;
+  line-height: 1.3;
+}
+.act:hover { color: var(--signal-text); border-bottom-color: currentColor; }
+.act .icon { width: 13px; height: 13px; color: var(--ink-3); }
+.act:hover .icon { color: currentColor; }
+
+/* Crop marks around an image or figure (8–12px L-shapes). */
+.crop { position: relative; }
+.crop::after {
+  content: "";
+  position: absolute;
+  inset: -6px;
+  pointer-events: none;
+  --c: var(--ink-3);
+  background:
+    linear-gradient(var(--c), var(--c)) top left / 12px 1px no-repeat,
+    linear-gradient(var(--c), var(--c)) top left / 1px 12px no-repeat,
+    linear-gradient(var(--c), var(--c)) top right / 12px 1px no-repeat,
+    linear-gradient(var(--c), var(--c)) top right / 1px 12px no-repeat,
+    linear-gradient(var(--c), var(--c)) bottom left / 12px 1px no-repeat,
+    linear-gradient(var(--c), var(--c)) bottom left / 1px 12px no-repeat,
+    linear-gradient(var(--c), var(--c)) bottom right / 12px 1px no-repeat,
+    linear-gradient(var(--c), var(--c)) bottom right / 1px 12px no-repeat;
 }
 
-/* ── Tag — unboxed metadata ── */
-.tag {
-  font-family: var(--font-mono);
-  font-size: var(--font-size-meta);
-  color: var(--color-faint);
-  letter-spacing: 0.01em;
-  line-height: 1.4;
+/* Figure caption line: index + description in Plex. */
+.figcap {
+  display: flex;
+  gap: var(--space-3);
+  align-items: baseline;
+  font-family: var(--f-mono);
+  font-size: var(--fs-meta);
+  color: var(--ink-2);
+  line-height: 1.45;
+  padding-top: var(--space-2);
 }
+.figcap .lbl { flex: none; }
+
+/* Hairline table: specs, facts, credits. */
+.htbl { width: 100%; border-collapse: collapse; border-top: 1px solid var(--ink); }
+.htbl > div, .htbl tr {
+  display: grid;
+  grid-template-columns: minmax(0, 0.42fr) minmax(0, 1fr);
+  gap: var(--space-4);
+  border-bottom: 1px solid var(--rule);
+  padding-block: var(--space-2);
+  align-items: baseline;
+}
+.htbl dt, .htbl th { font-family: var(--f-mono); font-weight: 500; font-size: var(--fs-micro); letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-3); text-align: left; }
+.htbl dd, .htbl td { font-size: 15px; line-height: 1.5; }
+.htbl .n { color: var(--ink-3); margin-right: 6px; font-variant-numeric: tabular-nums; }
+
+/* Page title block: annotation gutter + statement. */
+.page-head {
+  display: grid;
+  grid-template-columns: var(--gutter) minmax(0, 1fr);
+  gap: var(--space-6);
+  padding-block: var(--space-12) var(--space-12);
+}
+.page-head__aside { display: flex; flex-direction: column; gap: var(--space-1); padding-top: var(--space-2); }
+.page-head__aside .lbl + .data { margin-bottom: var(--space-3); }
+.page-head__idx { font-size: 56px; margin-bottom: var(--space-4); color: var(--ink); }
+.page-head__main { min-width: 0; display: flex; flex-direction: column; gap: var(--space-5); }
+.page-head__lead { font-size: var(--fs-lead); line-height: 1.4; color: var(--ink-2); max-width: 46ch; letter-spacing: -0.01em; }
+.page-head__note { font-size: 15px; color: var(--ink-2); max-width: 60ch; }
+.page-head__note a { color: var(--signal-text); border-bottom: 1px solid currentColor; }
+
+/* Numbered section: plate index in the gutter, body to the right. */
+.sec {
+  display: grid;
+  grid-template-columns: var(--gutter) minmax(0, 1fr);
+  gap: var(--space-6);
+  border-top: 1px solid var(--rule);
+  padding-block: var(--space-7) var(--space-16);
+  scroll-margin-top: var(--space-4);
+}
+.sec__head { display: flex; flex-direction: column; gap: var(--space-2); min-width: 0; }
+.sec__idx { font-size: 44px; color: var(--ink); }
+.sec__title { font-size: 20px; letter-spacing: -0.015em; line-height: 1.15; }
+.sec__body { min-width: 0; display: flex; flex-direction: column; gap: var(--space-6); }
+.sec__intro { color: var(--ink-2); max-width: 58ch; }
+
+@media (max-width: 860px) {
+  .page-head { grid-template-columns: 1fr; gap: var(--space-5); padding-block: var(--space-10); }
+  .page-head__aside { flex-direction: row; flex-wrap: wrap; align-items: baseline; gap: var(--space-1) var(--space-3); padding-top: 0; order: 0; }
+  .page-head__aside .lbl + .data { margin-bottom: 0; margin-right: var(--space-3); }
+  .page-head__idx { font-size: 40px; margin: 0 var(--space-3) 0 0; }
+  .sec { grid-template-columns: 1fr; gap: var(--space-5); padding-block: var(--space-6) var(--space-12); }
+  .sec__head { flex-direction: row; align-items: baseline; flex-wrap: wrap; gap: var(--space-2) var(--space-4); }
+  .sec__idx { font-size: 32px; }
+}
+
+/* Large solid fills get ink grain (DESIGN.md §7, 'Ink' layer). */
+.slab {
+  background-color: var(--ink);
+  background-image: var(--ink-on-ink);
+  background-size: 220px 220px;
+  color: var(--bg);
+}
+
+/* Planter block: the one moss ground per view (DESIGN.md §4.3). */
+.planter {
+  background-color: var(--moss-weak);
+  padding: var(--space-5);
+}
+.planter .lbl { color: var(--moss); }
+
+/* Generated cover for things without a screenshot: a flat concrete field, no gradient. */
+.gencover {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3);
+  background-color: var(--hover);
+  color: var(--ink-3);
+}
+.gencover .icon { color: var(--ink-2); stroke-width: 1.25; }
+.gencover__lbl { position: absolute; left: var(--space-3); bottom: var(--space-2); }
+.gencover__idx { position: absolute; right: var(--space-3); bottom: var(--space-2); }
 
 /* ── Icon ── */
 .icon {
@@ -183,43 +501,44 @@ img { display: block; max-width: 100%; }
   height: 1em;
   stroke: currentColor;
   fill: none;
-  stroke-width: 1.75;
-  stroke-linecap: round;
-  stroke-linejoin: round;
+  stroke-width: 1.5;
+  stroke-linecap: square;
+  stroke-linejoin: miter;
   vertical-align: -0.14em;
 }
 
-/* ── Panel — a filled block that breaks the hairline rhythm ── */
+/* ── Panel — kept for content that still uses it: a hairline box, no radius ── */
 .panel {
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-sm);
+  background: var(--surface);
+  border: 1px solid var(--rule);
   padding: var(--space-6);
 }
 
-/* ── Stat chip — small pill of hard data ── */
+/* ── Stat chip — now a neutral pill ── */
 .stat {
   display: inline-flex;
   align-items: center;
   gap: var(--space-2);
-  padding: var(--space-1) var(--space-3);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-pill);
-  font-family: var(--font-mono);
-  font-size: var(--font-size-meta);
-  color: var(--color-muted);
+  padding: 3px 7px;
+  border: 1px solid var(--rule-strong);
+  font-family: var(--f-mono);
+  font-size: var(--fs-micro);
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-2);
   white-space: nowrap;
 }
-.stat .icon { color: var(--color-faint); font-size: 0.85rem; }
 
-/* ── Icon link — text + trailing/leading glyph ── */
-.iclink {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-2);
+/* ── Icon link ── */
+.iclink { display: inline-flex; align-items: center; gap: var(--space-2); }
+.iclink .icon { color: var(--ink-3); transition: color var(--transition); }
+.iclink:hover .icon { color: var(--signal-text); }
+
+.accent-hover:hover { color: var(--signal-text); }
+
+.visually-hidden {
+  position: absolute !important;
+  width: 1px; height: 1px;
+  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap;
 }
-.iclink .icon { color: var(--color-faint); transition: color var(--transition); }
-.iclink:hover .icon { color: var(--color-accent); }
-
-/* accent-aware hover for interactive text */
-.accent-hover:hover { color: var(--color-accent-ink); }

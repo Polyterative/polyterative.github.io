@@ -2,199 +2,252 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Icon from '../components/Icon.astro';
 import { releases } from '../data/releases';
+import { isoDots, pad } from '../lib/datum';
+
+// Chronological order (oldest first) gives every release a stable position number.
+const chrono = [...releases].sort((a, b) => a.date.localeCompare(b.date));
+const position = (title: string) => pad(chrono.findIndex((r) => r.title === title) + 1);
+const totalTracks = releases.reduce((sum, r) => sum + (r.tracks ?? 0), 0);
+const unknownTracks = releases.filter((r) => r.tracks == null).length;
+
+// ── Growth line (DESIGN.md §9): one node per year, one leaf per release, drawn in moss. ──
+const W = 960;
+const x0 = 40;
+const x1 = 900;
+const base = 186;
+const y0 = Number(chrono[0].year);
+const y1 = Math.max(Number(chrono.at(-1)!.year), new Date().getFullYear());
+const yearSpan = Math.max(1, y1 - y0);
+const X = (fy: number) => x0 + ((fy - y0) / yearSpan) * (x1 - x0);
+const waveY = (x: number) => base - Math.sin(((x - x0) / (x1 - x0)) * Math.PI * 3) * 5;
+const r1 = (n: number) => Math.round(n * 10) / 10;
+
+let trunk = `M${x0} ${r1(waveY(x0))}`;
+for (let i = 1; i <= 60; i++) {
+  const x = x0 + (i / 60) * (x1 - x0);
+  trunk += ` L${r1(x)} ${r1(waveY(x))}`;
+}
+
+// Stem heights cycle so neighbouring labels never collide; they carry no data themselves.
+const heights = [56, 96, 136];
+const leaves = chrono.map((r, i) => {
+  const d = new Date(r.date);
+  const fy = d.getUTCFullYear() + d.getUTCMonth() / 12 + (d.getUTCDate() - 1) / 365;
+  const bx = X(fy);
+  const by = waveY(bx);
+  const up = heights[i % heights.length];
+  const tx = bx + 14;
+  const ty = by - up;
+  return {
+    title: r.title,
+    stem: `M${r1(bx)} ${r1(by)} C ${r1(bx)} ${r1(by - up * 0.5)}, ${r1(tx)} ${r1(ty + up * 0.35)}, ${r1(tx)} ${r1(ty)}`,
+    leaf: `M${r1(tx)} ${r1(ty)} c 9 -2, 16 -10, 18 -20 c -10 1, -17 9, -18 20 z`,
+    lx: r1(tx + 22),
+    ly: r1(ty - 6),
+  };
+});
+const releaseYears = new Set(chrono.map((r) => Number(r.year)));
+const years = Array.from({ length: y1 - y0 + 1 }, (_, i) => y0 + i);
 ---
 
 <BaseLayout
   title="Music — Vlady Yakovenko"
   description="Discography of Polyterative (Vlady Yakovenko) — electronic music, modular synthesis, and ambient releases from 2017 to present."
+  serial="PLY-M"
 >
   <div class="container container--wide">
 
-    <div class="music-intro">
-      <header class="page-header">
+    <header class="page-head music-head">
+      <aside class="page-head__aside">
+        <span class="plate page-head__idx">04</span>
+        <span class="lbl">Alias</span>
+        <span class="data">Polyterative</span>
+        <span class="lbl">Releases</span>
+        <span class="data">{releases.length} · {y0}–{chrono.at(-1)!.year}</span>
+        <span class="lbl">Tracks</span>
+        <span class="data">{totalTracks} across {releases.length - unknownTracks} releases</span>
+      </aside>
+      <div class="page-head__main">
         <h1>Discography</h1>
-        <p class="page-desc">
+        <p class="page-head__lead">
           Electronic music under the Polyterative alias — experimental techno, modular synthesis, ambient.
-          <a href="https://polyterative.bandcamp.com" target="_blank" rel="noopener" class="bandcamp-link iclink">All releases on Bandcamp<Icon name="external" size={13} /></a>
         </p>
-      </header>
-
+        <div>
+          <a href="https://polyterative.bandcamp.com" target="_blank" rel="noopener" class="btn btn--primary">All releases on Bandcamp<Icon name="arrow-up-right" size={14} /></a>
+        </div>
+      </div>
       <figure class="music-hero">
-        <img
-          src="/peraspera-2024.jpg"
-          alt="Vlady Yakovenko performing a modular synthesis live set at perAspera festival, Bologna 2024"
-          width="1400"
-          height="1400"
-          loading="eager"
-          decoding="async"
-        />
-        <figcaption class="music-hero__cap">
-          <Icon name="music" size={12} />Live at perAspera festival — Bologna, 2024
-        </figcaption>
+        <div class="crop">
+          <img
+            src="/peraspera-2024.jpg"
+            alt="Vlady Yakovenko performing a modular synthesis live set at perAspera festival, Bologna 2024"
+            width="1400"
+            height="1400"
+            loading="eager"
+            decoding="async"
+          />
+        </div>
+        <figcaption class="figcap"><span class="lbl">Fig. 01</span><span>Live at perAspera festival — Bologna, 2024</span></figcaption>
       </figure>
-    </div>
+    </header>
 
-    <ul class="release-grid">
-      {releases.map(r => (
-        <li class:list={['release', { 'release--highlight': r.highlight }]}>
-          <a class="release__cover" href={r.url ?? undefined} target={r.url ? '_blank' : undefined} rel={r.url ? 'noopener' : undefined} aria-label={r.url ? `Listen to ${r.title} on Bandcamp` : undefined}>
-            <img src={r.cover} alt={`${r.title} album cover`} loading="lazy" width="600" height="600" />
-          </a>
-          <div class="release__body">
-            <div class="release__meta">
-              <time class="release__year"><Icon name="calendar" size={12} />{r.released}</time>
-              {r.tracks && <span class="release__tracks"><Icon name="disc" size={12} />{r.tracks} {r.tracks === 1 ? 'track' : 'tracks'}</span>}
-            </div>
-            <h2 class="release__title">
-              {r.url
-                ? <a class="iclink accent-hover" href={r.url} target="_blank" rel="noopener">{r.title}<Icon name="arrow-up-right" size={15} /></a>
-                : r.title
-              }
-            </h2>
-            {r.desc && (
-              <div class="release__desc">
-                {r.desc.split('\n\n').map(para => <p>{para}</p>)}
+    <section class="sec" aria-labelledby="growth-title">
+      <header class="sec__head">
+        <span class="plate sec__idx">01</span>
+        <h2 class="sec__title" id="growth-title">Growth</h2>
+        <span class="lbl">One leaf per release</span>
+      </header>
+      <div class="sec__body">
+        <div class="growth-wrap">
+          <svg class="growth" viewBox={`0 0 ${W} 240`} role="img" aria-labelledby="growth-desc">
+            <desc id="growth-desc">Releases from {y0} to {chrono.at(-1)!.year}, plotted by date: {chrono.map((r) => `${r.title} (${r.released})`).join(', ')}.</desc>
+            <line class="axis" x1={x0} y1={base + 22} x2={x1} y2={base + 22} />
+            {years.map((yr) => (
+              <>
+                <line class="axis" x1={r1(X(yr))} y1={base + 18} x2={r1(X(yr))} y2={base + 26} />
+                <text x={r1(X(yr))} y={base + 42} text-anchor="middle">{yr}</text>
+              </>
+            ))}
+            <path class="stem" d={trunk} />
+            {leaves.map((l) => (
+              <>
+                <path class="stem" d={l.stem} />
+                <path class="leaf" d={l.leaf} />
+                <text class="t" x={l.lx} y={l.ly}>{l.title}</text>
+              </>
+            ))}
+            {years.filter((yr) => !releaseYears.has(yr)).map((yr) => (
+              <circle class="bud" cx={r1(X(yr))} cy={r1(waveY(X(yr)))} r="2.5" />
+            ))}
+          </svg>
+        </div>
+      </div>
+    </section>
+
+    <section class="sec" aria-labelledby="releases-title">
+      <header class="sec__head">
+        <span class="plate sec__idx">02</span>
+        <h2 class="sec__title" id="releases-title">Releases</h2>
+        <span class="lbl">Newest first</span>
+      </header>
+      <div class="sec__body">
+        <ul class="release-grid">
+          {releases.map(r => (
+            <li class:list={['release', { 'release--highlight': r.highlight }]}>
+              <a class="release__cover" href={r.url ?? undefined} target={r.url ? '_blank' : undefined} rel={r.url ? 'noopener' : undefined} aria-label={r.url ? `Listen to ${r.title} on Bandcamp` : undefined}>
+                <img src={r.cover} alt={`${r.title} album cover`} loading="lazy" width="600" height="600" />
+              </a>
+              <div class="release__body">
+                <div class="release__meta">
+                  <span class="plate release__idx" title="Release number, oldest first">{position(r.title)}</span>
+                  <div class="release__stamps">
+                    <span class="lbl">Released</span>
+                    <time class="data" datetime={r.date}>{isoDots(r.date)}</time>
+                  </div>
+                  {r.tracks && (
+                    <div class="release__stamps">
+                      <span class="lbl">Tracks</span>
+                      <span class="data">{pad(r.tracks)}</span>
+                    </div>
+                  )}
+                </div>
+                <h3 class="release__title">
+                  {r.url
+                    ? <a href={r.url} target="_blank" rel="noopener">{r.title}<Icon name="arrow-up-right" size={15} /></a>
+                    : r.title
+                  }
+                </h3>
+                {r.desc && (
+                  <div class="release__desc">
+                    {r.desc.split('\n\n').map(para => <p>{para}</p>)}
+                  </div>
+                )}
+                <ul class="taglist">
+                  {r.genre.map(g => <li>{g}</li>)}
+                </ul>
               </div>
-            )}
-            <ul class="release__tags">
-              {r.genre.map(g => <li><span class="tag">{g}</span></li>)}
-            </ul>
-          </div>
-        </li>
-      ))}
-    </ul>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
 
   </div>
 </BaseLayout>
 
 <style>
-  .music-intro {
-    display: grid;
-    grid-template-columns: 1fr minmax(0, 300px);
-    align-items: center;
-    gap: var(--space-10);
-    padding-block: var(--space-12) var(--space-8);
-  }
-  .music-hero {
-    position: relative;
-    margin: 0;
-    justify-self: end;
-    width: 100%;
-    max-width: 300px;
-    border-radius: var(--radius);
-    overflow: hidden;
-    border: 1px solid var(--color-border);
-  }
-  .music-hero img {
-    width: 100%;
-    height: auto;
-    display: block;
-  }
-  .music-hero__cap {
-    position: absolute;
-    left: var(--space-4);
-    bottom: var(--space-4);
-    display: inline-flex;
-    align-items: center;
-    gap: var(--space-2);
-    font-family: var(--font-mono);
-    font-size: var(--font-size-meta);
-    color: rgba(255, 255, 255, 0.92);
-    padding: 4px 10px;
-    border-radius: var(--radius-pill);
-    background: rgba(0, 0, 0, 0.45);
-    backdrop-filter: blur(3px);
-  }
-  .music-hero__cap :global(.icon) { color: rgba(255, 255, 255, 0.92); }
+  .music-head { grid-template-columns: var(--gutter) minmax(0, 1fr) minmax(0, 280px); }
+  .music-hero { margin: 0; padding-top: var(--space-2); }
+  .music-hero img { width: 100%; height: auto; display: block; border: 1px solid var(--rule); }
 
-  .page-header {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-3);
-    max-width: var(--max-w);
+  /* ── Growth line ── */
+  .growth-wrap { overflow-x: auto; scrollbar-width: thin; }
+  svg.growth { display: block; width: 100%; min-width: 720px; height: auto; overflow: visible; }
+  svg.growth .stem { stroke: var(--moss); stroke-width: 1.25; fill: none; }
+  svg.growth .leaf { fill: var(--moss); }
+  svg.growth .bud { fill: var(--bg); stroke: var(--moss); stroke-width: 1; }
+  svg.growth .axis { stroke: var(--rule-strong); stroke-width: 1; }
+  svg.growth text {
+    font-family: var(--f-mono);
+    font-weight: 500;
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    fill: var(--ink-3);
   }
-  .page-header h1 { font-size: clamp(2rem, 5vw, 3rem); }
-  .page-desc {
-    color: var(--color-muted);
-    display: flex;
-    align-items: baseline;
-    gap: var(--space-4);
-    flex-wrap: wrap;
-  }
-  .bandcamp-link {
-    font-family: var(--font-mono);
-    font-size: var(--font-size-meta);
-    color: var(--color-muted);
-  }
-  .bandcamp-link:hover { color: var(--color-text); }
+  svg.growth text.t { fill: var(--ink-2); letter-spacing: 0; font-weight: 400; font-size: 12px; }
 
+  /* ── Releases ── */
   .release-grid {
     list-style: none;
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr));
-    gap: var(--space-10) var(--space-8);
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 250px), 1fr));
+    gap: var(--space-12) var(--space-8);
   }
 
-  .release { display: flex; flex-direction: column; gap: var(--space-4); }
-  .release--highlight { grid-column: 1 / -1; }
+  .release { display: flex; flex-direction: column; gap: var(--space-4); border-top: 1px solid var(--rule); padding-top: var(--space-4); }
+  .release--highlight {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: minmax(0, 380px) minmax(0, 1fr);
+    gap: var(--space-8);
+    border-top-color: var(--ink);
+  }
 
   .release__cover {
     display: block;
     aspect-ratio: 1 / 1;
     overflow: hidden;
-    border-radius: var(--radius);
-    border: 1px solid var(--color-border);
-    background: var(--color-hover);
+    border: 1px solid var(--rule);
+    background: var(--hover);
   }
-  .release--highlight .release__cover { max-width: 420px; }
+  .release__cover:hover { border-color: var(--ink); }
   .release__cover img { width: 100%; height: 100%; object-fit: cover; }
-  .release__cover:hover { opacity: 0.85; }
 
-  .release__body { display: flex; flex-direction: column; gap: var(--space-2); }
-  .release__meta { display: flex; align-items: baseline; gap: var(--space-3); }
-  .release__year {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--space-1);
-    font-family: var(--font-mono);
-    font-size: var(--font-size-meta);
-    color: var(--color-faint);
-  }
-  .release__tracks {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--space-1);
-    font-family: var(--font-mono);
-    font-size: var(--font-size-meta);
-    color: var(--color-faint);
-  }
-  .release__title { font-size: 1.1rem; font-weight: 600; letter-spacing: -0.02em; }
-  .release__title .icon { color: var(--color-faint); }
+  .release__body { display: flex; flex-direction: column; gap: var(--space-3); min-width: 0; }
+  .release__meta { display: flex; align-items: flex-end; gap: var(--space-5); }
+  .release__idx { font-size: 28px; color: var(--ink); }
+  .release--highlight .release__idx { font-size: 44px; }
+  .release__stamps { display: flex; flex-direction: column; gap: 2px; }
+  .release__stamps .data { color: var(--ink); }
+  .release__title { font-size: 20px; font-weight: 600; letter-spacing: -0.02em; }
+  .release--highlight .release__title { font-size: clamp(1.8rem, 4vw, 2.6rem); letter-spacing: -0.035em; }
+  .release__title a { display: inline-flex; align-items: center; gap: var(--space-2); }
+  .release__title a :global(.icon) { color: var(--ink-3); }
+  .release__title a:hover { color: var(--signal-text); }
+  .release__title a:hover :global(.icon) { color: currentColor; }
 
-  .release__desc {
-    font-size: var(--font-size-sm);
-    color: var(--color-muted);
-    line-height: 1.65;
-    max-width: 60ch;
-  }
+  .release__desc { font-size: 15px; color: var(--ink-2); line-height: 1.55; max-width: 60ch; }
+  .release--highlight .release__desc { font-size: 17px; }
   .release__desc p { max-width: none; margin-bottom: 0.6em; }
   .release__desc p:last-child { margin-bottom: 0; }
-  .release__tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-2);
-    list-style: none;
-    margin-top: var(--space-1);
-  }
 
-  @media (max-width: 640px) {
-    .music-intro {
-      grid-template-columns: 1fr;
-      gap: var(--space-6);
-    }
-    .music-hero { justify-self: start; max-width: 220px; }
+  @media (max-width: 1000px) {
+    .music-head { grid-template-columns: minmax(0, 1fr) minmax(0, 240px); }
+    .music-head .page-head__aside { grid-column: 1 / -1; }
   }
-  @media (max-width: 420px) {
-    .release-grid { grid-template-columns: 1fr; }
+  @media (max-width: 700px) {
+    .music-head { grid-template-columns: 1fr; }
+    .music-hero { max-width: 240px; }
+    .release--highlight { grid-template-columns: 1fr; gap: var(--space-4); }
   }
 </style>

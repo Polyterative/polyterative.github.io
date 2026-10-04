@@ -25,20 +25,16 @@ const iconRules: [RegExp, string][] = [
 const hay = [...tags, title].join(' ');
 const icon = iconRules.find(([re]) => re.test(hay))?.[1] ?? 'book';
 
-// Deterministic hue from title so generated covers stay coherent but distinct.
-const hue = [...title].reduce((h, c) => (h * 31 + c.charCodeAt(0)) % 360, 11);
-const hue2 = (hue + 42) % 360;
-const coverStyle = `--h1:${hue};--h2:${hue2}`;
 const coverLabel = tags[0] ?? 'Post';
 ---
 
-<div class:list={['pcover', `pcover--${variant}`, { 'pcover--gen': !cover }]} style={!cover ? coverStyle : undefined}>
+<div class:list={['pcover', `pcover--${variant}`, { 'gencover': !cover }]} role={!cover ? 'img' : undefined} aria-label={!cover ? `${title}: no cover image` : undefined}>
   {cover
-    ? <img class="pcover__img" src={cover} alt={`${title} cover`} loading="lazy" decoding="async" />
+    ? <img class="pcover__img" src={cover} alt={`${title} cover`} loading={variant === 'hero' ? 'eager' : 'lazy'} decoding="async" />
     : (
       <>
-        <Icon name={icon} size={variant === 'hero' ? 44 : 26} />
-        <span class="pcover__tag">{coverLabel}</span>
+        <Icon name={icon} size={variant === 'hero' ? 40 : 24} />
+        <span class="lbl gencover__lbl">{coverLabel}</span>
       </>
     )
   }
@@ -48,8 +44,9 @@ const coverLabel = tags[0] ?? 'Post';
   .pcover {
     position: relative;
     overflow: hidden;
-    border-radius: var(--radius-sm);
-    border: 1px solid var(--color-line);
+    border: 1px solid var(--rule);
+    background-color: var(--hover);
+    transition: border-color var(--transition);
   }
   .pcover--thumb { aspect-ratio: 16 / 10; }
   .pcover--hero { aspect-ratio: 21 / 9; }
@@ -60,30 +57,6 @@ const coverLabel = tags[0] ?? 'Post';
     object-fit: cover;
     object-position: top center;
     display: block;
-    transition: transform 0.4s ease;
   }
-
-  .pcover--gen {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: var(--space-2);
-    background:
-      radial-gradient(120% 120% at 15% 0%, hsl(var(--h1) 70% 62% / 0.85), transparent 60%),
-      linear-gradient(135deg, hsl(var(--h1) 55% 42%), hsl(var(--h2) 55% 34%));
-  }
-  .pcover--gen :global(.icon) { color: rgba(255, 255, 255, 0.92); }
-  .pcover__tag {
-    font-family: var(--font-mono);
-    font-size: var(--font-size-meta);
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
-    color: rgba(255, 255, 255, 0.85);
-    padding: 2px 8px;
-    border-radius: var(--radius-pill);
-    background: rgba(0, 0, 0, 0.22);
-    backdrop-filter: blur(2px);
-  }
-  .pcover--hero .pcover__tag { font-size: var(--font-size-sm); padding: 3px 12px; }
+  .pcover--thumb .gencover__lbl { left: var(--space-2); bottom: var(--space-1); }
 </style>
