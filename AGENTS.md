@@ -101,3 +101,9 @@ Rules:
   emphasis is the exception that proves it.
 - Small caps CSS utility lives in `src/pages/blog/[slug].astro` (`.prose :global(.caps)`) —
   letterspaced uppercase in the same sans, never applied to lowercase running text.
+
+## Images and SEO
+
+- New raster images go in `public/`, then run `node scripts/optimize-images.mjs` (recompresses to ≤1600px and writes a `.webp` sibling). Render them with `src/components/Img.astro` (adds intrinsic size + WebP `<picture>`); raw `<img>` in blog markdown is handled by `src/lib/rehype-images.mjs`.
+- Share cards are generated per post at `/og/<slug>.png` (`src/lib/og.ts`, satori + Departure Mono). Pages can pass `image`, `type`, `noindex`, `breadcrumbs` to `BaseLayout`.
+- Optional `updated:` frontmatter on a post feeds `dateModified` and sitemap `lastmod`.
