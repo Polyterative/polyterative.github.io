@@ -2,7 +2,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Icon from '../components/Icon.astro';
 import { education, experience } from '../data/experience';
-import { pad } from '../lib/datum';
+import { lroman } from '../lib/datum';
 
 const currentFocus = [
   { text: 'Shipping Kinetip — a native macOS pen-tablet driver, in release hardening', href: '/apps/kinetip' },
@@ -46,11 +46,11 @@ const links = [
 
     <header class="page-head">
       <aside class="page-head__aside">
-        <span class="plate page-head__idx">06</span>
+        <span class="plate page-head__idx">0x06</span>
         <span class="lbl">Handle</span>
         <span class="data">polyterative</span>
         <span class="lbl">Base</span>
-        <span class="data">Bologna, Italy</span>
+        <span class="data">Castelfranco Emilia, Italy</span>
         <span class="lbl">Email</span>
         <a class="data about-mail" href="mailto:polyterative@outlook.com">polyterative@outlook.com</a>
       </aside>
@@ -67,7 +67,7 @@ const links = [
 
     <section class="sec">
       <header class="sec__head">
-        <span class="plate sec__idx">01</span>
+        <span class="plate sec__idx">A</span>
         <h2 class="sec__title">Practice</h2>
         <span class="lbl">{profileSnapshot.length} fields</span>
       </header>
@@ -75,7 +75,7 @@ const links = [
         <dl class="htbl">
           {profileSnapshot.map((item, i) => (
             <div>
-              <dt><span class="n">{pad(i + 1)}</span>{item.label}</dt>
+              <dt><span class="n">{lroman(i + 1)}</span>{item.label}</dt>
               <dd>{item.value}</dd>
             </div>
           ))}
@@ -85,7 +85,7 @@ const links = [
 
     <section class="sec">
       <header class="sec__head">
-        <span class="plate sec__idx">02</span>
+        <span class="plate sec__idx">B</span>
         <h2 class="sec__title">Now</h2>
         <span class="lbl">{currentFocus.length} active threads</span>
       </header>
@@ -97,7 +97,7 @@ const links = [
               const ext = item.href.startsWith('http');
               return (
                 <li>
-                  <span class="lbl now-list__n">{pad(i + 1)}</span>
+                  <span class="lbl now-list__n">{lroman(i + 1)}</span>
                   <a href={item.href} target={ext ? '_blank' : undefined} rel={ext ? 'noopener' : undefined}>
                     {item.text}<Icon name={ext ? 'arrow-up-right' : 'arrow-right'} size={13} />
                   </a>
@@ -111,7 +111,7 @@ const links = [
 
     <section class="sec">
       <header class="sec__head">
-        <span class="plate sec__idx">03</span>
+        <span class="plate sec__idx">C</span>
         <h2 class="sec__title">Experience</h2>
         <span class="lbl">{experience.length} roles</span>
       </header>
@@ -139,7 +139,7 @@ const links = [
 
     <section class="sec">
       <header class="sec__head">
-        <span class="plate sec__idx">04</span>
+        <span class="plate sec__idx">D</span>
         <h2 class="sec__title">Education</h2>
       </header>
       <div class="sec__body">
@@ -158,7 +158,7 @@ const links = [
 
     <section class="sec" id="tools">
       <header class="sec__head">
-        <span class="plate sec__idx">05</span>
+        <span class="plate sec__idx">E</span>
         <h2 class="sec__title">Tools</h2>
         <span class="lbl">{tools.length} groups</span>
       </header>
@@ -166,7 +166,7 @@ const links = [
         <dl class="htbl tools">
           {tools.map((group, i) => (
             <div>
-              <dt><span class="n">{pad(i + 1)}</span>{group.label}</dt>
+              <dt><span class="n">{lroman(i + 1)}</span>{group.label}</dt>
               <dd>
                 <ul class="taglist tools__items">
                   {group.items.map(item => <li>{item}</li>)}
@@ -180,7 +180,7 @@ const links = [
 
     <section class="sec">
       <header class="sec__head">
-        <span class="plate sec__idx">06</span>
+        <span class="plate sec__idx">F</span>
         <h2 class="sec__title">Find me</h2>
       </header>
       <div class="sec__body">

@@ -6,6 +6,27 @@
 /** Zero-padded index, e.g. pad(3) → "03". */
 export const pad = (n: number, width = 2) => String(n).padStart(width, '0');
 
+/*
+ * Counting systems — one per kind of counter, used the same way on every page:
+ *   hex      site sections         §0x03
+ *   letter   sections inside a page A, B, C
+ *   roman    registries (apps, releases)  III
+ *   decimal  posts (No. 019) and plain quantities (19)
+ *   greek    figures               Fig. α
+ *   lroman   list items            i, ii, iii
+ */
+export const hex = (n: number) => `0x${n.toString(16).toUpperCase().padStart(2, '0')}`;
+export const letter = (n: number) => String.fromCharCode(64 + n);
+export const roman = (n: number) => {
+  let out = '';
+  for (const [v, s] of [[1000, 'M'], [900, 'CM'], [500, 'D'], [400, 'CD'], [100, 'C'], [90, 'XC'], [50, 'L'], [40, 'XL'], [10, 'X'], [9, 'IX'], [5, 'V'], [4, 'IV'], [1, 'I']] as const) {
+    while (n >= v) { out += s; n -= v; }
+  }
+  return out;
+};
+export const lroman = (n: number) => roman(n).toLowerCase();
+export const greek = (n: number) => 'αβγδεζηθικλμνξοπρστυφχψω'[n - 1] ?? String(n);
+
 /** "2026-08-07" → "2026.08.07" (ISO order, dots — DESIGN.md §9 version stamp). */
 export const isoDots = (date: string | Date) => {
   const d = typeof date === 'string' ? new Date(date) : date;
@@ -23,16 +44,16 @@ export const sections = [
 ] as const;
 
 export interface SectionInfo {
-  index: string;   // "00" for home, "01".."06" in nav order, "—" for pages outside the nav
+  index: string;   // "0x00" for home, "0x01".."0x06" in nav order, "—" for pages outside the nav
   label: string;
   code: string;
 }
 
 export function sectionFor(pathname: string): SectionInfo {
-  if (pathname === '/' || pathname === '') return { index: '00', label: 'Index', code: 'IDX' };
+  if (pathname === '/' || pathname === '') return { index: hex(0), label: 'Index', code: 'IDX' };
   const i = sections.findIndex((s) => pathname === s.href || pathname.startsWith(`${s.href}/`));
   if (i === -1) return { index: '—', label: 'Off-index', code: 'X' };
-  return { index: pad(i + 1), label: sections[i].label, code: sections[i].code };
+  return { index: hex(i + 1), label: sections[i].label, code: sections[i].code };
 }
 
 export type StatusTone = 'live' | 'signal' | 'cold' | 'neutral';

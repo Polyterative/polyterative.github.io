@@ -2,7 +2,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import ProjectCard from '../components/ProjectCard.astro';
 import Icon from '../components/Icon.astro';
-import { pad } from '../lib/datum';
+import { letter, lroman } from '../lib/datum';
 
 const sectionIcons: Record<string, string> = {
   code: 'code',
@@ -208,7 +208,7 @@ const entryCount = archiveSections.reduce((n, s) => n + s.projects.length, 0);
   <div class="container container--wide">
     <header class="page-head">
       <aside class="page-head__aside">
-        <span class="plate page-head__idx">02</span>
+        <span class="plate page-head__idx">0x02</span>
         <span class="lbl">Entries</span>
         <span class="data">{entryCount}</span>
         <span class="lbl">Sections</span>
@@ -228,14 +228,14 @@ const entryCount = archiveSections.reduce((n, s) => n + s.projects.length, 0);
     <nav class="index-nav" aria-label="Jump to section">
       <a href="/apps" class="index-nav__link"><span class="lbl">A</span>Applications</a>
       {archiveSections.map((s, i) => (
-        <a href={`#${s.id}`} class="index-nav__link"><span class="lbl">{pad(i + 1)}</span>{s.label}</a>
+        <a href={`#${s.id}`} class="index-nav__link"><span class="lbl">{letter(i + 1)}</span>{s.label}</a>
       ))}
     </nav>
 
     {archiveSections.map((section, si) => (
       <section class="sec domain" id={section.id} aria-labelledby={`h-${section.id}`}>
         <header class="sec__head">
-          <span class="plate sec__idx">{pad(si + 1)}</span>
+          <span class="plate sec__idx">{letter(si + 1)}</span>
           <span class="lbl">{section.label}</span>
           <h2 class="sec__title" id={`h-${section.id}`}>{section.title}</h2>
           <span class="lbl">{section.projects.length} {section.projects.length === 1 ? 'entry' : 'entries'}</span>
@@ -244,7 +244,7 @@ const entryCount = archiveSections.reduce((n, s) => n + s.projects.length, 0);
           <ul class="grid">
             {section.projects.map((p, i) => (
               <li class:list={[{ 'grid__span': p.featured }]}>
-                <ProjectCard {...p} icon={sectionIcons[section.id]} index={pad(i + 1)} />
+                <ProjectCard {...p} icon={sectionIcons[section.id]} index={lroman(i + 1)} />
               </li>
             ))}
           </ul>

@@ -5,7 +5,6 @@ import Icon from '../components/Icon.astro';
 import { experience } from '../data/experience';
 import { releases } from '../data/releases';
 import { timelineMilestones, type TimelineCategory } from '../data/timeline';
-import { pad } from '../lib/datum';
 
 interface TimelineItem {
   id: string;
@@ -111,7 +110,7 @@ for (const item of items) {
     <header class="timeline-header">
       <div class="page-head timeline-header__copy">
         <aside class="page-head__aside">
-          <span class="plate page-head__idx">03</span>
+          <span class="plate page-head__idx">0x03</span>
           <span class="lbl">Span</span>
           <span class="data">{minYear}–{maxYear}</span>
           <span class="lbl">Entries</span>
@@ -175,7 +174,7 @@ for (const item of items) {
         <section class="timeline-year" id={`year-${year}`} data-timeline-year>
           <div class="timeline-year__stamp">
             <h2 class="plate">{year}</h2>
-            <span class="lbl">{pad(yearItems.length)} {yearItems.length === 1 ? 'entry' : 'entries'}</span>
+            <span class="lbl">{yearItems.length} {yearItems.length === 1 ? 'entry' : 'entries'}</span>
           </div>
           <div class="timeline-year__events">
             {yearItems.map((item) => {

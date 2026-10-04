@@ -24,7 +24,8 @@ quiet and slightly cold, but made by one person who cares about every small deci
 
 ## 2. Where it comes from
 
-Six reference families, each contributing something specific.
+Six reference families, each contributing something specific. The overall mood is northern:
+cold overcast light, restraint, clean surfaces, and something faintly strange in the filing.
 
 | Source | What it looks like | What we take from it |
 |---|---|---|
@@ -33,7 +34,7 @@ Six reference families, each contributing something specific.
 | **Brutalist architecture** | Raw concrete, repeated modular facades, cantilevers, overcast flat light, mass and shadow, plants growing against it | Honest structure, repetition as rhythm, heavy blocks against empty space, grey as a material, the soft/hard contrast of greenery on concrete |
 | **Generative / signal** | Black fields with wireframe terrain, halftone, glitch smear, scanlines, test charts, ASCII, terminal logs | Texture made from data, procedural imagery, the screen as a medium with its own artefacts |
 | **Modular synthesis** | Eurorack panels: a fixed height, widths in HP units, silkscreened short labels, rows of identical knobs and jacks, inverted labels on outputs, patch cables crossing the rack | Coherency across modules, controls you can operate by feel, signal flow as layout, inputs vs outputs |
-| **Institutional brutalism** (the *Control* game by Remedy) | A bureau inside a concrete monolith: forms, filing codes, redaction bars, classification lines, huge location names cut across the screen | The document as an institution, redaction as a mark, giant title cards, mass as composition |
+| **Institutional brutalism** | A quiet bureau inside a concrete monolith, slightly uncanny: forms, filing codes, redaction bars, classification lines, huge location names cut across the screen | The document as an institution, redaction as a mark, giant title cards, mass as composition |
 
 What ties them together: **nothing is ornamental unless it is also information**, the
 structure underneath (grid, module, measurement) is allowed to show, and **the same thing
@@ -317,7 +318,7 @@ carrying real information.
 
 | Mark | Form | Typical content |
 |---|---|---|
-| **Index** | `01`, `02/14`, `§3` (Departure if ≥20px, else Plex) | Section number, page of total, item position |
+| **Index** | `§0x03`, `B`, `III`, `No. 019`, `Fig. α`, `ii` (Departure if ≥20px, else Plex) | See counting systems below |
 | **Serial / ID** | `PLY-2026-014`, `OBJ-01` | Document or project identifier |
 | **Version stamp** | `v0.2 · 2026.10.04` | Revision and date (ISO, dots or dashes) |
 | **Coordinates** | `00.0000° N, 00.0000° E` | Place of origin, only if true |
@@ -337,12 +338,27 @@ carrying real information.
 | **Growth line** | A branching hairline in moss, drawn from real data (one node per year, one leaf per item) | Releases, milestones, years of a project. The only organic shape in the system |
 | **Title card** | A word set huge, uppercase grotesk, cropped by the frame | Section or place name at a section start |
 
+### Counting systems
+
+Each kind of counter has its own system, the same on every page (helpers in `src/lib/datum.ts`).
+Decimal means "how many" or the post number; every other system means "which one".
+
+| Counts | System | Example |
+|---|---|---|
+| Site sections | Hex | `§0x03 Timeline` |
+| Sections inside a page | Uppercase letters | `A`, `B` |
+| Registries (apps, releases) | Roman numerals, no total | `III`, `PLY-A-III` |
+| Posts | 3-digit decimal | `No. 019` |
+| Figures | Greek letters | `Fig. α` |
+| List items | Lowercase roman | `i`, `ii` |
+| Quantities | Plain decimal, no padding | `19` |
+
 Hairlines are 1px on screen, 0.5pt in print. Corners are sharp (radius 0). The only exception
 is a deliberate physical-object reference (a rounded hang tag, a jack, a screw head).
 
 ## 10. The institutional layer
 
-From the bureau in *Control*: documents that behave like they belong to an institution,
+From the bureau: documents that behave like they belong to an institution,
 inside a concrete building. Use it for proposals, reports, spec sheets, archive pages.
 
 - **Forms, not pages.** Numbered fields (`01 Title`, `02 Owner`, `03 Status`) laid out like a
@@ -448,10 +464,12 @@ between cold labels and warm, direct prose is intentional.
   the grotesk.
 - 2026-10-04 (v0.2): Signal toned down a touch: `#FF4F1F` → `#EA562A`.
 - 2026-10-04 (v0.2): Added material texture, control-surface rules (modular synthesis) and the
-  institutional layer (*Control*).
+  institutional layer.
 
 - 2026-10-04 (v0.3): Added moss (`#55664A` / `#8FA27A`) as a balance colour, max ~3% per
   view, always less than signal. Added the growth line mark and the planter block.
+- 2026-10-04: Counting systems per counter type (hex, letters, roman, greek); light motion
+  (settle-in on load, reveal on scroll); secondary labels pushed further back in colour.
 
 ## Open decisions
 

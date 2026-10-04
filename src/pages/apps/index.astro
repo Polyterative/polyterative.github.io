@@ -2,9 +2,9 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Icon from '../../components/Icon.astro';
 import { apps, featuredApps, moreApps } from '../../data/apps';
-import { pad, parseStatus, pillClass } from '../../lib/datum';
+import { roman, greek, parseStatus, pillClass } from '../../lib/datum';
 
-const position = (slug: string) => pad(apps.findIndex((a) => a.slug === slug) + 1);
+const position = (slug: string) => roman(apps.findIndex((a) => a.slug === slug) + 1);
 const isExternal = (href: string) => href.startsWith('http');
 ---
 
@@ -16,7 +16,7 @@ const isExternal = (href: string) => href.startsWith('http');
   <div class="container container--wide">
     <header class="page-head">
       <aside class="page-head__aside">
-        <span class="plate page-head__idx">01</span>
+        <span class="plate page-head__idx">0x01</span>
         <span class="lbl">Registry</span>
         <span class="data">{apps.length} applications</span>
         <span class="lbl">Flagships</span>
@@ -45,7 +45,7 @@ const isExternal = (href: string) => href.startsWith('http');
               <a class="showcase__frame crop" href={`/apps/${app.slug}`} aria-label={`${app.name} — view application page`}>
                 <img src={app.hero} alt={app.heroAlt} loading={i === 0 ? 'eager' : 'lazy'} decoding="async" />
               </a>
-              <p class="figcap"><span class="lbl">Fig. {pad(i + 1)}</span><span>{app.heroAlt}</span></p>
+              <p class="figcap"><span class="lbl">Fig. <span class="nocase">{greek(i + 1)}</span></span><span>{app.heroAlt}</span></p>
             </div>
             <div class="showcase__body">
               <div class="showcase__kicker">

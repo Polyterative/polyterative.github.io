@@ -2,8 +2,9 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Icon from '../components/Icon.astro';
 import { apps } from '../data/apps';
+import { italy, europe } from '../data/map-italy';
 import { releases } from '../data/releases';
-import { pad, isoDots, sections, parseStatus, pillClass } from '../lib/datum';
+import { pad, isoDots, hex, roman, greek, letter, sections, parseStatus, pillClass } from '../lib/datum';
 import { getCollection } from 'astro:content';
 
 const allPosts = (await getCollection('blog', ({ data }) => !data.draft))
@@ -69,7 +70,7 @@ const modules = selectedProjects.map((p) => {
   return {
     ...p,
     slug,
-    registry: pad(apps.indexOf(app) + 1),
+    registry: roman(apps.indexOf(app) + 1),
     platform: app.platform,
     status,
     version: fact(slug, 'Current version'),
@@ -136,14 +137,42 @@ const postCount = allPosts.length;
 const serial = 'PLY-IDX';
 const bits = [...serial].flatMap((ch) => [...ch.charCodeAt(0).toString(2).padStart(8, '0')]);
 const latestPost = allPosts[0];
-const record = [
-  { label: 'Posts', value: pad(postCount) },
-  { label: 'Apps', value: pad(apps.length) },
-  { label: 'Releases', value: pad(releaseCount) },
-  { label: 'Since', value: String(y0) },
+// Cover stub: where I am, drawn as a hairline instrument map from real coordinates.
+// Equirectangular, longitude scaled by cos(44.5°); 1° of latitude = 100 units.
+const home = { name: 'Castelfranco Emilia', lat: 44.5967, lon: 11.0525 };
+const kx = 100 * Math.cos((home.lat * Math.PI) / 180);
+const proj = (lat: number, lon: number) => ({ x: (lon - home.lon) * kx, y: (home.lat - lat) * 100 });
+const mapW = 1200, mapH = 420;
+// Graticule every 5°, wide enough to cover the zoomed-out Europe view.
+const meridians = Array.from({ length: 21 }, (_, i) => -40 + i * 5).map((lon) => proj(0, lon).x);
+const parallels = Array.from({ length: 11 }, (_, i) => 25 + i * 5).map((lat) => proj(lat, 0).y);
+const gridExtent = 6000;
+const coord = (v: number, pos: string, neg: string) => `${Math.abs(v).toFixed(4)}° ${v >= 0 ? pos : neg}`;
+
+// Boot log shown while the cover powers on. Every figure is real.
+const bootLog = [
+  [`${serial} · cold start`, 'v0.3'],
+  ['mount /software', 'ok'],
+  ['mount /visuals', 'ok'],
+  ['mount /sound', 'ok'],
+  [`index ${postCount} posts · ${apps.length} apps · ${releaseCount} releases`, 'ok'],
+  [`locate ${home.lat.toFixed(4)} N ${home.lon.toFixed(4)} E`, 'ok'],
+  ['ready', '▮'],
 ];
 
-const contents = sections.map((s, i) => ({ ...s, index: pad(i + 1) }));
+// Title word materials. visuals: each letter has a geometric alter ego it passes through.
+const geo = ['circle', 'square', 'diamond', 'pill', 'square', 'circle', 'diamond'];
+const visualLetters = [...'visuals'].map((c, i) => ({ c, shape: geo[i % geo.length] }));
+// sound: a waveform of bars under the letters. Amplitudes follow a spoken-word envelope
+// (two syllable humps) with a deterministic wobble, so the shape is the same every build.
+const waveBars = Array.from({ length: 32 }, (_, i) => {
+  const t = i / 31;
+  const env = Math.max(Math.sin(Math.PI * Math.min(1, t / 0.55)), 0.6 * Math.sin(Math.PI * Math.max(0, (t - 0.45) / 0.55)));
+  const wob = 0.55 + 0.45 * Math.abs(Math.sin(i * 1.7) * Math.cos(i * 0.6));
+  return { a: (0.12 + 0.88 * env * wob).toFixed(2), b: (0.12 + 0.7 * env * (1 - wob * 0.6)).toFixed(2) };
+});
+
+const contents = sections.map((s, i) => ({ ...s, index: hex(i + 1) }));
 ---
 
 <BaseLayout
@@ -152,46 +181,109 @@ const contents = sections.map((s, i) => ({ ...s, index: pad(i + 1) }));
   isHome={true}
   serial={serial}
 >
-  <div class="container container--wide">
+  <div class="container container--wide home">
 
     <!-- ── 00 · Cover ── -->
+    <!-- Boot runs on every visit to home, before the cover paints; skipped for reduced motion. -->
+    <script is:inline>
+      (function () {
+        if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+        var root = document.documentElement, timer;
+        function boot() {
+          clearTimeout(timer);
+          root.classList.remove('booting');
+          void root.offsetWidth;
+          root.classList.add('booting');
+          timer = setTimeout(function () { root.classList.remove('booting'); }, 7600);
+        }
+        boot();
+        // Coming back via the browser's back button restores a frozen page; boot it again.
+        window.addEventListener('pageshow', function (e) { if (e.persisted) boot(); });
+      })();
+    </script>
     <section class="cover" aria-labelledby="cover-title">
       <div class="field">
+        <ol class="boot" aria-hidden="true">
+          {bootLog.map((l, n) => (
+            <li style={`--n:${n}`}><span>{l[0]}</span><i></i><span>{l[1]}</span></li>
+          ))}
+        </ol>
         <div class="field__top">
           <span class="lbl">Vlady Yakovenko · Personal archive</span>
-          <span class="lbl">§00 Index · {serial}</span>
+          <span class="lbl">§{hex(0)} Index · {serial}</span>
         </div>
-        <h1 class="field__title" id="cover-title">Designer working across software, visuals, and sound.</h1>
-        <dl class="field__rec">
-          {record.map((r) => (
-            <div>
-              <dt class="lbl">{r.label}</dt>
-              <dd class="plate">{r.value}</dd>
-            </div>
-          ))}
-        </dl>
+        <h1 class="field__title" id="cover-title">
+          <span class="visually-hidden">Designer working across software, visuals, and sound.</span>
+          <span aria-hidden="true">Designer working across <span class="w"><span class="w--code" data-word="software">software</span>,</span> <span class="w"><span class="w--motion">{visualLetters.map((l, i) => (
+            <span class="g" style={`--i:${i}`}><span class="g__c">{l.c}</span><i class:list={['g__s', `g__s--${l.shape}`]}></i></span>
+          ))}</span>,</span> and <span class="w"><span class="w--sound"><span class="s__txt">sound</span><span class="s__wave">{waveBars.map((b, i) => (
+            <i style={`--i:${i};--a:${b.a};--b:${b.b}`}></i>
+          ))}</span></span>.</span></span>
+        </h1>
         <div class="field__word" aria-hidden="true"><span>Polyterative</span></div>
+        <div class="stub">
+          <div class="stub__id">
+            <span class="lbl">Based in</span>
+            <span class="stub__place">Castelfranco Emilia, Italy</span>
+            <span class="lbl">{coord(home.lat, 'N', 'S')} · {coord(home.lon, 'E', 'W')}</span>
+            <span class="lbl">Local <time class="stub__clock" id="local-time">--:--</time></span>
+          </div>
+          <svg class="stub__map" viewBox={`${-mapW / 2} ${-mapH / 2} ${mapW} ${mapH}`} preserveAspectRatio="xMidYMid slice" role="img" aria-label="Map of Italy with Castelfranco Emilia marked; hover to zoom out to Europe">
+            <defs>
+              <radialGradient id="map-fade" cx="50%" cy="50%" r="50%">
+                <stop offset="55%" stop-color="#fff" />
+                <stop offset="100%" stop-color="#fff" stop-opacity="0" />
+              </radialGradient>
+              <mask id="map-mask" maskUnits="userSpaceOnUse" x={-mapW / 2} y={-mapH / 2} width={mapW} height={mapH}>
+                <rect x={-mapW / 2} y={-mapH / 2} width={mapW} height={mapH} fill="url(#map-fade)" />
+              </mask>
+            </defs>
+            <g mask="url(#map-mask)" class="map__reveal">
+              <g class="map__pan">
+                <g class="map__zoom">
+                  <g class="map__grid">
+                    {meridians.map((x) => <line x1={x} x2={x} y1={-gridExtent} y2={gridExtent} />)}
+                    {parallels.map((y) => <line x1={-gridExtent} x2={gridExtent} y1={y} y2={y} />)}
+                  </g>
+                  <path class="map__europe" d={europe} />
+                  <path class="map__italy" d={italy} />
+                </g>
+                <g class="map__home">
+                  <circle r="1" class="map__ping" />
+                  <g class="map__cross">
+                    <circle r="22" class="map__ring" />
+                    <line x1="-32" x2="-10" y1="0" y2="0" /><line x1="10" x2="32" y1="0" y2="0" />
+                    <line y1="-32" y2="-10" x1="0" x2="0" /><line y1="10" y2="32" x1="0" x2="0" />
+                    <rect x="-2.5" y="-2.5" width="5" height="5" />
+                  </g>
+                  <polyline class="map__leader" points="16,-16 44,-44 292,-44" pathLength="1" />
+                  <text class="map__label" x="50" y="-54">Castelfranco Emilia</text>
+                </g>
+              </g>
+            </g>
+          </svg>
+        </div>
       </div>
 
       <figure class="slab plate-fig">
         <div class="plate-fig__hd">
-          <span class="lbl">Fig. 01</span>
+          <span class="lbl">Fig. <span class="nocase">{greek(1)}</span></span>
           <span class="lbl">Portrait</span>
         </div>
         <img
           src="/vlady.jpg"
-          alt="Portrait of Vlady Yakovenko, Paris 2023"
+          alt="Portrait of Vlady Yakovenko, 2023"
           width="1200"
           height="1200"
           loading="eager"
           decoding="async"
         />
         <figcaption class="plate-fig__cap">
-          <span class="data">Paris, 2023</span>
+          <span class="data">Portrait, 2023</span>
           <span class="lbl">Latest entry <time datetime={latestPost.data.date}>{isoDots(latestPost.data.date)}</time></span>
         </figcaption>
         <div class="plate-fig__strip" aria-hidden="true">
-          {bits.map((b) => <i class:list={{ on: b === '1' }}></i>)}
+          {bits.map((b, n) => <i class:list={{ on: b === '1' }} style={`--n:${n}`}></i>)}
         </div>
         <span class="lbl plate-fig__serial">{serial} · {bits.length} bits</span>
       </figure>
@@ -201,7 +293,7 @@ const contents = sections.map((s, i) => ({ ...s, index: pad(i + 1) }));
     <section class="intro" aria-label="Introduction">
       <aside class="intro__aside">
         <span class="lbl">Base</span>
-        <span class="data">Bologna, Italy</span>
+        <span class="data">Castelfranco Emilia, Italy</span>
         <span class="lbl">Practice</span>
         <ul class="intro__facts">
           <li class="stat">design</li>
@@ -263,7 +355,7 @@ const contents = sections.map((s, i) => ({ ...s, index: pad(i + 1) }));
       <!-- ── 01 · Selected work, as a rack ── -->
       <section class="sec sec--rack" id="work">
         <header class="sec__head">
-          <span class="plate sec__idx">01</span>
+          <span class="plate sec__idx">{letter(1)}</span>
           <h2 class="sec__title">A few things I've made</h2>
           <span class="lbl">{selectedProjects.length} of {apps.length} applications</span>
         </header>
@@ -280,7 +372,7 @@ const contents = sections.map((s, i) => ({ ...s, index: pad(i + 1) }));
               <i class="screw bl" aria-hidden="true"></i><i class="screw br" aria-hidden="true"></i>
 
               <div class="mod__hd">
-                <span class="mod__reg"><span class="plate">{m.registry}</span><span class="lbl">/{pad(apps.length)}</span></span>
+                <span class="mod__reg"><span class="plate">{m.registry}</span></span>
                 <span class={pillClass(m.status.tone)}>{m.status.head}</span>
               </div>
 
@@ -330,7 +422,7 @@ const contents = sections.map((s, i) => ({ ...s, index: pad(i + 1) }));
       {featuredPosts.length > 0 && (
         <section class="sec" id="writing">
           <header class="sec__head">
-            <span class="plate sec__idx">02</span>
+            <span class="plate sec__idx">{letter(2)}</span>
             <h2 class="sec__title">Writing</h2>
             <span class="lbl">{featuredPosts.length} of {allPosts.length} posts</span>
           </header>
@@ -416,6 +508,57 @@ const contents = sections.map((s, i) => ({ ...s, index: pad(i + 1) }));
   window.addEventListener('load', drawPatches);
 </script>
 
+<script is:inline>
+  // One sequencer plays the three title words in turn: software → visuals → sound.
+  (function () {
+    var code = document.querySelector('.w--code');
+    var motion = document.querySelector('.w--motion');
+    var sound = document.querySelector('.w--sound');
+    if (!code || (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches)) return;
+    var word = code.dataset.word, glyphs = '01{}<>/=;_#$';
+
+    function play(el, ms) {
+      el.classList.remove('is-playing');
+      void el.offsetWidth;
+      el.classList.add('is-playing');
+      setTimeout(function () { el.classList.remove('is-playing'); }, ms);
+    }
+    function scramble() {
+      var frame = 0, total = 18;
+      play(code, 1300);
+      var id = setInterval(function () {
+        frame++;
+        code.textContent = word.split('').map(function (c, i) {
+          return frame > total * (i + 1) / word.length ? c : glyphs[(Math.random() * glyphs.length) | 0];
+        }).join('');
+        if (frame >= total) { clearInterval(id); code.textContent = word; }
+      }, 45);
+    }
+
+    // Each word gets its turn, then hands over; a longer rest closes the bar.
+    var step = 0;
+    var steps = [scramble, function () { play(motion, 2800); }, function () { play(sound, 2900); }];
+    var gaps = [1600, 3000, 5000];
+    function tick() {
+      if (!document.hidden) steps[step % 3]();
+      setTimeout(tick, gaps[step % 3]);
+      step++;
+    }
+    setTimeout(tick, document.documentElement.classList.contains('booting') ? 2750 : 1000);
+  })();
+</script>
+
+<script is:inline>
+  (function () {
+    var el = document.getElementById('local-time');
+    if (!el) return;
+    var fmt = new Intl.DateTimeFormat('en-GB', { timeZone: 'Europe/Rome', hour: '2-digit', minute: '2-digit', timeZoneName: 'short' });
+    function tick() { el.textContent = fmt.format(new Date()); }
+    tick();
+    setInterval(tick, 15000);
+  })();
+</script>
+
 <style>
   /* ═══ Cover ═══════════════════════════════════════════════════════════
      The one loud surface: a signal field with ink grain (DESIGN.md §14),
@@ -461,42 +604,247 @@ const contents = sections.map((s, i) => ({ ...s, index: pad(i + 1) }));
     text-wrap: balance;
   }
 
-  .field__rec {
-    display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    margin-top: auto;
-    padding-top: var(--space-10);
+  /* Title words: three materials, one sequencer (see script).
+     Each word rests in the material of its medium and, on its turn, shows the medium at work.
+     Same tempo and easing family throughout, one word at a time — a single instrument.
+     software → code:   rests in mono; glyphs scramble and resolve left to right.
+     visuals  → vector: rests as an outline; letters dissolve into geometric primitives that
+                        turn and morph, then resolve back into type.
+     sound    → signal: rests as letters cut from waveform bars; the letters fall away into a
+                        live waveform that swells and decays, then the word re-forms. */
+  .w { display: inline-block; white-space: nowrap; }
+  .w--code { display: inline-block; position: relative; font-family: var(--f-plate); font-weight: 400; letter-spacing: -0.06em; font-size: 0.9em; margin-right: -0.02em; }
+  @keyframes caret { 50% { opacity: 0; } }
+
+  /* visuals — glyph and primitive cross-dissolve, so there is never an empty frame. */
+  .w--motion { display: inline-block; }
+  .g { position: relative; display: inline-block; }
+  .g__c { display: inline-block; color: transparent; -webkit-text-stroke: 0.024em var(--on-signal); }
+  .g__s {
+    position: absolute;
+    left: 50%;
+    top: 0.34em;
+    width: 0.34em;
+    height: 0.34em;
+    margin-left: -0.17em;
+    border: 0.024em solid var(--on-signal);
+    opacity: 0;
+    pointer-events: none;
   }
-  .field__rec > div {
+  .g__s--circle  { border-radius: 50%; }
+  .g__s--diamond { rotate: 45deg; scale: 0.82; }
+  .g__s--pill    { border-radius: 0.17em; width: 0.18em; margin-left: -0.09em; }
+  .w--motion.is-playing .g__c,
+  .w--motion.is-playing .g__s { animation-duration: 2200ms; animation-timing-function: cubic-bezier(0.45, 0, 0.55, 1); animation-fill-mode: both; animation-delay: calc(var(--i) * 70ms); }
+  .w--motion.is-playing .g__c { animation-name: geo-glyph; }
+  .w--motion.is-playing .g__s { animation-name: geo-shape; }
+  @keyframes geo-glyph {
+    0%, 100% { opacity: 1; transform: none; filter: blur(0); }
+    22%, 74% { opacity: 0; transform: scale(0.82); filter: blur(0.02em); }
+  }
+  @keyframes geo-shape {
+    0%   { opacity: 0; transform: scale(1.5); }
+    24%  { opacity: 1; transform: scale(1); }
+    50%  { transform: rotate(90deg) scale(1); }
+    72%  { opacity: 1; transform: rotate(90deg) scale(1); }
+    100% { opacity: 0; transform: rotate(90deg) scale(0.6); }
+  }
+
+  /* sound — the letters dissolve left to right into the waveform that drew them, and
+     re-form in the same direction as the signal decays. */
+  .w--sound { position: relative; display: inline-block; }
+  .s__txt {
+    display: inline-block;
+    color: transparent;
+    background: repeating-linear-gradient(90deg, var(--on-signal) 0 0.045em, transparent 0.045em 0.08em);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-mask-size: 400% 100%;
+    mask-size: 400% 100%;
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+  }
+  .s__wave {
+    position: absolute;
+    inset: 0.16em 0.02em 0.1em;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    pointer-events: none;
+  }
+  .s__wave i { width: 0.04em; height: 100%; background: var(--on-signal); opacity: 0; transform: scaleY(0.5); }
+  .w--sound.is-playing .s__txt { animation: wave-txt 2400ms cubic-bezier(0.45, 0, 0.55, 1) both; }
+  .w--sound.is-playing .s__wave i { animation: wave-bar 2400ms cubic-bezier(0.45, 0, 0.55, 1) both; animation-delay: calc(var(--i) * 14ms); }
+  /* One mask, slid right to left: ink | gap | ink. The gap enters from the left (letters
+     dissolve), holds while the waveform plays, then the left ink follows (letters re-form). */
+  .w--sound.is-playing .s__txt {
+    -webkit-mask-image: linear-gradient(90deg, #000 25%, transparent 28% 72%, #000 75%);
+    mask-image: linear-gradient(90deg, #000 25%, transparent 28% 72%, #000 75%);
+  }
+  @keyframes wave-txt {
+    0%       { -webkit-mask-position: 100% 0; mask-position: 100% 0; }
+    28%, 72% { -webkit-mask-position: 50% 0; mask-position: 50% 0; }
+    100%     { -webkit-mask-position: 0% 0; mask-position: 0% 0; }
+  }
+  @keyframes wave-bar {
+    0%   { opacity: 0; transform: scaleY(0.5); }
+    12%  { opacity: 1; transform: scaleY(0.5); }
+    32%  { transform: scaleY(var(--a)); }
+    50%  { transform: scaleY(var(--b)); }
+    68%  { transform: scaleY(calc(var(--a) * 0.75)); }
+    86%  { opacity: 1; transform: scaleY(0.5); }
+    100% { opacity: 0; transform: scaleY(0.5); }
+  }
+
+  /* Cover stub: an ink strip torn off the bottom of the field, holding the location map. */
+  .stub {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: stretch;
+    margin-inline: calc(var(--space-6) * -1);
+    background-color: var(--on-signal);
+    background-image: var(--ink-on-ink);
+    color: var(--signal);
+  }
+  .field .stub .lbl { color: color-mix(in srgb, var(--signal) 70%, transparent); }
+  .stub__id {
     display: flex;
     flex-direction: column;
-    gap: var(--space-2);
-    padding: var(--space-2) var(--space-3) var(--space-3) var(--space-3);
-    border-top: 1px solid var(--on-signal);
-    border-left: 1px solid var(--on-signal);
+    justify-content: center;
+    gap: var(--space-1);
+    padding: var(--space-4) var(--space-6);
+    border-right: 1px solid color-mix(in srgb, var(--signal) 35%, transparent);
   }
-  .field__rec > div:first-child { border-left: 0; padding-left: 0; }
-  .field__rec dd { font-size: clamp(28px, 5cqw, 44px); }
+  .stub__place { font-size: 20px; font-weight: 600; letter-spacing: -0.02em; color: var(--signal); margin-bottom: var(--space-1); }
+  .stub__clock { font-variant-numeric: tabular-nums; }
+  .stub__map { display: block; width: 100%; height: 190px; }
+  /* Zoom: Italy at rest, Europe on hover. Registered so the values interpolate. */
+  @property --z { syntax: '<number>'; inherits: true; initial-value: 1; }
+  @property --ty { syntax: '<number>'; inherits: true; initial-value: 0; }
+  .stub__map { --z: 1; --ty: 0; transition: --z 1100ms cubic-bezier(0.65, 0, 0.35, 1), --ty 1100ms cubic-bezier(0.65, 0, 0.35, 1); cursor: zoom-out; }
+  .stub__map:hover { --z: 0.16; --ty: 88; }
+  .map__pan { transform: translateY(calc(var(--ty) * 1px)); }
+  .map__zoom { transform: scale(var(--z)); }
 
-  /* Title card: the name set huge, cropped by the bottom edge of the field. */
+  .map__grid line { stroke: var(--signal); stroke-opacity: 0.1; stroke-width: 1; vector-effect: non-scaling-stroke; }
+  .map__europe, .map__italy { stroke: var(--signal); stroke-linejoin: round; vector-effect: non-scaling-stroke; }
+  .map__europe { fill: none; stroke-opacity: 0.22; stroke-width: 1; }
+  .map__italy { fill: color-mix(in srgb, var(--signal) 8%, transparent); stroke-opacity: 0.9; stroke-width: 1.25; }
+
+  .map__home line, .map__ring, .map__leader { stroke: var(--signal); stroke-width: 1; fill: none; vector-effect: non-scaling-stroke; }
+  .map__ring { stroke-dasharray: 2 5; stroke-opacity: 0.35; }
+  .map__cross line { stroke-opacity: 0.55; }
+  .map__leader { stroke-opacity: 0.6; }
+  .map__home rect { fill: var(--signal); }
+  .map__label { fill: var(--signal); font-family: var(--f-grotesk); font-size: 26px; font-weight: 600; letter-spacing: -0.02em; }
+
+  /* ═══ Boot sequence ═════════════════════════════════════════════════
+     Every visit to home. The field powers on like a tube: a point, a line, the plane,
+     a flicker. A boot log mounts the three disciplines, the title prints row by row,
+     the name is stamped (filled, then hollowed), the stub unfolds and the map locates
+     home with a ping. Times are absolute from first paint. */
+  .boot { display: none; }
+  :global(html.booting) .boot {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    position: absolute;
+    z-index: 3;
+    top: 64px;
+    left: var(--space-6);
+    right: var(--space-6);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-family: var(--f-mono);
+    font-size: 12px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    pointer-events: none;
+    animation: boot-out 1ms linear 2150ms forwards;
+  }
+  .boot li { display: flex; gap: var(--space-2); align-items: baseline; max-width: 520px; animation: cut-in 140ms steps(6, end) both; animation-delay: calc(950ms + var(--n) * 150ms); }
+  .boot li i { flex: 1; border-bottom: 1px dotted currentColor; opacity: 0.5; transform: translateY(-3px); }
+  .boot li:last-child span:last-child { animation: caret 0.5s steps(1) infinite; }
+  @keyframes boot-out { from, to { visibility: hidden; opacity: 0; } }
+
+  :global(html.booting) .field { animation: power-on 900ms cubic-bezier(0.7, 0, 0.2, 1) both; }
+  @keyframes power-on {
+    0%   { clip-path: inset(49.6% 50% 49.6% 50%); filter: brightness(2.2); }
+    30%  { clip-path: inset(49.6% 0 49.6% 0); filter: brightness(2.2); }
+    70%  { clip-path: inset(0 0 0 0); filter: brightness(1); }
+    76%  { filter: brightness(0.55); }
+    82%  { filter: brightness(1.25); }
+    88%  { filter: brightness(0.85); }
+    100% { clip-path: inset(0 0 0 0); filter: none; }
+  }
+  :global(html.booting) .field__top { animation: cut-in 450ms steps(14, end) 850ms both; }
+  :global(html.booting) .field__title { animation: rows 520ms steps(3, end) 2200ms both; }
+  @keyframes rows { from { clip-path: inset(0 0 100% 0); } to { clip-path: inset(0 0 -10% 0); } }
+  :global(html.booting) .field__word { animation: cut-in 1ms linear 2700ms both; }
+  :global(html.booting) .field__word span { animation: cut-in 700ms steps(12, end) 2700ms both, stamp 700ms ease-out 3450ms both; }
+  @keyframes stamp { from { color: var(--on-signal); } to { color: transparent; } }
+
+  :global(html.booting) .stub { animation: unfold 450ms cubic-bezier(0.7, 0, 0.2, 1) 3150ms both; }
+  @keyframes unfold { from { clip-path: inset(0 0 100% 0); } to { clip-path: inset(0 0 0 0); } }
+  :global(html.booting) .stub__id > * { animation: cut-in 260ms steps(8, end) both; }
+  :global(html.booting) .stub__id > :nth-child(1) { animation-delay: 3450ms; }
+  :global(html.booting) .stub__id > :nth-child(2) { animation-delay: 3550ms; }
+  :global(html.booting) .stub__id > :nth-child(3) { animation-delay: 3650ms; }
+  :global(html.booting) .stub__id > :nth-child(4) { animation-delay: 3750ms; }
+  :global(html.booting) .map__reveal { animation: radar 1300ms cubic-bezier(0.3, 0, 0.2, 1) 3700ms both; }
+  @keyframes radar { from { clip-path: circle(0% at 50% 50%); } to { clip-path: circle(75% at 50% 50%); } }
+  .map__ping { fill: none; stroke: var(--signal); stroke-width: 1; vector-effect: non-scaling-stroke; opacity: 0; }
+  :global(html.booting) .map__ping { animation: ping 1300ms cubic-bezier(0.3, 0, 0.2, 1) 3700ms both; }
+  @keyframes ping { 0% { transform: scale(1); opacity: 0.3; } 100% { transform: scale(500); opacity: 0; } }
+  :global(html.booting) .map__cross { animation: lock 700ms ease-out 4400ms both; }
+  @keyframes lock { from { transform: scale(1.25); opacity: 0; } to { transform: none; opacity: 1; } }
+  .map__leader { stroke-dasharray: 1; stroke-dashoffset: 0; }
+  :global(html.booting) .map__leader { animation: draw 300ms ease-out 5000ms both; }
+  @keyframes draw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+  :global(html.booting) .map__label { animation: flicker-in 420ms linear 5250ms both; }
+  @keyframes flicker-in { 0% { opacity: 0; } 20% { opacity: 0.7; } 35% { opacity: 0.1; } 55% { opacity: 0.9; } 70% { opacity: 0.4; } 100% { opacity: 1; } }
+
+  :global(html.booting) .plate-fig { animation: settle 800ms cubic-bezier(0.2, 0.8, 0.2, 1) 3000ms both; }
+  :global(html.booting) .plate-fig__strip i { animation: bit 1ms linear backwards; animation-delay: calc(3600ms + var(--n) * 22ms); }
+  @keyframes bit { from, to { visibility: hidden; } }
+
+  /* ═══ System load: the rest of the page ═════════════════════════════
+     After the cover has booted, everything else comes up with the site-wide tron-in
+     (global.css). Kept quiet on purpose; the cover is the event, this is the system settling. */
+  /* Above the fold: queued behind the cover, group by group, item by item. */
+  :global(html.booting) .intro > * > * { animation: tron-in 800ms linear both; animation-delay: calc(4700ms + var(--g, 0) * 220ms + var(--k, 0) * 80ms); }
+  .intro > :nth-child(2) { --g: 1; }
+  .intro > :nth-child(3) { --g: 2; }
+  .intro > :nth-child(4) { --g: 3; }
+  .intro > * > :nth-child(2) { --k: 1; }
+  .intro > * > :nth-child(3) { --k: 2; }
+  .intro > * > :nth-child(4) { --k: 3; }
+  .intro > * > :nth-child(5) { --k: 4; }
+  .intro > * > :nth-child(6) { --k: 5; }
+  /* Below the fold the global scroll reveal (global.css) carries the same signal. */
+
+  /* Title card: the name set huge across the bottom of the field. */
   .field__word {
+    margin-top: auto;
     margin-inline: calc(var(--space-6) * -1);
     padding-inline: var(--space-6);
+    padding-block: 0.06em 0.1em;
     border-top: 1px solid var(--on-signal);
-    height: 0.6em;
-    font-size: 14.6cqw;
-    overflow: hidden;
+    font-size: calc((100cqw - var(--space-6) * 2) / 6.7);
   }
+  /* Outlined: the name as a stencil, the grain showing through. */
   .field__word span {
     display: block;
     font-weight: 700;
+    color: transparent;
+    -webkit-text-stroke: clamp(1px, 0.018em, 2px) var(--on-signal);
     text-transform: uppercase;
     letter-spacing: -0.055em;
     line-height: 1;
     margin-top: -0.02em;
     margin-left: -0.05em;
     white-space: nowrap;
-    animation: cut-in 180ms steps(4, end) 120ms both;
   }
   @keyframes cut-in {
     from { clip-path: inset(0 100% 0 0); }
@@ -719,9 +1067,10 @@ const contents = sections.map((s, i) => ({ ...s, index: pad(i + 1) }));
     .cover { grid-template-columns: 1fr; margin-top: var(--space-4); }
     .field { min-height: 0; padding-inline: var(--space-4); }
     .field__title { margin-top: var(--space-10); font-size: clamp(2.3rem, 11.5cqw, 3.4rem); }
-    .field__rec { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-    .field__rec > div:nth-child(3) { border-left: 0; padding-left: 0; }
-    .field__word { margin-inline: calc(var(--space-4) * -1); padding-inline: var(--space-4); margin-top: var(--space-6); }
+        .stub { margin-inline: calc(var(--space-4) * -1); grid-template-columns: 1fr; }
+    .stub__id { padding-inline: var(--space-4); border-right: 0; border-bottom: 1px solid color-mix(in srgb, var(--signal) 35%, transparent); }
+    .stub__map { height: 220px; }
+    .field__word { margin-inline: calc(var(--space-4) * -1); padding-inline: var(--space-4); font-size: calc((100cqw - var(--space-4) * 2) / 6.7); margin-top: var(--space-6); }
 
     .plate-fig { display: grid; grid-template-columns: 120px minmax(0, 1fr); grid-template-rows: auto 1fr auto auto; gap: var(--space-2) var(--space-4); }
     .plate-fig__hd { grid-column: 1 / -1; }

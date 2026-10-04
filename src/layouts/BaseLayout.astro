@@ -2,7 +2,7 @@
 import { getCollection } from 'astro:content';
 import { apps } from '../data/apps';
 import { releases } from '../data/releases';
-import { sections, sectionFor, isoDots } from '../lib/datum';
+import { sections, sectionFor, isoDots, hex } from '../lib/datum';
 
 export interface Props {
   title?: string;
@@ -29,7 +29,7 @@ const buildDate = new Date();
 const buildStamp = isoDots(buildDate);
 const docSerial = serial ?? `PLY-${section.code}`;
 
-const navLinks = sections.map((s, i) => ({ ...s, index: String(i + 1).padStart(2, '0') }));
+const navLinks = sections.map((s, i) => ({ ...s, index: hex(i + 1) }));
 
 const personSchema = {
   '@context': 'https://schema.org',
@@ -45,7 +45,7 @@ const personSchema = {
   ],
   jobTitle: 'Product Designer',
   description: 'Designer working across software, visuals, music, and interaction systems.',
-  address: { '@type': 'PostalAddress', addressLocality: 'Bologna', addressCountry: 'IT' },
+  address: { '@type': 'PostalAddress', addressLocality: 'Castelfranco Emilia', addressCountry: 'IT' },
   email: 'polyterative@outlook.com',
 };
 ---
@@ -130,7 +130,7 @@ const personSchema = {
       </div>
       <div class="titleblock">
         <a href="/" class="titleblock__name" aria-label="polyterative — home">
-          <span class="lbl">00 · Index</span>
+          <span class="lbl">{hex(0)} · Index</span>
           <span class="titleblock__word">polyterative</span>
         </a>
         <nav class="titleblock__nav" aria-label="Main navigation">
@@ -174,7 +174,7 @@ const personSchema = {
         <div><span class="lbl">Doc</span><span class="data">{docSerial}</span></div>
         <div><span class="lbl">Built</span><span class="data"><time datetime={buildDate.toISOString().slice(0, 10)}>{buildStamp}</time></span></div>
         <div><span class="lbl">Record</span><span class="data">{postCount} posts · {apps.length} apps · {releases.length} releases</span></div>
-        <div><span class="lbl">Base</span><span class="data">Bologna, IT</span></div>
+        <div><span class="lbl">Base</span><span class="data">Castelfranco Emilia, IT</span></div>
       </div>
       <div class="footer-inner">
         <p class="footer-copy">Software, notes, music, ongoing work.</p>
@@ -190,6 +190,74 @@ const personSchema = {
       <p class="footer-meta lbl">polyterative &copy; {buildDate.getFullYear()} · polyterative@outlook.com</p>
     </div>
   </footer>
+
+  <script is:inline>
+    (function () {
+      var els = document.querySelectorAll('.site-main section ~ section, .site-main section section, .site-main article, .site-main .mod, .site-main li');
+      if (!('IntersectionObserver' in window)) return;
+      document.documentElement.classList.add('js');
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('is-in'); io.unobserve(e.target); } });
+      }, { rootMargin: '0px 0px -8% 0px' });
+      // First screen: trace in the visible blocks child by child, in reading order.
+      // Home skips this — its cover boot sequence queues the above-the-fold content itself.
+      var first = document.querySelector('.site-main .container');
+      if (first && !document.querySelector('.cover')) {
+        var n = 0;
+        Array.prototype.forEach.call(first.children, function (block) {
+          if (block.getBoundingClientRect().top >= innerHeight || block.tagName === 'SCRIPT') return;
+          var parts = block.children.length ? block.children : [block];
+          Array.prototype.forEach.call(parts, function (el) {
+            el.style.setProperty('--i', Math.min(n++, 14));
+            el.setAttribute('data-reveal', '');
+            el.classList.add('is-in');
+          });
+        });
+      }
+      els.forEach(function (el) {
+        if (el.getBoundingClientRect().top < innerHeight || el.hasAttribute('data-reveal')) return;
+        var sib = el.parentElement ? Array.prototype.indexOf.call(el.parentElement.children, el) : 0;
+        el.style.setProperty('--i', Math.min(sib, 6));
+        el.setAttribute('data-reveal', '');
+        io.observe(el);
+      });
+    })();
+  </script>
+
+  <script is:inline>
+    // Idle: the page's big index plate (0x06, No. 018, III…) re-reads itself now and then —
+    // its digits cycle through their own counting system and settle back. Home has the cover instead.
+    (function () {
+      var el = document.querySelector('.page-head__idx, .hero__idx, .showcase-hero__idx');
+      if (!el || document.querySelector('.cover')) return;
+      if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      var text = el.textContent.trim();
+      var hex = /^0x/i.test(text), roman = /^[IVXLCDM]+$/.test(text);
+      var start = hex ? 2 : 0;
+      function pool(c) {
+        if (hex) return '0123456789ABCDEF';
+        if (roman) return 'IVXLC';
+        return /[0-9]/.test(c) ? '0123456789' : null;
+      }
+      function reread() {
+        var frame = 0, total = 14;
+        var id = setInterval(function () {
+          frame++;
+          el.textContent = text.split('').map(function (c, i) {
+            var p = i >= start && pool(c);
+            if (!p || frame > total * (i + 1) / text.length) return c;
+            return p[(Math.random() * p.length) | 0];
+          }).join('');
+          if (frame >= total) { clearInterval(id); el.textContent = text; }
+        }, 45);
+      }
+      function loop() {
+        if (!document.hidden) reread();
+        setTimeout(loop, 8000 + Math.random() * 5000);
+      }
+      setTimeout(loop, 3500);
+    })();
+  </script>
 
   <script is:inline>
     (function () {

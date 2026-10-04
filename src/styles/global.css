@@ -27,7 +27,7 @@
   --hover:       #E2E2DE;
   --ink:         #111111;
   --ink-2:       #55554F;
-  --ink-3:       #686862;
+  --ink-3:       #8A8A83;
   --rule:        #CFCFCA;
   --rule-strong: #B4B4AE;
   --signal:      #EA562A;
@@ -113,7 +113,7 @@
     --hover:       #1C1C1B;
     --ink:         #E8E8E4;
     --ink-2:       #9A9A94;
-    --ink-3:       #808079;
+    --ink-3:       #66665F;
     --rule:        #2A2A28;
     --rule-strong: #3A3A36;
     --signal:      #EB6137;
@@ -141,7 +141,7 @@
   --hover:       #1C1C1B;
   --ink:         #E8E8E4;
   --ink-2:       #9A9A94;
-  --ink-3:       #808079;
+  --ink-3:       #66665F;
   --rule:        #2A2A28;
   --rule-strong: #3A3A36;
   --signal:      #EB6137;
@@ -190,7 +190,32 @@ body {
   * { scrollbar-color: var(--rule-strong) transparent; scrollbar-width: thin; }
 }
 
+/* Motion: staggered settle-in on load, quiet reveal on scroll. */
+@keyframes settle {
+  from { opacity: 0; transform: translateY(10px); filter: blur(4px); }
+  to   { opacity: 1; transform: none; filter: none; }
+}
+/* System load: blocks come up like a display finding its signal — a left-to-right trace,
+   two or three faint flickers, a brief glow that cools. Used for the first screen of every
+   page and for anything that scrolls in (script in BaseLayout). The home cover has its own boot. */
+@keyframes tron-in {
+  0%   { opacity: 0;    clip-path: inset(-12px 100% -12px -12px); filter: drop-shadow(0 0 0 transparent); }
+  10%  { opacity: 0.55; }
+  16%  { opacity: 0.12; }
+  26%  { opacity: 0.8;  filter: drop-shadow(0 0 4px color-mix(in srgb, var(--signal) 40%, transparent)); }
+  32%  { opacity: 0.45; }
+  50%  { opacity: 1;    clip-path: inset(-12px -12px -12px -12px); }
+  100% { opacity: 1;    clip-path: inset(-12px -12px -12px -12px); filter: drop-shadow(0 0 0 transparent); }
+}
+html.js [data-reveal] { opacity: 0; }
+html.js [data-reveal].is-in { opacity: 1; animation: tron-in 800ms linear both; animation-delay: calc(80ms + var(--i, 0) * 80ms); }
+a, button { transition: color var(--transition), background-color var(--transition), transform 160ms ease-out; }
+a:active, button:active { transform: translateY(1px); }
+img { transition: filter 400ms ease, transform 600ms cubic-bezier(0.2, 0.8, 0.2, 1); }
+a:hover img { transform: scale(1.015); }
+
 @media (prefers-reduced-motion: reduce) {
+  html.js [data-reveal] { opacity: 1; transform: none; }
   *, *::before, *::after { transition: none !important; animation: none !important; scroll-behavior: auto !important; }
 }
 
@@ -448,7 +473,7 @@ button { font: inherit; color: inherit; }
   scroll-margin-top: var(--space-4);
 }
 .sec__head { display: flex; flex-direction: column; gap: var(--space-2); min-width: 0; }
-.sec__idx { font-size: 44px; color: var(--ink); }
+.sec__idx { font-size: 44px; color: var(--signal-text); }
 .sec__title { font-size: 20px; letter-spacing: -0.015em; line-height: 1.15; }
 .sec__body { min-width: 0; display: flex; flex-direction: column; gap: var(--space-6); }
 .sec__intro { color: var(--ink-2); max-width: 58ch; }
@@ -542,3 +567,6 @@ button { font: inherit; color: inherit; }
   width: 1px; height: 1px;
   overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap;
 }
+
+/* Keep case-sensitive counters (greek figures) intact inside uppercase labels. */
+.nocase { text-transform: none; }

@@ -2,11 +2,11 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Icon from '../components/Icon.astro';
 import { releases } from '../data/releases';
-import { isoDots, pad } from '../lib/datum';
+import { isoDots, roman, greek } from '../lib/datum';
 
 // Chronological order (oldest first) gives every release a stable position number.
 const chrono = [...releases].sort((a, b) => a.date.localeCompare(b.date));
-const position = (title: string) => pad(chrono.findIndex((r) => r.title === title) + 1);
+const position = (title: string) => roman(chrono.findIndex((r) => r.title === title) + 1);
 const totalTracks = releases.reduce((sum, r) => sum + (r.tracks ?? 0), 0);
 const unknownTracks = releases.filter((r) => r.tracks == null).length;
 
@@ -59,7 +59,7 @@ const years = Array.from({ length: y1 - y0 + 1 }, (_, i) => y0 + i);
 
     <header class="page-head music-head">
       <aside class="page-head__aside">
-        <span class="plate page-head__idx">04</span>
+        <span class="plate page-head__idx">0x04</span>
         <span class="lbl">Alias</span>
         <span class="data">Polyterative</span>
         <span class="lbl">Releases</span>
@@ -87,13 +87,13 @@ const years = Array.from({ length: y1 - y0 + 1 }, (_, i) => y0 + i);
             decoding="async"
           />
         </div>
-        <figcaption class="figcap"><span class="lbl">Fig. 01</span><span>Live at perAspera festival — Bologna, 2024</span></figcaption>
+        <figcaption class="figcap"><span class="lbl">Fig. <span class="nocase">{greek(1)}</span></span><span>Live at perAspera festival — Bologna, 2024</span></figcaption>
       </figure>
     </header>
 
     <section class="sec" aria-labelledby="growth-title">
       <header class="sec__head">
-        <span class="plate sec__idx">01</span>
+        <span class="plate sec__idx">A</span>
         <h2 class="sec__title" id="growth-title">Growth</h2>
         <span class="lbl">One leaf per release</span>
       </header>
@@ -126,7 +126,7 @@ const years = Array.from({ length: y1 - y0 + 1 }, (_, i) => y0 + i);
 
     <section class="sec" aria-labelledby="releases-title">
       <header class="sec__head">
-        <span class="plate sec__idx">02</span>
+        <span class="plate sec__idx">B</span>
         <h2 class="sec__title" id="releases-title">Releases</h2>
         <span class="lbl">Newest first</span>
       </header>
@@ -147,7 +147,7 @@ const years = Array.from({ length: y1 - y0 + 1 }, (_, i) => y0 + i);
                   {r.tracks && (
                     <div class="release__stamps">
                       <span class="lbl">Tracks</span>
-                      <span class="data">{pad(r.tracks)}</span>
+                      <span class="data">{r.tracks}</span>
                     </div>
                   )}
                 </div>

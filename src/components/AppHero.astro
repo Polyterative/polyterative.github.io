@@ -1,7 +1,7 @@
 ---
 import Icon from './Icon.astro';
 import { apps, type AppEntry, type AppLink } from '../data/apps';
-import { pad, parseStatus, pillClass } from '../lib/datum';
+import { roman, greek, parseStatus, pillClass } from '../lib/datum';
 
 export interface Props {
   app: AppEntry;
@@ -13,7 +13,7 @@ export interface Props {
 
 const { app, primaryCta, secondaryCta, shotBadge } = Astro.props;
 const status = parseStatus(app.status);
-const position = `${pad(apps.indexOf(app) + 1)}/${pad(apps.length)}`;
+const position = roman(apps.indexOf(app) + 1);
 
 const isExternal = (href: string) => href.startsWith('http');
 ---
@@ -69,7 +69,7 @@ const isExternal = (href: string) => href.startsWith('http');
           <img src={app.hero} alt={app.heroAlt} loading="eager" decoding="async" />
           {shotBadge && <span class="inv showcase-hero__badge">{shotBadge}</span>}
         </div>
-        <figcaption class="figcap"><span class="lbl">Fig. 01</span><span>{app.heroAlt}</span></figcaption>
+        <figcaption class="figcap"><span class="lbl">Fig. <span class="nocase">{greek(1)}</span></span><span>{app.heroAlt}</span></figcaption>
       </>
     ) : (
       <div class="gencover showcase-hero__gen crop" role="img" aria-label={`${app.name}: no screenshot`}>
