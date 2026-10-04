@@ -1,20 +1,22 @@
 ---
 title: "CostaMeno — Finding the Cheapest Fuel in Italy with Open Government Data"
-description: "I built a mobile-first fuel price finder using Italian Ministry open data — no tracking, no app install, no nonsense."
+description: "I wanted to know which pump nearby was cheapest without a login, an ad or a location prompt. It turned out the government already publishes the data."
 date: "2026-03-31"
 tags: ["Next.js", "TypeScript", "Tailwind", "Civic Tech", "Open Data"]
 cover: "/blog/covers/costameno.png"
 ---
 
-Every fuel price app in Italy is either behind a login wall, plastered with ads, or wants your GPS coordinates. I wanted something with **no ceremony**: open a URL while standing at a pump, see which station nearby is cheapest. *That's the whole product.*
+I wanted one thing: to stand at a pump, open a page, and see which station nearby was cheaper. Every fuel price app I tried in Italy wanted something first. A login, my GPS position, or my patience while an ad loaded.
 
-[CostaMeno](https://costameno.vercel.app) is that thing.
+[CostaMeno](https://costameno.vercel.app) is the version I wanted: open a URL, see the cheapest station, done.
 
-## The data
+## The data was already there
 
-The Italian Ministry of Enterprises (<span class="caps">MIMIT</span>) publishes a daily `CSV` of every fuel station in the country — around **23,000 stations** with prices for benzina, gasolio, GPL, and metano. It's open data under IODL 2.0 and it's updated every morning. *I had no idea this existed until I went looking.*
+I assumed I'd have to scrape something. Then I found out that the Italian Ministry of Enterprises (<span class="caps">MIMIT</span>) publishes a daily `CSV` of every fuel station in the country. That's around **23,000 stations**, with prices for benzina, gasolio, GPL and metano, released as open data under IODL 2.0 and updated every morning. I had no idea it existed until I went looking.
 
-The pipeline: at build time, a script fetches the `CSV`, parses it, and writes a local `JSON` cache. At runtime, the API route applies a **Haversine distance filter** with an **adaptive radius** and returns the nearest stations ranked by price.
+So most of the work was the pipeline. At build time a script downloads the `CSV`, parses it and writes a local `JSON` cache. At runtime an API route filters stations by Haversine distance and returns the closest ones sorted by price.
+
+Choosing the search radius was harder than it sounds. A fixed radius gives you too many results in a city and nothing on a quiet stretch of motorway. So the search starts small and widens until it has enough to compare:
 
 ```typescript
 // Adaptive radius: start tight, expand if results are sparse
@@ -30,21 +32,21 @@ function findNearby(lat: number, lon: number, fuelType: string) {
 }
 ```
 
-This means if you're in a dense city you get results within 3km. If you're on the highway in the middle of nowhere, it expands until it finds something.
+In a city you get results within 3 km. In the middle of nowhere it keeps searching until it finds something.
 
-## No GPS permissions
+## No location prompt
 
-The location picker is a Leaflet map. You tap where you are — or drag the pin — and the search fires. **No permission prompts, no coordinates sent anywhere.** Map tiles come from OpenStreetMap.
+To pick a location you tap a Leaflet map, or drag the pin, and the search runs. The app never asks for permission and never sends your coordinates anywhere. The map tiles come from OpenStreetMap.
 
-The design choice is partly privacy, partly UX: *a permission dialog is friction you don't want when you're standing at a pump.*
+Part of that is privacy. The other part is that a permission dialog is just friction when you're standing next to your car.
 
-## Color-coded pins and podium rankings
+## Making the answer obvious
 
-The results map shows each station as a colored pin: **green** for cheap, **yellow** for mid, **red** for expensive — relative to the current result set, not an absolute scale. The three cheapest get medal badges (🥇🥈🥉) both on the map and in the list.
+The results map colors each station by price compared with the others you're looking at: green for cheap, yellow for middle, red for expensive. The three cheapest get medals (🥇🥈🥉) on the map and in the list.
 
-There's also a savings calculator on each card. *"If you drive 4km to this station instead, you save ~0.90€ on a 50L fill."* That's the number that actually helps you decide.
+Each card also shows a savings estimate, something like *"drive 4 km to this one and save about €0.90 on a 50 L fill."* That's the number that actually helps you decide whether the detour is worth it.
 
-## Stack
+## The stack
 
 | Layer | Choice |
 |-------|--------|
@@ -55,10 +57,10 @@ There's also a savings calculator on each card. *"If you drive 4km to this stati
 | Hosting | Vercel |
 | Data | MIMIT CSV (build-time + 3h runtime cache) |
 
-Nothing exotic. The interesting part is all in the data pipeline and the UX decisions, not the framework.
+Nothing unusual here. All the interesting decisions were about the data and the experience at the pump.
 
-## What I learned
+## What I took away
 
-Italian government open data is better than I expected. The <span class="caps">MIMIT</span> dataset is reliable, consistently formatted, and available without an API key or rate limit. If you're building anything touching Italian civic infrastructure, *it's worth checking what's already published* before reaching for a third-party data provider.
+I was surprised by how good Italian open data turned out to be. The <span class="caps">MIMIT</span> dataset is reliable and consistently formatted, and you don't need an API key or have to worry about rate limits. If you're building anything that touches Italian public services, check what the government already publishes before you pay a third party for it.
 
-CostaMeno is live at [costameno.vercel.app](https://costameno.vercel.app). I use it. *It does the thing.*
+CostaMeno is live at [costameno.vercel.app](https://costameno.vercel.app), and I use it whenever I need to fill up.

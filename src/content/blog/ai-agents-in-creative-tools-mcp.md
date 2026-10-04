@@ -1,27 +1,27 @@
 ---
 title: "Giving AI Agents Eyes and Hands in Creative Tools"
-description: "MCP bridges let AI assistants operate Figma, Blender, and other creative software directly. Here's what that actually enables."
+description: "My AI assistant could read my code but not my canvas. MCP servers for Figma and Blender changed that. Here's what it was like to use them on real work."
 date: "2026-03-05"
 tags: ["MCP", "AI", "Figma", "Blender", "Claude", "Creative Coding", "Tooling"]
 ---
 
-There's a gap between "AI assistant that can write code" and "AI assistant that can participate in your actual workflow." For a developer who spends significant time in creative tools — Figma for design, Blender for 3D — that gap has been frustrating. The assistant can see code. It can't see the canvas.
+A lot of my work happens outside code. I design in Figma and model in Blender. For a long time my AI assistant could help with everything in my editor and nothing on my canvas. I'd describe a component in words, it would write code, and then I'd rebuild the result in Figma by hand. I was basically narrating a visual tool to something that couldn't see it.
 
-**Model Context Protocol** (MCP) is closing that gap. It's a standard that lets AI assistants connect to external tools and services — giving them the ability to read from, write to, and in some cases directly operate software that isn't text.
+**Model Context Protocol** (MCP) is what changed that. It's a standard way to connect an assistant to outside tools, so it can read from them, write to them and, in some cases, drive them directly. I tried it in the two creative tools I use most.
 
-## Figma MCP
+## Figma: asking the design system questions
 
-The Figma Console MCP server connects Claude (and other MCP-capable assistants) directly to Figma. When it's running, the assistant can:
+The Figma Console MCP server connects Claude, or any assistant that speaks MCP, straight to Figma. With it running, the assistant can:
 
-- Read the design system — variables, components, styles, tokens
-- Inspect specific frames or components with their properties
-- Create frames and components directly in the canvas
-- Manage design tokens (create, update, rename, delete)
-- Capture console output from plugins for debugging
+- read the design system: variables, components, styles and tokens
+- inspect specific frames or components and their properties
+- create frames and components on the canvas
+- create, update, rename and delete design tokens
+- capture console output from plugins for debugging
 
-The practical effect is significant. Instead of describing a component and having the assistant generate code that I then manually translate into Figma, I can ask the assistant to inspect an existing component, identify inconsistencies with the design system, and make corrections — in Figma, directly. The design system becomes queryable in the same conversation where I'm working on implementation.
+The way I work changed straight away. I don't describe a component and then translate the code back into Figma anymore. I ask the assistant to inspect a component, find where it drifts from the design system, and fix it in Figma. The design system is now something I can ask questions about in the same conversation where I'm writing the implementation.
 
-The setup is straightforward — an MCP server config pointing to the Figma API with an access token:
+Setup is a small config block with your Figma access token:
 
 ```json
 {
@@ -38,28 +38,22 @@ The setup is straightforward — an MCP server config pointing to the Figma API 
 }
 ```
 
-The difference between the read-only remote mode and the full local mode is substantial: read-only gives you 16 tools for inspection; local gives you 56+ including creation and modification. For anything beyond quick queries, you want the local setup.
+One tip: use the local mode. The read-only remote mode gives you 16 inspection tools, while local gives you 56+, including creating and editing. For anything past a quick question, local is the one you want.
 
-## Blender MCP
+## Blender: modelling by conversation
 
-Blender is a different challenge. Where Figma has a well-structured API, Blender is a Python-scriptable 3D environment — powerful but historically not accessible from outside the application. MCP changes this.
+Blender was a different problem. It doesn't have a tidy external API like Figma. It's a 3D environment you script in Python from the inside. A Blender MCP server opens that up: the agent can run Python inside Blender, inspect the scene, create and change geometry, adjust materials and render settings, and start renders. It treats the scene the way it treats a codebase. It reads the structure, makes targeted changes and goes round again.
 
-With a Blender MCP server running, an AI agent can execute Python scripts inside Blender, inspect the scene graph, create and modify geometry, adjust materials and rendering settings, and trigger renders. The agent works on the 3D scene the way it works on a codebase — reading structure, making targeted changes, iterating.
+In March I needed to model and render an object I was planning to make physically. I'm not a fast modeller, so by hand that would have taken me several hours. Instead I described the shape, the agent wrote and ran the Blender script, I looked at the result, and we went back and forth. It took about 45 minutes, and I came away with renders I could use as references for the physical design.
 
-I used this in March for a project where I needed to model and render a physical object I was planning to fabricate. The workflow: describe the geometry to the agent, have it generate and execute the Blender Python script, inspect the result, iterate. What would have taken me several hours of manual Blender work — I'm not a fast modeler — became a back-and-forth over about 45 minutes. The renders came out as reference images I could work from for the physical design.
+The moment that stayed with me was small. A test render came out too clean, and the agent adjusted the volumetric settings until the fog and atmosphere looked right. It was looking at a picture and changing the scene based on what it saw. I hadn't been able to work with an assistant that way before.
 
-The fog and atmospheric rendering in the screenshots from that session came from having the agent adjust the volumetric settings after seeing a test render that looked too clean — a feedback loop between description and visual result that feels genuinely new.
+## What changed
 
-## The pattern
+In both tools the same thing happened. The assistant stopped being something I talk to in another window and started working in the same place I do. Before MCP it couldn't see a Figma file or a Blender scene at all. Now it can, and I don't have to describe everything to it anymore.
 
-Both of these tools follow the same pattern: the AI assistant stops being something you talk to in a separate window and becomes something that operates in the same environment you're working in.
+It's still early. The Figma server is solid, and I use it all the time. The Blender setup takes more work, and the loop is slower: run a script, wait for a render, look, adjust. It works, but it doesn't flow the way coding with an assistant does.
 
-This matters more as the tools get more complex. A senior developer can hold a Blender scene or a Figma design system in their head to some degree. The AI assistant, without MCP, can't see any of it — you're narrating a visual environment to something that has no visual channel into it. MCP creates the **visual channel**.
+I still want it everywhere. Every creative tool I use regularly is one I'd like an agent to be able to reach into, and for the ones that don't have an MCP server yet, someone will build one eventually.
 
-The honest constraint: these integrations are still early. The Figma MCP is production-quality and I use it regularly. The Blender integration requires more setup and the feedback loop is slower — executing a Python script, waiting for a render, assessing the result, iterating. It works, but it's not yet as fluid as working with code.
-
-The direction is clear though. Every creative tool I use regularly is one that I'd like an AI agent to be able to reach into. The ones that don't have MCP integrations yet are just waiting for someone to build them.
-
-*The tools that stay text-only are the ones that get left behind.*
-
-Related: [Three Small Tools for Living with Local AI](/blog/local-ai-toolkit-tagger-renamer-guard) covers a different angle on the same theme — building the plumbing around local models rather than reaching them through a chat window. And [thear](/blog/sonifying-ai-work-thear) is a small example of what happens when you give an AI assistant a non-text output channel.
+On a related note, [Three Small Tools for Living with Local AI](/blog/local-ai-toolkit-tagger-renamer-guard) is about building around local models instead of talking to them in a chat window, and [thear](/blog/sonifying-ai-work-thear) gives an assistant a way to make sound.

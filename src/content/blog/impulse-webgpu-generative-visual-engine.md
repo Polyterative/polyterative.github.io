@@ -1,44 +1,44 @@
 ---
 title: "Impulse — A Visual Engine Built for Live Performance (and AI)"
-description: "I do audiovisual performances. TouchDesigner taught me the concepts; its own UI convinced me to build something better."
+description: "I perform audiovisual sets. TouchDesigner taught me how visual engines work, and its interface convinced me to build my own."
 date: "2026-03-10"
 tags: ["WebGPU", "Three.js", "Creative Coding", "MIDI", "Web Audio", "TypeScript", "Live Performance"]
 ---
 
-I do audiovisual performances — live sets where sound and visuals are generated and modulated together in real time. For this kind of work, **TouchDesigner** is the standard tool. It's powerful, it has a huge ecosystem, and a lot of brilliant people use it. I also find it genuinely painful to use.
+I perform audiovisual sets, where sound and visuals are generated and played together in real time. For that kind of work **TouchDesigner** is the standard tool. It's powerful, it has a huge community, and a lot of brilliant people use it. I also find it painful to use.
 
-The UI is dense to the point of being hostile. Everything lives in a proprietary binary format that's opaque to version control and impossible to work on with AI agents. And that last part matters to me now: I build almost nothing without an AI coding assistant in the loop, and if a codebase is effectively closed to that accelerator, I feel the drag immediately.
+The interface is so dense that it feels hostile. Projects live in a proprietary binary format that version control can't read and AI agents can't touch. That last part matters to me. I build almost everything with an AI coding assistant now, and when a project is closed to it, I feel the slowdown in every session.
 
-So I learned what I needed from TouchDesigner — the node-based signal flow model, the idea of separating input sources from processing from rendering — and then I built Impulse on a stack where everything is just TypeScript and the structure is transparent.
+So I took what TouchDesigner taught me and left the rest. What I kept was the node-based signal flow and the separation of inputs, processing and rendering. Then I built Impulse on a stack that's TypeScript all the way through, where every part is a plain file you can read.
 
-## Why the browser, not a native app
+## Why the browser
 
-TouchDesigner is a native application. Most node-based AV tools are. I chose the browser deliberately.
+TouchDesigner is a native app, and so are most node-based AV tools. I chose the browser on purpose, for two reasons.
 
-The practical reason is distribution. A browser-based engine runs on any machine with Chrome — no installer, no driver version mismatches, no *"does this work on the venue's laptop"* moment right before a show. You open a URL.
+The first is distribution. A browser engine runs on any machine with Chrome. There's no installer and no driver mismatch, and no panic five minutes before a show wondering *"will this run on the venue's laptop?"* You open a URL.
 
-The less obvious reason is AI agent compatibility. A TypeScript codebase in plain files — nodes as functions, graph state as `JSON`, shaders as `TSL` — is something an AI assistant can read, reason about, and modify without friction. I can describe a new node type in natural language and have a working implementation in seconds. That's a qualitatively different development speed than a tool that stores its patches in a proprietary binary format. If a codebase is opaque to the tools I use to build everything else, I feel that drag every session.
+The second is working with AI. Nodes are plain functions, graph state is `JSON` and shaders are `TSL`, so an assistant can read the code, reason about it and change it without any friction. I can describe a new node type in a sentence and have a working version seconds later. That's a completely different pace from a tool that saves your work as a binary blob.
 
-## The architecture
+## How it's built
 
-Four layers, strict top-down data flow, no feedback loops between them:
+There are four layers, and data only flows from top to bottom:
 
 ```
 Signal Layer  →  Node Graph  →  Entity World  →  Render Layer
 (MIDI/Audio)     (events)        (simulation)     (WebGPU worker)
 ```
 
-**Signal Layer** — Raw input. MIDI events from a controller, amplitude from the microphone, arbitrary values from the UI. Each becomes a named stream the rest of the system subscribes to.
+The signal layer is raw input. MIDI from a controller, the microphone level, values from the UI. Each one becomes a named stream that the rest of the system can subscribe to.
 
-**Node Graph** — The user-facing part. A visual graph where you wire nodes together: "map MIDI CC 74 to float 0–1", "smooth with 200ms attack", "spawn an entity when this crosses 0.5". Nodes are pure transformations — no side effects, no hidden state.
+The node graph is the part you play with. You wire nodes together: "map MIDI CC 74 to 0–1", "smooth with a 200 ms attack", "spawn an entity when this crosses 0.5". Nodes are pure transformations with no hidden state.
 
-**Entity World** — A simulation layer. Entities have position, velocity, lifetime, color. Nodes create, modify, or destroy them. The world ticks at a fixed rate, independent of frame rate.
+The entity world is a simulation. Entities have a position, velocity, lifetime and colour, and nodes create, change or destroy them. The world ticks at a fixed rate that doesn't depend on the frame rate.
 
-**Render Layer** — Runs in a WebGPU worker. Reads entity state and draws. Fully decoupled — if rendering drops frames, the simulation keeps going.
+The render layer runs in a WebGPU worker. It reads entity state and draws it. Because it's separate, the simulation keeps going even if rendering drops a frame.
 
-## TSL instead of GLSL
+## Shaders in TypeScript
 
-Three.js r174 ships TSL (Three.js Shading Language) as the default shader system for WebGPU. Instead of writing GLSL strings, you write TypeScript:
+Three.js r174 uses TSL (Three.js Shading Language) as the default shader system for WebGPU. Instead of writing GLSL in strings, you write TypeScript:
 
 ```typescript
 import { vec3, mix, uv } from 'three/tsl';
@@ -50,20 +50,18 @@ const gradient = mix(
 );
 ```
 
-Type checking, autocomplete, composable functions. Shader logic that used to live in template-substituted `.glsl` files now lives in the same codebase as everything else, and an AI assistant can touch it without context-switching into a different mental model.
+That gets you type checking, autocomplete and functions you can compose. Shader code lives in the same codebase as everything else, and the assistant can work on it without switching to another language.
 
-## MIDI and Web Audio
+## Knobs and kick drums
 
-The Web MIDI API is more capable than its reputation suggests. Impulse connects to any MIDI device the browser sees, maps channels and CCs to named signals, and makes them available as node inputs. Web Audio handles the audio side — FFT, amplitude, beat detection. Both feed the same signal layer, so you can drive a visual parameter from a hardware knob, a kick drum, or both at once.
+The Web MIDI API is more capable than people give it credit for. Impulse connects to any MIDI device the browser can see, maps channels and CCs to named signals, and makes them available as node inputs. Web Audio handles the sound side: FFT, amplitude and beat detection. Both feed the same signal layer, so you can drive a visual parameter from a hardware knob, a kick drum, or both.
 
-## Current state
+## Where it is
 
-Impulse is work in progress. The architecture is solid and the rendering pipeline works. The node editor is functional but the node library is still small — I'm building the most useful primitives first, guided by what I actually need for upcoming performances.
+Impulse is a work in progress. The architecture holds up and the rendering pipeline works. The node editor works too, but there aren't many nodes yet. I'm building the most useful ones first, based on what my upcoming performances need.
 
-One hard requirement: Chromium with WebGPU enabled. On macOS, the renderer uses Metal via the `apple/metal-*` adapter — verify this is active in DevTools if something looks off. Firefox doesn't have WebGPU in stable builds yet.
+You need a Chromium browser with WebGPU enabled. On macOS the renderer uses Metal through the `apple/metal-*` adapter, so check DevTools if something looks off. Firefox doesn't support WebGPU in stable builds yet.
 
-I'll write more as it develops. The genuinely hard problems are in the node graph execution model — specifically, making mid-performance patch edits feel instant rather than causing a visual stutter. That's the one thing TouchDesigner actually gets right.
+The hardest problem ahead is in how the graph runs: editing a patch in the middle of a set has to feel instant, with no visual stutter. That's the one thing TouchDesigner really does get right, and it's the bar I'm aiming for.
 
-The development process has been non-linear — some nights productive, some nights spent unraveling a cascade failure in the entity pool at 3am. I wrote about one of those nights in the [Impulse dev diary](/blog/impulse-dev-diary-entity-pools). For the broader context of what Impulse is built for — the live performance pipeline it slots into — see [The Live AV Pipeline](/blog/live-av-performance-pipeline).
-
-Earlier visual work that informed Impulse's design: [Reactive Visuals — Angular Meets Three.js](/blog/reactive-visuals-angular-threejs).
+Not every night of building this has gone well. One of the worse ones is in the [Impulse dev diary](/blog/impulse-dev-diary-entity-pools). The performances it's built for are described in [The Live AV Pipeline](/blog/live-av-performance-pipeline), and the earlier experiment it grew out of is [Reactive Visuals](/blog/reactive-visuals-angular-threejs).

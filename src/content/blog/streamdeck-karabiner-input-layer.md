@@ -1,65 +1,55 @@
 ---
 title: "Stream Deck + Karabiner — Building an Input Layer That Fits How I Actually Work"
-description: "Why I stopped fighting the default keyboard layout and built my own input system with Stream Deck XL and Karabiner complex modifications."
+description: "I stopped putting up with the default keyboard and built my own input setup out of a Stream Deck XL and some Karabiner rules. It isn't really about speed."
 date: "2026-01-15"
 tags: ["Productivity", "Tooling", "Stream Deck", "Karabiner", "macOS", "Keyboard"]
 ---
 
-The default keyboard layout was designed in 1873. The symbol positions, the modifier key locations, the total absence of anything useful in the function row — it's a historical artifact we've all agreed to live with. For most tasks this is fine. For writing code and switching between tools constantly, it's a friction tax you pay thousands of times a day without noticing.
+The keyboard layout we all use dates back to 1873. The symbols are in odd places, the modifier keys are wherever they ended up, and the function row barely does anything. For most tasks that's fine. When you write code and switch between tools all day, though, you pay for those small awkward moves thousands of times a day without noticing.
 
-*I stopped accepting it.*
+I noticed when my wrists started getting tired after long sessions. Voice coding with Talon took care of the worst days. But I still spend a lot of hours at a keyboard, and I wanted those hours to cost less too. So I stopped putting up with the defaults and built my own input setup in two layers.
 
-## The two layers
+## Two layers for two jobs
 
-My input system has two distinct layers:
+**Karabiner** works at the operating-system level, below every app. It catches each keystroke before anything else sees it and can turn it into whatever you like. That's where my remapping lives.
 
-**Karabiner** operates at the OS level, below any application. It intercepts keystrokes before anything else sees them and can transform them into anything. This is where I handle remapping, complex modifications, and the **hyper key**.
+The **Stream Deck XL** is a separate device with 32 labelled buttons. It's for actions that should be one deliberate press instead of a chord, things that benefit from a visible label, and things I want to reach without thinking about where they live.
 
-**Stream Deck XL** is physical — 32 labeled buttons on a separate device. This is where I handle things that need to be triggered with one deliberate press rather than a key chord, things that benefit from having a visible label, and things I want to reach without moving my hands off the home row.
+They solve different problems, and together they cover most of what used to bother me.
 
-They solve different problems. Together they cover most of the friction.
+## Karabiner: one spare key, and symbols under your fingers
 
-## Karabiner: the hyper key and symbol remapping
+The change I'd keep if I could only keep one is the hyper key. Caps Lock, which is almost useless, acts as Control + Option + Command + Shift when you hold it. No app uses that combination, so nothing ever clashes with it. Every global shortcut and macro I own lives under `Hyper + [key]`.
 
-The most valuable modification in my Karabiner config is the hyper key. Caps Lock — a key with almost no legitimate use — becomes a simultaneous press of Control + Option + Command + Shift when held. This combination is guaranteed to never conflict with any existing shortcut in any application. Every automation, macro, and custom binding I want globally available lives in the `Hyper + [key]` namespace.
+Next is symbols. `[`, `]`, `{`, `}`, `|` and `\` are hard to reach on most keyboards, and on an Italian layout they need Option chords that never became muscle memory for code. So I put them on a layer. Hold one modifier and the home row turns into a row of symbols. My hands don't move, and I don't have to remember where anything is.
 
-The second most valuable category is symbol remapping. Characters like `[`, `]`, `{`, `}`, `|`, `\` are buried on most keyboards — especially on Italian layouts, where they require Option chords that aren't muscle memory for code. I've remapped these to more accessible positions using home-row layers: hold one modifier, and the home row becomes a symbol row. No hand movement, no mental translation.
+Last is navigation. HJKL as arrow keys on a layer, Vim-style, plus word jumps and start/end of line. These work in every app, not just editors that support them.
 
-The third category is complex modifications for navigation. Vim-style arrow keys on a layer (HJKL with a modifier), word-skip, line start/end — these work globally, not just in editors that support them.
+## Stream Deck: actions you can see
 
-## Stream Deck: visible, deliberate actions
+Karabiner is invisible. You can't see which layer you're on or what a key does right now. The Stream Deck is the opposite: every button has a label and an icon.
 
-Karabiner is invisible — you don't see what layer you're in, you don't see what a key does in a given context. Stream Deck inverts this: every button has a label, an icon, and a clear identity.
+So it gets the jobs where seeing helps:
 
-I use the Stream Deck for things that fit this model:
+- switching apps and windows, with each app always in the same physical spot, so no Alt-Tab hunting
+- system actions: muting the mic, do-not-disturb, switching audio between studio monitors and headphones
+- macros: multi-step actions that would be hard-to-remember chords but work well as a single button
+- per-app pages: the deck switches pages depending on which app is in front
 
-- **Window and app switching** — specific apps always at the same physical position; no Alt-Tab hunting
-- **System actions** — mute microphone, toggle do-not-disturb, switch audio output (between studio monitors and headphones)
-- **Macro sequences** — multi-step automations that would need to be memorized as key chords but work better as single button presses
-- **Context-sensitive pages** — the deck changes pages based on which application is active; the button grid reorganizes itself
+Those per-app pages are what made it stick. The buttons in front of me are always the ones that matter in the app I'm using. There are no blank buttons and none that don't apply.
 
-The context-sensitivity is where the Stream Deck goes from useful to genuinely well-integrated. The buttons you see when a specific app is in focus are the actions that matter in that app. No blank buttons, no buttons that don't apply.
+## What it cost
 
-## The connection to physical health
+The Stream Deck XL was the real expense. Karabiner is free and open source.
 
-This isn't just about speed. It's also about load.
+Karabiner takes time. Complex modifications need some reading, and the `JSON` rule format isn't obvious at first. Plan on a couple of evenings to get from nothing to something useful, and then keep tweaking it whenever you notice another awkward spot.
 
-Keyboard-heavy development has a cumulative physical cost. Modifier key chords, particularly the awkward ones that require crossing the hand or holding two widely-spaced keys simultaneously, generate repetitive strain. The more efficiently your input system is designed, the lower the mechanical load per hour of work.
+The Stream Deck is quicker to set up. Its software is drag-and-drop, and per-app profiles are easy. The ongoing work is keeping the profiles up to date as your workflow changes.
 
-I started taking this seriously after experiencing wrist fatigue from extended keyboard sessions. The voice coding setup I've written about elsewhere (Talon Voice) addressed the most demanding periods. The Karabiner and Stream Deck configuration reduces friction during the hours I am using a keyboard — fewer awkward chords, shorter key travel for common actions, less search-and-press for things I reach for constantly.
+## Why it was worth it
 
-## Cost and assembly time
+Each awkward chord or hunt for a key is a tiny tax. One on its own costs nothing, but over eight or ten hours of work they add up to real tiredness, both physical and mental.
 
-The Stream Deck XL was the significant purchase. Karabiner is free and open source.
+Removing them hasn't made me measurably faster. What it changed is how the day feels. By the evening I don't notice the tools anymore, and that's the best thing a tool can do.
 
-Setting up a useful Karabiner configuration takes time — the complex modifications system requires some reading, and the `JSON` format for custom rules is not immediately intuitive. I would estimate a couple of evenings to get from zero to something genuinely useful, and ongoing refinement after that as you notice remaining friction points.
-
-The Stream Deck configuration is faster — the software is drag-and-drop and the profile system for context-switching is straightforward. The ongoing investment is keeping the profiles updated when your workflow changes.
-
-## The meta-point
-
-Every friction point in your input system is a small cognitive tax. Each individual tax is negligible. Across eight or ten hours of development work, they accumulate into a genuine drag on energy and focus.
-
-Eliminating them doesn't make you dramatically faster in a measurable way. It makes the work feel lighter. After a long day with a well-configured input system, you feel the absence of friction rather than its presence. That's the best outcome — a tool that stops being something you notice.
-
-The most complete version of this input rethink is [Voice Coding with Talon](/blog/voice-coding-with-talon) — when the keyboard disappears from the equation entirely.
+The furthest version of this is [Voice Coding with Talon](/blog/voice-coding-with-talon), where the keyboard drops out completely.

@@ -1,25 +1,17 @@
 ---
 title: "Voice Coding with Talon — A Year of Hands-Free Development"
-description: "What works, what doesn't, and how I configured Talon Voice for daily development across JetBrains IDEs and the terminal."
+description: "My wrists were getting tired, so I started coding by voice. A year later, here's what works, what doesn't, and how my Talon setup works with JetBrains and the terminal."
 date: "2025-02-10"
 tags: ["Voice Coding", "Talon", "Tooling", "Accessibility", "Productivity"]
 ---
 
-I've been using Talon Voice as my **primary coding interface** for over a year. Not as an experiment — as my daily driver for production TypeScript, Angular, and terminal work. Here's what actually happened.
+It started with my wrists. Long days of keyboard-heavy development left them tired every single time, and I didn't want to wait for that to turn into something worse.
 
-## Why
+So I started using Talon Voice. More than a year later it's my **main coding interface**. I write production TypeScript and Angular with it and do my terminal work through it every day. I was also curious whether you could build serious software by voice at a normal pace. You can, with some caveats, and this post is about those caveats.
 
-Two reasons, one more practical than the other.
+## What Talon actually is
 
-The practical one: repetitive strain from keyboard-heavy development. Before voice coding, I had consistent wrist fatigue after long sessions. Voice eliminates the mechanical load entirely.
-
-The less practical one: I was curious whether you could build complex software with your voice at production speed. The answer is yes, *with caveats*.
-
-## What Talon Is
-
-Talon Voice is a programmable voice control system for desktop computers. Unlike dictation software, it's not trying to transcribe natural speech — it listens for specific spoken commands that you define yourself, and executes code (Python) in response.
-
-Every command is a Python function:
+Talon isn't dictation. It doesn't try to transcribe what you say. It listens for short spoken commands that you define yourself, and each command runs a bit of Python:
 
 ```python
 # Say "slap" → press Enter
@@ -32,45 +24,35 @@ Every command is a Python function:
 "select funk": user.select_function()
 ```
 
-The commands are short, unambiguous, and composable. "Grab word right" selects the next word. "Chuck line" deletes the current line. "Paste that" pastes.
+The words are short and easy to tell apart, and they chain together. "Grab word right" selects the next word. "Chuck line" deletes the current line. "Paste that" pastes. It sounds strange at first, and then it turns into a language you speak without thinking.
 
-## The JetBrains Setup
+## The first two weeks
 
-JetBrains IDEs need specific integration. The Talon community has a shared `talon_community` repo with JetBrains-specific commands, but I've extended mine substantially in [Poly-Talon-Scripts](https://github.com/polyterative/Poly-Talon-Scripts).
+The first two weeks were frustrating. I was slower than on a keyboard, and every command felt like looking something up. I had to stop and remember the word for "select to end of line", then say it, then check it had worked.
 
-The key additions for Angular/TypeScript work:
+Around the third week it changed. The commands started coming out on their own the way keyboard shortcuts do, and I stopped translating in my head.
 
-- **Refactoring commands**: "rename symbol", "extract variable", "implement interface" — all mapped to the JetBrains refactoring shortcuts
-- **File navigation**: "open component", "go to template", "switch spec" for Angular component navigation
-- **Snippet expansion**: custom spoken triggers for common TypeScript patterns (Observable chains, component decorators, async/await)
-- **Terminal toggle**: "show terminal", "run tests", "build it"
+## Fitting it to JetBrains
 
-## What's Fast vs Slow
+JetBrains IDEs need their own integration. The Talon community shares a `talon_community` repo with JetBrains commands, and I've built a lot on top of it in [Poly-Talon-Scripts](https://github.com/polyterative/Poly-Talon-Scripts). Most of my additions come from Angular and TypeScript work:
 
-Fast:
-- Navigation (jumping to files, symbols, lines)
-- Refactoring (rename, extract, move)
-- Running builds and tests
-- Git operations via terminal commands
-- Dictating comments and documentation
+- **Refactoring**: "rename symbol", "extract variable", "implement interface", each mapped to the JetBrains refactoring shortcut
+- **Navigation**: "open component", "go to template", "switch spec" for jumping around an Angular component
+- **Snippets**: spoken triggers for common TypeScript shapes like Observable chains, component decorators and async/await
+- **Terminal**: "show terminal", "run tests", "build it"
 
-Slow:
-- Writing dense expression syntax (arrow functions, template literals)
-- Anything involving unusual punctuation clusters
-- Switching between voice and manual input mid-flow
+## Where voice wins, and where it doesn't
 
-The practical workflow is **hybrid**: voice for navigation, commands, and structure; keyboard for dense expression bodies when speed matters.
+Voice turned out to be fast for anything with a name: jumping to a file, symbol or line, refactoring, running builds and tests, git commands in the terminal, and writing comments and documentation.
 
-## The Learning Curve
+It's slow for dense syntax. Arrow functions, template literals and any line full of punctuation take longer to say than to type. Switching between voice and keyboard in the middle of a thought is slow too.
 
-The first two weeks are frustrating. You're slower than you would be on a keyboard, and the command vocabulary doesn't feel natural yet. Around week three it shifts — commands become reflexes rather than lookups.
+So in practice I mix them. I use voice for navigation, commands and structure, and the keyboard for the dense bits when speed matters.
 
-The full command set is in the repo. It's opinionated toward my workflow but the structure is documented well enough to fork.
+## Was it worth it?
 
-## Honest Assessment
+Voice coding isn't faster than typing across the board. It's faster for some kinds of work and slower for others.
 
-Voice coding is not universally faster than keyboard coding. It's faster for specific things (navigation, large-scale refactoring, terminal work) and slower for others (dense expression writing).
+But speed was never the reason I started. After a full day of coding my wrists are fine now, and that alone was worth two awkward weeks. My full command set is in the repo. It's shaped around how I work, but it's documented well enough to fork.
 
-The real benefit for me was ergonomic. Zero wrist fatigue after full-day sessions. That alone is worth the two-week learning investment.
-
-Voice coding is one layer of a broader input system rethink. The hours I spend at the keyboard benefit from a different kind of work — remapping and hardware macros. I wrote about that in [Stream Deck + Karabiner — Building an Input Layer That Fits How I Actually Work](/blog/streamdeck-karabiner-input-layer).
+Voice took care of the worst days. For the hours I still spend on the keyboard, I rebuilt the rest of my input setup, which I wrote about in [Stream Deck + Karabiner](/blog/streamdeck-karabiner-input-layer).

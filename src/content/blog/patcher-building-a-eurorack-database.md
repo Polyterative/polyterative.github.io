@@ -1,43 +1,39 @@
 ---
 title: "Patcher — Building a Database for Eurorack Modular Synthesis"
-description: "Why I built an open-source web app to manage modular synth patches, and what I learned about community-driven tools."
+description: "I kept losing my modular patches, so I built somewhere to keep them. Then other people started using it."
 date: "2024-11-10"
 tags: ["Eurorack", "Angular", "Supabase", "Open Source"]
 cover: "/projects/patcher.jpg"
 ---
 
-Modular synthesis is inherently combinatorial. You connect a finite set of modules in near-infinite ways, and the patch — the state of all those connections — is ephemeral unless you document it. I got tired of photographing my rack and uploading screenshots to spreadsheets.
+A modular synth patch only exists while the cables are plugged in. Pull them and the sound is gone, along with the knob positions that made it. For a long time my archive was a folder of photos of my rack and a spreadsheet where I tried to explain what each photo meant. Months later I'd open one and have no idea which cable went where, or why I'd liked the result.
 
-That frustration became [patcher.xyz](https://patcher.xyz).
+That's how [patcher.xyz](https://patcher.xyz) started. I wanted to stop losing patches.
 
-## The Problem
+## Looking for something that already existed
 
-The Eurorack community is fragmented across forums, Reddit, and Discord. There was no central place to:
+Before writing any code I looked for a tool that already did this. Eurorack people talk about patches all the time, on forums, Reddit and Discord, but those conversations are hard to find again later. The apps I found were either from a single manufacturer, so they only knew that brand's modules, or general note apps that didn't know what a module was.
 
-- Document and retrieve your own patches
-- Discover how others used the same modules
-- Build a **canonical database** of modules with accurate specs
+What I wanted was simple to describe. I wanted a place to keep my own patches. I wanted to see how other people used the modules I owned. And under both of those I needed a **shared module database** with specs I could trust.
 
-Existing tools were either too narrow (single-vendor apps) or too general (plain note apps).
+## The first version
 
-## What I Built
+Patcher is an Angular app with a Supabase backend. Angular is what I work in every day, and RxJS streams suit an interface where lots of small things change at once. Supabase gave me auth and a realtime Postgres database, so I didn't have to run servers for a side project.
 
-Patcher is an Angular + Supabase app that lets you:
+The first version did three things. You could log your modules from the shared database, save patches with routing, settings, notes and photos, and browse other people's patches by module, tag or contributor.
 
-1. Log your modules — search a community-maintained database
-2. Save patches — describe signal routing, note settings, add photos
-3. Explore — browse patches by module, tag, or contributor
+It launched with zero users and broke in three different browsers.
 
-The stack was deliberate. Angular gives me the reactive programming model I'm comfortable with (RxJS flows feel natural for event-driven synth UIs). Supabase handles auth and a real-time Postgres backend without infrastructure overhead.
+## Letting other people shape it
 
-## On Building in Public
+I shipped it anyway, and that was the right call. People from the Bologna Modulare community started using it and telling me what was wrong, and nearly every feature since has come out of those conversations. I'd built it for myself, but other people are the reason it kept getting better.
 
-The first version launched with zero users and broke in three different browsers. Shipping it anyway was the right call. Feedback from the Bologna Modulare community shaped every subsequent feature. A tool for one person is a script. *A tool for a community is a product.*
+The module database is open for the same reason. I can't keep every module accurate by myself. Anyone can add or fix an entry, so the data improves faster than I could manage alone. Reviewing those changes takes work, and it's worth it.
 
-Open source matters here too — the module database grows because anyone can contribute. That multiplier effect is worth the maintenance overhead.
+## What's next
 
-## What's Next
+Two things are next. First, a better mobile layout, so I can document a patch on my phone while I'm standing at the rack. Second, an API so other tools can use the module database.
 
-Better mobile UX for live patch documentation, and an API so other tools can consume the module database. If you use Eurorack, give it a try and file an issue.
+I still log every patch in Patcher before a live set, so it went from a fix for my own mess to a tool I depend on. If you play Eurorack, try it, and if something breaks, open an issue. Most of the app got built that way.
 
-Patcher is where I document every patch before a live set. If you're curious what that pipeline looks like end-to-end — from patch design through performance to post-production — I wrote about it in [The Live AV Pipeline](/blog/live-av-performance-pipeline).
+How Patcher fits into preparing a show is in [The Live AV Pipeline](/blog/live-av-performance-pipeline).

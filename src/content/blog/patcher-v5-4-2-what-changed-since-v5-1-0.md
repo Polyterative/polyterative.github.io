@@ -1,18 +1,16 @@
 ---
 title: "Patcher v5.4.2 — What Changed Since v5.1.0"
-description: "A progress update on Patcher: manufacturer pages, public profiles, SSR, moderation tools, multi-panel workflows, and a more coherent digital twin workspace for Eurorack."
+description: "v5.1.0 finished the patch editor. Since then I've worked on everything around it: the shared data, the public side, multi-panel modules, and a lot of small fixes."
 date: "2026-04-14"
 tags: ["Patcher", "Eurorack", "Angular", "Supabase", "Open Source"]
 cover: "/blog/covers/patcher-v5.jpg"
 ---
 
-It has been a while since the last public update for Patcher.
+The last time I wrote about Patcher was around **v5.1.0**. That was the release where the patch editor finally felt complete. With the editor done, the rest of the app needed to catch up.
 
-The last major message was around **v5.1.0**, which was the release where the patch editor finally started to feel complete. Since then, the work has been less about one single headline feature and more about pushing the whole product forward in a steady way: public pages, browsing, moderation, panel workflows, SEO, onboarding, and the database itself.
+So the releases since then haven't had one big headline. I've been working through everything around the editor: the shared database, how Patcher looks to people who aren't logged in, multi-panel modules, and a long list of small annoyances. Put together, Patcher now feels like one workspace and not a set of separate tools.
 
-The result is that Patcher now feels less like a set of separate tools and more like one coherent workspace for modular musicians.
-
-A few screens from the current state of the product:
+Here's where it is today:
 
 <div class="post-gallery">
   <figure>
@@ -32,59 +30,41 @@ A few screens from the current state of the product:
   </figure>
 </div>
 
-## The database side got much stronger
+## The data had to get better
 
-One of the biggest improvements since v5.1.0 is the database and discovery layer.
+Patcher is only as useful as its shared module data. A patch that points at a module with wrong specs isn't much use to anyone, so that's where I started.
 
-Patcher now has **manufacturer pages** with dedicated browsing, filtering, pagination, and recent activity. That makes the public hardware database more useful as a reference, not just as a support system for patches and racks.
+There are now **manufacturer pages** with their own browsing, filters, pagination and recent activity. You can use the hardware database as a reference in its own right now, not just as a lookup for patches and racks.
 
-On the module side, there is now support for store links, better issue reporting, smarter power defaults, and a fuller moderation workflow. Users can flag problematic entries, and admins now have a proper flow for reviewing, resolving, or deleting those reports.
+Modules got store links, better issue reporting and smarter power defaults. More importantly, there's now a proper moderation workflow. Anyone can flag a bad entry, and admins can review, resolve or delete those reports.
 
-That work matters because Patcher is only as useful as the quality of the shared data behind it.
+## Making it visible from the outside
 
-## Public pages and sharing improved a lot
+For a long time Patcher was only useful once you'd logged in. I wanted it to make sense to someone arriving from a search result or a shared link.
 
-Another major area of work was the public-facing layer of the app.
+I added server-side rendering, structured SEO data, better metadata and a working sitemap. Public patches and racks now show up in search and preview properly when you share them. I also added public profile pages, so patches, racks and module contributions link back to the people who made them.
 
-Patcher now includes **server-side rendering**, structured SEO data, improved metadata handling, and better sitemap behavior. In practical terms, this means public content is easier to discover, preview, and share.
+## Multi-panel modules, finally
 
-There are now also public profile pages, which give contributors a more visible presence in the system and help connect patches, racks, and module contributions back to real users.
+Some modules come in several panel versions: different colours, alternate layouts. Early support for that was basic. Now there are panel galleries, clearer labels, click-to-preview, panel switching inside a rack, and a global preference for panel colour. If you want your digital rack to look like your real one, this is much better than it was a few versions ago.
 
-This has been an important step toward making Patcher more legible from the outside, not just more useful once logged in.
+## The small stuff
 
-## Multi-panel support became a real workflow
+Most of the remaining work was small fixes that only stand out when they're missing. Pagination now stays where you left it when you navigate around. Floating search reaches more of the app. You can filter modules by tag. Onboarding responds to what you're actually doing, the sign-in and profile flows have been cleaned up, and the app now makes sure every account has a username.
 
-Multi-panel modules have also moved much closer to the original vision.
+And a few more:
 
-What started as basic support is now a more complete system: panel galleries, clearer labels, click-to-preview behavior, rack-local panel switching, and a global panel color preference. If you care about panel variants, alternate layouts, or keeping a digital representation of your system visually accurate, this part of Patcher is now substantially better than it was a few versions ago.
-
-## Browsing and account flows got smoother
-
-A lot of work went into the connective tissue of the app.
-
-Pagination state now persists across navigation. Floating search has expanded. Module tag filtering is in place. Onboarding has become more contextual. Auth and profile flows have been cleaned up, and username completion is now enforced properly.
-
-None of these changes are flashy on their own, but together they make the app feel more stable and more deliberate in day-to-day use.
-
-## A lot of quality-of-life work landed too
-
-There were also many smaller but meaningful improvements:
-
-- comments UI got a major refresh
-- discovery tips can now be paused globally
-- rack creation can default to private
+- the comments UI got a big refresh
+- discovery tips can be paused globally
+- new racks can default to private
 - rack editing supports HP overrides
-- public profile queries and comments handling were hardened
-- backup and restore scripts were added for local Supabase workflows
+- public profile queries and comment handling were hardened
+- backup and restore scripts for local Supabase development
 
-This kind of work is easy to overlook in a changelog, but it is often what makes a tool feel trustworthy.
+None of these are exciting on their own. They're what makes the app feel solid instead of fragile, and that matters when people are trusting it with their patches.
 
-## Where Patcher is now
+## Where it is now
 
-Patcher started from a simple need: documenting modular patches in a way that was actually usable over time.
+Patcher started because I kept losing patches. That's still the heart of it, but it has grown into what I actually wanted from the start: a digital twin of a Eurorack setup, where patches, racks, modules, public discovery and your own workflow all live in one place.
 
-That idea is still the core of the project, but the app has grown well beyond patch notes. It is now much closer to what I wanted from the beginning: a digital twin workspace for Eurorack musicians, where patches, racks, modules, public discovery, and personal workflow all belong to the same system.
-
-If you have not looked at it since v5.1.0, now is a good time to check back in.
-
-https://patcher.xyz
+If you haven't opened it since v5.1.0, now's a good time to have another look at [patcher.xyz](https://patcher.xyz).

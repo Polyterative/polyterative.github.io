@@ -1,31 +1,31 @@
 ---
 title: "Impulse Dev Diary — Entity Pools, Dead Threads, and 3am Cascade Failures"
-description: "Building a live WebGPU visual engine night by night. What the architecture decisions actually cost, and what they bought."
+description: "One bad night building a live WebGPU visual engine: how a freeze in the entity pool happened, why it was so hard to find, and the boring fix that solved it."
 date: "2026-03-29"
 tags: ["WebGPU", "Three.js", "TypeScript", "Creative Coding", "Live Performance", "Dev Diary"]
 ---
 
-At 03:14 on a Tuesday in late March, my screenshot tagger logged this:
+At 03:14 on a Tuesday in late March, my screenshot tagger saved a screenshot with these four tags:
 
 ```
 dying_state entity_pool spawning_logic cascading_errors
 ```
 
-That's four tags extracted from a screen that was not going well. The entity world was collapsing — spawned entities refusing to die cleanly, the pool leaking references, new spawns triggering errors in the dying pipeline, the whole thing unraveling in a cascade that made the renderer freeze at exactly the moment I needed to test something else.
+That pretty much sums up the night. Entities in [Impulse](/apps/impulse) were refusing to die cleanly, the pool was leaking references, new spawns were tripping over the dying ones, and every few seconds the renderer froze, right when I was trying to test something else.
 
-This is what building [Impulse](/apps/impulse) looks like on the inside.
+This is the story of that bug, and what it says about building this engine.
 
-## What Impulse is trying to do
+## What I'm building
 
-The goal is a visual engine built specifically for live AV performance — something I can wire to my modular synthesizer via <span class="caps">OSC</span>, drive with MIDI from a controller, and run at 4K/60fps on a venue screen while performing. The output should also be distributable as a web gallery where recorded performances play back deterministically.
+Impulse is a visual engine for live AV performance. I want to drive it from my modular synth over <span class="caps">OSC</span>, play it with a MIDI controller, and run it at 4K/60fps on a venue screen while I perform. Later, recorded performances should also play back exactly the same way in a web gallery.
 
-The design constraint I set myself early: **the signal philosophy should be identical to Eurorack**. In modular synthesis, there is no fundamental difference between an audio signal, a control voltage, a gate, a trigger, or a clock. They are all the same thing: a number changing over time, passing through a wire. Impulse is built on this principle. Every node output is a number. Every node input accepts a number. No type enforcement at the wire level. You can patch anything into anything.
+Early on I decided Impulse should treat signals the way Eurorack does. In a modular synth there's no real difference between audio, a control voltage, a gate, a trigger or a clock. They're all a number changing over time, travelling down a cable. So in Impulse every node output is a number, every input accepts a number, and you can patch anything into anything.
 
-*This is either elegant or reckless depending on the day.*
+*Some days that feels elegant. Some days it feels reckless.*
 
-## The three-thread architecture
+## Three threads, and why
 
-The hardest early decision was threading. The browser's main thread cannot be trusted with anything performance-critical — garbage collection pauses, DOM events, and layout thrashing will drop frames at the worst moments. So the system runs on three threads:
+The first hard decision was threading. You can't trust the browser's main thread with anything time-critical. Garbage collection, DOM events and layout work will all drop frames at the worst moment. So Impulse runs on three threads:
 
 ```
 Main Thread        — UI, OSC, audio analysis, MIDI input
@@ -33,40 +33,40 @@ Graph Worker       — node evaluation, ~16ms tick interval
 Renderer Worker    — Three.js r174, WebGPU, OffscreenCanvas
 ```
 
-The graph worker runs a synchronous O(N) evaluation sweep every tick. Nodes are topologically sorted using Kahn's algorithm at load time, so evaluation always proceeds in dependency order with no wasted work. The worker sends world state to the renderer via `MessageChannel` — not through the main thread, which would add a relay hop and destroy the latency budget.
+Every tick, the graph worker evaluates all the nodes in one pass. When a session loads, the nodes are sorted with Kahn's algorithm so they always run in dependency order and nothing is wasted. The worker sends the world state straight to the renderer over a `MessageChannel`. Going through the main thread would add an extra hop and blow the latency budget.
 
-The renderer worker runs Three.js entirely on an OffscreenCanvas. On macOS this maps directly to Metal via the WebGPU adapter. Shaders are written in TSL (Three.js Shading Language) — actual TypeScript instead of GLSL strings — which means the AI agents I use during development can read, modify, and reason about shader code as naturally as any other TypeScript. This was not an accident.
+The renderer draws with Three.js onto an OffscreenCanvas. On macOS that goes through WebGPU to Metal. Shaders are written in TSL, which is TypeScript, not GLSL in strings. I did that on purpose: the AI agents I build with can read and change shaders like any other code.
 
-The 4K/60fps budget is non-negotiable. That means no per-tick allocations, no async chains in the hot path, no unbounded loops. Entity spawn/destroy uses pooled memory. Every constraint exists because I need this to hold up during a live set when I cannot touch a keyboard.
+The **4K/60fps budget** isn't negotiable. That rules out allocating memory every tick, async chains in the hot path and loops without a bound. Entities come from a pre-allocated pool instead of being created and thrown away. Every one of these rules exists because the engine has to survive a live set where I can't reach for the keyboard.
 
-## The entity problem that broke at 3am
+## The night it broke
 
-The entity world is the simulation layer between the node graph and the renderer. Nodes emit events — spawn an entity, modify a property, destroy an entity. The world maintains a pool of entity objects, assigns them to events, updates their state each tick (position, velocity, lifetime, color), and passes the living set to the renderer.
+The entity world sits between the node graph and the renderer. Nodes emit events like spawn, modify and destroy. The world takes entities from its pool, updates them every tick (position, velocity, lifetime, colour) and hands the living ones to the renderer.
 
-The problem was in the dying pipeline. When an entity's lifetime expired, it was supposed to return cleanly to the pool. Instead, under certain spawn rate conditions, the dying logic was reading from the pool mid-cycle, the pool was giving out entities that were still completing their death transition, the new spawning logic was initializing those entities before the death cleanup finished, and the renderer was receiving inconsistent state.
+The bug was in how entities died. When an entity's lifetime ran out, it was supposed to go back to the pool cleanly. At certain spawn rates, though, things overlapped. The dying logic read from the pool in the middle of a cycle. The pool handed out entities that were still on their way out. The spawn logic set them up before cleanup had finished, and the renderer received state that didn't add up.
 
-The cascade happened because none of these components failed loudly. They all continued running, processing subtly wrong data, and the visible output was a freeze rather than a crash — which made it harder to locate.
+What made it so hard was that nothing failed loudly. Every part kept running on slightly wrong data, and what you saw on screen was a freeze, not a crash with an error message. There was nothing pointing at where the problem started.
 
-The fix was boring in the way that most real fixes are: enforce a **strict phase separation** within each tick. Death cleanup runs first, returns entities to pool, marks pool clean. Only then does spawn logic pull from the pool. The renderer only reads after both phases complete. The order was always implied; I made it explicit and the problem stopped.
+The fix was boring, like most real fixes. I split each tick into strict phases. First, dead entities are cleaned up and returned to the pool. Only after that can spawning take from the pool, and the renderer reads only once both are done. That order had always been implied. Once I made it explicit, the freeze went away.
 
-206 tests across 19 files now cover the entity lifecycle, graph evaluation, clock synchronization, and hot-reload behavior. The tests didn't catch this one — it was a timing issue that only surfaced at specific spawn rates. But they've caught many others.
+There are 206 tests across 19 files now, covering the entity lifecycle, graph evaluation, clock sync and hot reload. None of them caught this one, because it was a timing problem that only showed up at certain spawn rates. They've caught plenty of others.
 
-## Sessions as JSON, committed to the repo
+## A decision that paid off: sessions are just JSON
 
-One of the better architectural decisions: a "session" (a complete node graph configuration) is just a `NodeDefinition[]` JSON array validated against a Zod schema. The same schema validates bundled sessions shipped with the code and user-exported sessions downloaded from the UI.
+Not every architecture decision has caused me trouble. A session, meaning a complete node graph, is just a `NodeDefinition[]` `JSON` array checked against a Zod schema. The same schema checks the sessions that ship with the code and the ones users export from the UI.
 
-This means a patch I build during rehearsal, export as JSON, and copy into `src/engine/graph/sessions/` becomes a committed, version-controlled session available in every future run. There is no separate patch format, no proprietary save file. The graph is the data and the data is the source.
+That means a patch I build in rehearsal can be exported, dropped into `src/engine/graph/sessions/`, committed, and it's part of every future run. There's no separate patch format or proprietary save file. The graph is the data, and the data is in the repo.
 
-⌘S saves to localStorage. The download button exports to a file. Import validates through the same schema before touching application state. Nothing external is trusted before validation.
+⌘S saves to localStorage, and the download button exports a file. Imports go through the same schema check before anything touches the app's state. Nothing from outside is trusted until it's validated.
 
 ## Where it is now
 
-Phases 0, 1, and 2.5 are complete. Phase 2 (the node graph editor and entity world) is in active development.
+Phases 0, 1 and 2.5 are done. Phase 2, the node graph editor and the entity world, is what I'm working on now.
 
-The current node library has around 20 nodes: timing primitives (Clock, Pulse, LFO, Sequencer, Divider, Randomizer), math transformations (Add, Multiply, Remap, Quantize, SampleHold), and renderer nodes (Spawner, Camera, Field, Fog, PostProcessing, Choreographer). Small but sufficient for the first performances I'm planning.
+There are about 20 nodes so far. Timing: Clock, Pulse, LFO, Sequencer, Divider and Randomizer. Maths: Add, Multiply, Remap, Quantize and SampleHold. Rendering: Spawner, Camera, Field, Fog, PostProcessing and Choreographer. It's a small set, but it's enough for the first performances I'm planning.
 
-What's next: feedback loops — Z⁻¹ back-edges in the graph that let a node's output feed back into an earlier node with a one-tick delay. This is the modular equivalent of patching an output back to a CV input, and it opens up a much larger space of emergent behavior. Then hot-parameter tweaking without reloading the graph, which is the live performance feature I need most — changing a parameter mid-set without destroying the entity world.
+Next come feedback loops: back-edges in the graph (Z⁻¹) that feed a node's output into an earlier node one tick later. It's the modular trick of patching an output back into a CV input, and it opens up a lot more emergent behaviour. After that comes the feature I need most on stage, changing parameters mid-set without reloading the graph and wiping the entity world.
 
-The 3am cascade is fixed. The screenshots from a week later are tagged `impulse node_graph 3d_graphics realtime`. Progress is non-linear but it compounds.
+The freeze from that night is fixed. A week later, my screenshots were getting tagged `impulse node_graph 3d_graphics realtime` instead. Progress has been uneven, but it keeps adding up.
 
-For an overview of Impulse's goals and architecture, start with [the intro post](/blog/impulse-webgpu-generative-visual-engine). For the live performance context Impulse is built for, see [The Live AV Pipeline](/blog/live-av-performance-pipeline).
+If you're new to Impulse, start with [the intro post](/blog/impulse-webgpu-generative-visual-engine). The live shows it's built for are covered in [The Live AV Pipeline](/blog/live-av-performance-pipeline).

@@ -1,59 +1,59 @@
 ---
 title: "The Live AV Pipeline — From Modular Patch to Finished Video"
-description: "How a Polyterative live set actually comes together: patch design, documentation, performance, and post-production."
+description: "A modular set looks improvised from the audience. Here's the weeks of patching, documenting, soundchecking and editing that go into one."
 date: "2026-03-15"
 tags: ["Eurorack", "Live Performance", "Ableton", "Modular", "DaVinci Resolve", "AV"]
 ---
 
-A live modular performance looks improvised from the outside. From the inside, it's the result of weeks of patch design, documentation, equipment preparation, and — after the show — hours of post-production. Here's what the full pipeline actually looks like.
+From the audience, a live modular set looks improvised. Someone is moving cables and turning knobs, and the sound follows. What you don't see is the weeks of patch design before it, the gear prep, and the hours of editing afterwards. This post covers the whole process, from first patch to finished video.
 
-## The patch
+## It starts with a patch
 
-Everything starts with **the patch** — the specific configuration of cables and settings that produces the sound of the set. For the industrial techno material I've been performing, the architecture is built around rhythm and tension rather than melody.
+Every set starts with **the patch**: the arrangement of cables and settings that produces the sound. The industrial techno material I've been playing is built around rhythm and tension, not melody.
 
-The core signal chain runs something like: percussion source into a dynamics processor, with the bass voice going through its own path before merging. The sidechain compression is cross-faded rather than hard-triggered, which gives it a more physical, pumping quality. The frequency content is shaped aggressively — the intention is abrasive, evolving, with the kind of rhythmic intensity that comes from my background playing deathcore guitar, now translated into electronic texture.
+The signal chain goes roughly like this. A percussion source runs into a dynamics processor, while the bass voice takes its own path before the two merge. The sidechain compression is crossfaded instead of hard-triggered, which makes it pump in a way that feels physical. I shape the frequencies aggressively. I want it abrasive and constantly changing, with the kind of rhythmic drive that comes from my background playing deathcore guitar, now coming out as electronic texture.
 
-The patch lives in [Patcher](https://patcher.xyz). Every module, every connection, every setting I want to recall later is documented there. Before Patcher existed I was photographing the front panel and taking written notes. Now I have a searchable, queryable record of every patch I've ever built — which is also useful for tracing back why something worked when I try to rebuild it months later.
+Every patch goes into [Patcher](https://patcher.xyz): every module, every connection, every setting I'll want back later. Before Patcher, I photographed the front panel and scribbled notes. Now I have a searchable record of every patch I've built, which helps most months later, when I'm rebuilding something and trying to work out why it worked.
 
 ## The gear
 
-My live setup is deliberately minimal:
+I keep the live rig small on purpose:
 
-- Eurorack modular case, 7U / 104HP
-- Ableton Live with Push 2
-- Launchpad for clip triggering
-- Audio interface outputting two balanced TRS channels to FOH
+- a Eurorack case, 7U / 104HP
+- Ableton Live with a Push 2
+- a Launchpad for triggering clips
+- an audio interface sending two balanced TRS channels to front of house (FOH)
 
-That stereo output is the only thing the venue needs from me. The rider specifies: line level, balanced, no added reverb or delay at FOH unless pre-arranged. Strong low end expected — *"gently control above 10kHz if harsh"* is the note I include, because the material often is.
+That stereo pair is all the venue gets from me. My rider asks for line level, balanced, and no reverb or delay at FOH unless we've agreed on it. It also warns them to expect a heavy low end, with a note to *"gently control above 10kHz if harsh"*, because the material often is.
 
-The modular handles sound generation and processing. Ableton handles arrangement structure and timing reference — it's the backbone that the modular patches over, not the other way around.
+The modular makes and processes the sound. Ableton holds the arrangement and timing, and the modular plays over it, not the other way around.
 
-## The performance history
+## How the sets grew
 
-I've been performing as Polyterative since 2021, first in collaborative improv sessions with the [Bologna Modulare](https://www.instagram.com/bolognmodulare/) collective — loose, exploratory, no formal structure. That was where I learned what works live versus what sounds good in a studio.
+I've performed as Polyterative since 2021. It started with collaborative improv sessions with the [Bologna Modulare](https://www.instagram.com/bolognmodulare/) collective, loose and exploratory with no fixed structure. That's where I learned the difference between what sounds good in the studio and what actually works in a room full of people.
 
-The trajectory since then has been toward more deliberately structured sets and larger formats. 2024 was a step change: a multichannel spatialized performance at a venue in Bologna where the sound moved through speakers positioned around the audience — a fundamentally different experience from stereo. Then a dedicated AV event pairing live visuals with the modular set, which is what led directly to building Impulse.
+Since then the sets have become more structured and the formats bigger. 2024 was a big step. I played a multichannel spatialised show in Bologna, where the sound moved through speakers placed all around the audience, which feels completely different from stereo. Then came an AV event that paired live visuals with the modular set. That event is what led me to start building Impulse.
 
-In 2025, a panel talk at MENT Festival in Ljubljana, then a live slot at Kino Šiška. The audiences are different at each of these — Ljubljana is more experimentally inclined than a Bologna club night — and the set shifts accordingly. The patch changes. The pacing changes. The documentation in Patcher means I can prepare variants without starting from scratch each time.
+In 2025 I gave a panel talk at MENT Festival in Ljubljana, then played a live slot at Kino Šiška. Each audience is different. Ljubljana leans more experimental than a Bologna club night, so the set changes to match: different patch, different pacing. Because everything is in Patcher, I can prepare those versions without starting from zero each time.
 
-## Soundcheck and the venue relationship
+## Soundcheck
 
-The **technical rider** exists because venues vary enormously. The table size matters — you need 100×60cm minimum for the modular case, the laptop, and the interface, and there needs to be power within one meter of where you're performing, not across the stage. A technician during soundcheck is non-negotiable; sending audio into an unchecked PA and hoping is not a workflow.
+Venues vary a lot, and that's why the **technical rider** exists. I need a table at least 100×60 cm for the case, the laptop and the interface, and power within a metre of where I'm playing, not across the stage. I won't skip having a technician at soundcheck. Sending audio into a PA nobody has checked and hoping for the best isn't a plan.
 
-The most common friction is FOH engineers who add reverb or compression to the stereo bus without asking. The modular output is already processed — it has its own spatial character. Additional processing at the desk usually makes things worse. The rider note is there to start that conversation before the soundcheck, not during it.
+The most common problem is a sound engineer adding reverb or compression to the stereo bus without asking. The modular output is already processed and already has its own sense of space. Anything extra at the desk usually makes it worse. That line in the rider is there so we have that conversation before soundcheck, not in the middle of it.
 
-## Post-production
+## After the show
 
-After the show, the recorded output from the interface goes into DaVinci Resolve alongside whatever video was captured — camera footage, screen recordings from Impulse if it was running, any fixed-camera or audience footage that's available.
+Afterwards, the recording from the interface goes into DaVinci Resolve with whatever video exists: camera footage, screen recordings from Impulse if it was running, and any audience or fixed-camera footage I can get.
 
-The editing goal is documentation, not production. I want something that conveys what the set actually sounded and felt like, not a polished music video. That means keeping the rough edges, the room sound, the visible effort of working with physical hardware. The cut follows the energy of the performance, not a predetermined structure.
+I edit to document the show, not to make a music video. I want it to show what the set actually sounded and felt like, so I keep the rough edges, the sound of the room and the visible effort of working with physical hardware. The edit follows the energy of the performance, not a template.
 
-Some performances end up on [YouTube](https://youtu.be/8FU1Pg-0AH0). Others go into the archive and stay there. The value of the documentation isn't always in publishing it — it's in having a record that lets me hear what happened with some distance from the moment.
+Some of these end up on [YouTube](https://youtu.be/8FU1Pg-0AH0). Others just go into the archive. Publishing isn't really the point. The point is having a record I can listen back to later, once I'm no longer caught up in how the night felt.
 
-## The loop
+## Back to the patch
 
-Patch → document → prepare → perform → record → edit → archive → observe → adjust patch.
+Patch, document, prepare, perform, record, edit, archive, listen back, adjust the patch, and around again.
 
-The cycle is slow. A set takes weeks to develop properly. But each iteration of the loop produces a patch that's more considered than the last, documentation that's more useful, a performance that's more deliberate. The modular forces you to be specific about what you want — you can't accidentally stumble into a good patch and then forget what it was.
+It's a slow loop, and a set takes weeks to get right. But each time round, the patch is more thought through, the notes are more useful, and the performance is more intentional. The modular makes you be specific about what you want. You can't stumble into a good patch and forget it, as long as you wrote it down.
 
-Patcher is where the specificity lives. The live set is where it gets tested. Impulse — the visual engine I'm building for AV performances — is described in detail [here](/blog/impulse-webgpu-generative-visual-engine), and the visual work that preceded it lives [here](/blog/reactive-visuals-angular-threejs).
+Patcher is where I write it down, and the stage is where it gets tested. The visual engine I'm building for these shows is [Impulse](/blog/impulse-webgpu-generative-visual-engine), and the visual work that came before it is [here](/blog/reactive-visuals-angular-threejs).

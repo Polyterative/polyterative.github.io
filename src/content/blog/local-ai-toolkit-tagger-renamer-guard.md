@@ -1,27 +1,25 @@
 ---
 title: "Three Small Tools for Living with Local AI"
-description: "mini-tagger, mini-renamer, and lms-guard: a set of macOS utilities I built because local LLMs are powerful but rough around the edges."
+description: "mini-tagger, mini-renamer and lms-guard: three small macOS utilities I built because running models locally is great, except for everything around the model."
 date: "2026-03-20"
 tags: ["Python", "Local AI", "LM Studio", "macOS", "Tooling", "Productivity"]
 ---
 
-Running models locally is great until your machine grinds to a halt because you forgot to unload a **14B model** — or until you notice your screenshots folder has 800 files named `Screenshot 2026-03-14 at 09.43.11.png` and no way to find anything in them.
+Running models on my own machine is great until two things happen. The first is when the whole Mac grinds to a halt because I forgot a **14B model** was still loaded. The second is when I open my screenshots folder and find 800 files called `Screenshot 2026-03-14 at 09.43.11.png`, with no way to find the one I want.
 
-I built three small macOS utilities to deal with this. *Each does one thing.*
+The models were fine. What was missing was everything around them. So I built three small macOS utilities, and each one fixes one of those problems.
 
----
+## mini-tagger: screenshots that name themselves
 
-## mini-tagger — Auto-tag and rename your screenshots
-
-mini-tagger is a menu bar app that watches a folder. When a new image appears, it sends the image to [Moondream2](https://moondream.ai) — a compact vision-language model — running locally on MPS (Apple Silicon GPU), extracts semantic tags, and renames the file to:
+mini-tagger is a menu bar app that watches a folder. When a new image shows up, it sends it to [Moondream2](https://moondream.ai), a small vision-language model running locally on the Apple Silicon GPU. The model returns a few tags, and the file gets renamed to something you can actually search for:
 
 ```
 2026-03-14 at 09.43.11 (terminal python error traceback).png
 ```
 
-Then it moves it to a destination folder and copies the result to your clipboard.
+Then it moves the file to a destination folder and copies the result to the clipboard.
 
-macOS screenshots are tricky: the system writes them via an atomic temp-file rename, not a direct create. The watcher handles both `FileCreatedEvent` and `FileMovedEvent` exactly for this reason. There's also a small polling loop that waits for file size to stabilize before handing it to the model — otherwise PIL opens a partial write and produces garbage.
+The tricky part wasn't the model. macOS doesn't write screenshots directly. It writes a temporary file and renames it at the end, so the watcher has to listen for both `FileCreatedEvent` and `FileMovedEvent`. Even then, the file can still be half-written when the event arrives, and PIL will happily open it and return garbage. So there's a small loop that waits for the file size to stop changing:
 
 ```python
 def _wait_for_stable(path: Path, timeout: float = 5.0) -> bool:
@@ -36,20 +34,18 @@ def _wait_for_stable(path: Path, timeout: float = 5.0) -> bool:
     return False
 ```
 
-There's also a memory monitor that auto-unloads the model when free RAM drops below a configurable threshold, so the tool doesn't become a problem in itself.
+It also watches memory and unloads the model if free RAM drops below a threshold you set, so the tagger doesn't turn into the problem it was built to fix.
 
----
+## mini-renamer: renaming with a human in the loop
 
-## mini-renamer — Human-in-the-loop file renaming
+mini-renamer applies the same idea to files where I want the final say. You drag files onto a window, whether they're images, PDFs or DOCX, and a local model suggests a clean name for each one. You go through them one by one, edit any name you don't like, and press Apply.
 
-Same idea, different interaction model. You drag files onto a window — images, PDFs, DOCX — and a local LLM proposes a clean filename for each one. You review them one at a time, edit the proposed name inline if needed, then hit Apply.
+Each file type takes a different route to the model:
+- Images are sent as base64 to the vision model
+- `PDF` text is extracted with `pdfplumber`, and scanned PDFs fall back to an image of the first page via `pymupdf`
+- `DOCX` text is extracted with `python-docx`
 
-The file handling per type:
-- Images → sent as base64 to the VLM
-- `PDF` → text extracted with `pdfplumber`; scanned PDFs fall back to first-page image via `pymupdf`
-- `DOCX` → text extracted with `python-docx`
-
-Everything stays on your machine. No uploads. The model runs in LM Studio locally, you configure which one in a `TOML` file.
+Nothing leaves your machine. The model runs in LM Studio, and you choose which one in a `TOML` file:
 
 ```toml
 [model]
@@ -61,17 +57,13 @@ style      = "kebab-case"
 max_length = 60
 ```
 
-The output style — kebab-case, snake_case, Title Case — is configurable because different workflows want different things.
+The naming style is configurable, kebab-case, snake_case or Title Case, because different folders need different conventions.
 
----
+## lms-guard: a watchdog for forgotten models
 
-## lms-guard — Memory watchdog for LM Studio
+The third tool deals with the frozen Mac. LM Studio models are big. If a few are loaded and you open something else that's memory-hungry, the system starts swapping and everything slows to a crawl.
 
-This one is the most utilitarian. LM Studio models are large. If you have a few loaded and then switch to something memory-heavy, the system starts swapping and everything becomes slow.
-
-lms-guard is a macOS menu bar app that polls RAM usage every N seconds. If available memory drops below a threshold and the loaded models have been idle for a configurable period, it starts a 10-second countdown and then unloads them. You can cancel, snooze, or pause the guard entirely from the menu.
-
-The menu bar icon tells you at a glance what's happening:
+lms-guard sits in the menu bar and checks RAM every few seconds. If free memory drops below a threshold and the loaded models have been idle for a while, it starts a 10-second countdown and then unloads them. You can cancel, snooze or pause it from the menu, and the icon shows what it's doing:
 
 | Icon | State |
 |------|-------|
@@ -80,16 +72,14 @@ The menu bar icon tells you at a glance what's happening:
 | `⏸` | Guard paused by you |
 | `⤓` | Unloading in progress |
 
-It talks to LM Studio via the `lms` CLI, not the HTTP API, which turns out to be more reliable for unload operations.
+It talks to LM Studio through the `lms` CLI instead of the HTTP API, because I found the CLI more reliable for unloading.
 
----
+## What building them taught me
 
-## The pattern
+None of these tools is impressive on its own. Together they show that local AI isn't finished yet as something you use every day. The models are good. What's still mostly missing is everything around them: managing memory, keeping files organised, the basic routine of loading and unloading. Either you build that yourself or you put up with the friction.
 
-These three tools are small individually. Together they make a point: local AI is powerful but still unfinished as a day-to-day experience. The models are good. The scaffolding around them — memory management, file organization, the basic lifecycle of loading and unloading — mostly doesn't exist yet. You either build it yourself or you tolerate the friction.
+I'd rather build it, partly because it's the best way I've found to understand what these models actually do. You learn more by wiring one into your file system than by poking at it in a chat window.
 
-I'd rather build it. It's also the fastest way to actually understand what these models are doing, as opposed to prodding them through a chat window and hoping.
+All three are written in Python, packaged as native macOS `.app` bundles with py2app, and live in the menu bar using rumps. I'll open-source them once they've run on my machine a bit longer.
 
-All three are Python, packaged as native macOS `.app` bundles via py2app, living in the menu bar with rumps. Tidy codebases. I'll open-source them when they've had more time on my machine.
-
-If this theme interests you: [thear](/blog/sonifying-ai-work-thear) is another tool in the same spirit — sonifying Claude Code's activity in real time. And the ergonomic side of this whole setup is covered in [Voice Coding with Talon](/blog/voice-coding-with-talon) and [Stream Deck + Karabiner](/blog/streamdeck-karabiner-input-layer).
+[thear](/blog/sonifying-ai-work-thear) comes from the same itch: it turns Claude Code's activity into sound. And the physical side of my setup is in [Voice Coding with Talon](/blog/voice-coding-with-talon) and [Stream Deck + Karabiner](/blog/streamdeck-karabiner-input-layer).

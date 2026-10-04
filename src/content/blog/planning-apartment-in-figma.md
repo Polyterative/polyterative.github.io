@@ -1,69 +1,67 @@
 ---
 title: "I Planned My Apartment in Figma (And I'd Do It Again)"
-description: "A UX engineer moves into a new place and does the obvious thing: opens Figma. What I learned about spatial design by treating it like an interface problem."
+description: "I moved into a new place and did the obvious thing for a UX engineer: opened Figma. Treating the rooms like an interface problem gave me a set of rules I still use."
 date: "2026-02-20"
 tags: ["Design", "Figma", "Interior Design", "Space Planning", "UX"]
 ---
 
-When I moved into my new apartment, the first thing I opened was Figma.
+When I moved into my new apartment, the first app I opened was Figma.
 
-This is probably not surprising if you know me. Figma is where I think spatially — where I arrange things, test compositions, compare options side by side. The question of how to configure a room is, at some level, the same kind of problem as designing an interface: you have a bounded space, a set of elements with fixed and flexible properties, and a set of human behaviors you're trying to support or avoid.
+If you know me, that won't surprise you. Figma is where I think about space. It's where I arrange things, try out compositions and compare options side by side. And laying out a room is a lot like designing an interface. You have a fixed area, some elements that can move and some that can't, and people whose habits you're trying to support.
 
-So I imported the floor plan, set up a frame at **1:50 scale**, and started working.
+So I imported the floor plan, set up a frame at **1:50 scale**, and started.
 
 ## The floor plan as a canvas
 
-The apartment came with architectural drawings. I traced the walls into Figma, marked the fixed points — windows, doors, radiators, electrical outlets — and then started placing furniture as components. Each piece of furniture became a frame with accurate proportions: the desk, the bed, the shelving units, the kitchen elements.
+The apartment came with architectural drawings. I traced the walls into Figma and marked everything that couldn't move: windows, doors, radiators, power outlets. Then I added the furniture as components, each drawn to scale: the desk, the bed, the shelving, the kitchen units.
 
-The advantage over paper sketching is immediate: you can duplicate an entire layout variant in two seconds, compare three configurations side by side, and share it with anyone who needs to weigh in. I went through around a dozen serious layout iterations before arriving at something that felt right.
+Paper can't keep up with this. I could duplicate a whole layout in two seconds, put three versions side by side, and send them to anyone who needed to weigh in. I went through about a dozen serious layouts before one felt right.
 
-## Design principles that emerged from the process
+## The rules that came out of it
 
-Working through the layouts forced me to articulate why certain configurations felt better. I ended up with a set of principles I've been applying consistently:
+Going through that many layouts made me put into words why some felt better than others. By the end I had a handful of rules, and I've stuck to them since.
 
-Float elements when possible. Wall-mounted furniture or pieces with visible legs reveal the floor perimeter. A continuous floor plane reads as a larger room. A piece that disappears into the floor breaks that continuity.
+Float furniture where you can. Wall-mounted pieces, or pieces on visible legs, let you see the floor run all the way to the wall. An unbroken floor makes a room read as bigger, and anything that sits solidly on the floor interrupts it.
 
-Consolidate vertical mass. Tall storage units compress a room visually. One block of tall storage on one wall is fine; distributing tall pieces around the room makes it feel smaller and busier. Keep the rest low and continuous.
+Keep the tall stuff together. Tall storage makes a room feel smaller. One block of it on one wall is fine, but tall pieces scattered around make the room feel cramped and busy. Keep everything else low and continuous.
 
-One clear sightline from entry to window. Leave at least one meter of open space along the main axis from the front door to the primary window. A room that reads as one continuous volume from entry feels significantly larger than the same dimensions with an obstruction in that path.
+Keep one clear line from the door to the window. Leave at least a metre of open space along that path. A room you can see straight through from the entrance feels much bigger than the same room with something in the way.
 
-Limit materials, vary texture. Three materials maximum: one for surfaces (walls and ceiling), one for the floor, one for accents. Varying texture within a material is fine — varying color between multiple materials creates visual noise.
+Limit materials and vary texture. Use three materials at most: one for the walls and ceiling, one for the floor and one for accents. Texture can vary within a material, but every extra colour adds noise.
 
-Align edges. Furniture, rugs, and lighting should run parallel to the room's longest wall. Diagonal placement feels dynamic as a concept and chaotic in practice.
+Line things up. Furniture, rugs and lights should run parallel to the room's longest wall. Diagonal placement sounds dynamic and looks messy.
 
-Curtains as architecture, not decoration. Full-height, wall-to-wall tracks. Stack to one side when open to read the window as a single opening. Curtains that stop at the window frame make the ceiling feel lower and the window feel smaller.
+Treat curtains as part of the architecture. Use full-height, wall-to-wall tracks, and stack the curtains to one side when they're open so the window reads as one opening. Curtains that stop at the window frame make the ceiling look lower and the window look smaller.
 
 ## The kitchen
 
-The kitchen planning was a negotiation between what the builder was offering and what I actually wanted. Figma became the communication layer — I could show exactly what I meant rather than describe it.
+The kitchen was a negotiation between what the builder offered and what I wanted, and Figma became how I communicated. I could show exactly what I meant instead of trying to describe it.
 
-The main requests: all drawers below the counter instead of cabinet doors (significantly more ergonomic), a full-height backsplash in an inox/stainless effect, extra electrical outlets above the counter (essential for the smart home setup). One outlet conflict required routing power behind the fridge — a minor thing that would have been easy to miss without working through the layout in detail.
+I asked for drawers under the whole counter instead of cupboard doors, which is much easier to use. I wanted a full-height backsplash in a stainless steel finish, and extra outlets above the counter, which I'd need for the smart home setup. One outlet clashed with the layout, so the power had to run behind the fridge. That kind of thing is easy to miss unless you work through the layout in detail.
 
-## The color system
+## A small colour system
 
-I settled on a small, explicit color meaning system early:
+Early on I gave each colour a meaning:
 
-- Grey — structural, supportive, containing
-- Wood — warmth, comfort, tactile presence
-- Yellow accents — creative areas, good daylight zones
-- Green — food-adjacent spaces (kitchen, dining)
+- grey: structure, support, containers
+- wood: warmth, comfort, things you touch
+- yellow accents: creative spaces and areas with good daylight
+- green: anywhere near food, like the kitchen and dining area
 
-This isn't a decoration choice, it's navigation. When you're not consciously deciding what color something should be, you default to what's in front of you. Having a small system means the decisions are already made.
+It's less about decoration and more about making decisions in advance. When you haven't decided what colour something should be, you end up with whatever happens to be in front of you. A small system means that choice is already made.
 
-## What Figma can't do
+## What Figma can't show you
 
-Scale and light. You can make a furniture layout that looks perfect in Figma and walks into the actual room to find that one piece blocks the window in a way you didn't register, or that the light at 5pm hits something in a way the floor plan doesn't capture.
+Figma can't show you scale or light. A layout can look perfect on the canvas, and then in the real room you find a piece that blocks the window more than you expected, or 5pm sunlight hitting something the floor plan never hinted at.
 
-I supplemented with REW (for the studio corner, where acoustics matter as much as aesthetics) and a lot of standing in the empty room at different times of day before committing to positions.
+So I also spent a lot of time standing in the empty rooms at different times of day before deciding where things went. For the studio corner, where sound matters as much as looks, I measured with REW too.
 
-## Would I recommend this workflow?
+## Would I do it again?
 
-If you're comfortable in Figma and you're moving into a new space, yes. The benefits are real: spatial comparison at scale, easy iteration, sharable artifacts, and a discipline that forces you to think in precise dimensions rather than vague preferences.
+Yes, if you're comfortable in Figma and you're moving somewhere new. You can compare layouts properly, try things quickly, share them easily, and you're forced to think in exact measurements instead of vague preferences.
 
-The limitation is that it's a 2D top-down view, which is better for layout than for atmosphere. I found myself switching between Figma for arrangement logic and Pinterest for mood reference — the two tools serve different kinds of spatial thinking.
+The limit is that it's a flat view from above. That's good for layout and bad for atmosphere. I kept switching between Figma for how things fit and Pinterest for how they should feel. They're answering different questions.
 
-The apartment is now configured. Most of the layouts I tested in Figma were discarded. A few principles I thought were rules turned out to be guidelines. One thing I was certain about turned out to be completely wrong once I was standing in the room.
+The apartment is set up now, and most of the layouts I made in Figma ended up in the bin. A few of the rules I thought were fixed turned out to be guidelines. One thing I was sure about turned out to be wrong the moment I stood in the room. I don't think that's a failure of the method. That's just how design goes: you plan carefully, and then the real thing teaches you the rest.
 
-*That's design.*
-
-The acoustic corner of this apartment has its own story — how I treated a square room with polyester panels and a desk rotation. That's [here](/blog/acoustic-treatment-square-room). The home automation layer built on top of the whole space is [here](/blog/home-assistant-infrastructure).
+The studio corner has its own story, about treating a square room with polyester panels and turning a desk 90 degrees. That's [here](/blog/acoustic-treatment-square-room). The home automation built into the whole place is [here](/blog/home-assistant-infrastructure).

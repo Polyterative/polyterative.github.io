@@ -1,17 +1,17 @@
 ---
 title: "Sonifying AI Work — thear"
-description: "A small Python tool that turns Claude Code's activity into sound, using Ableton and OSC."
+description: "A small Python tool that turns Claude Code's activity into sound through Ableton and OSC, so I can hear the work instead of watching it."
 date: "2025-06-01"
 tags: ["Python", "Ableton", "OSC", "AI", "Tooling"]
 ---
 
-I spend a lot of time with AI coding assistants. The experience is largely visual — you watch tokens appear. I wanted to *hear* the work happening.
+I spend a lot of my day working with AI coding assistants, and all of it happens on screen. Text appears, tool calls scroll past, files change. After long sessions I'd notice that I'd lost track of what had actually happened, even though I'd been looking at it the whole time. It felt oddly detached.
 
-[thear](https://github.com/polyterative/thear) is a small Python daemon that hooks into Claude Code's activity events and emits <span class="caps">OSC</span> messages. Those messages trigger Ableton Live clips and effects in real time.
+I make music, so I tried to fix it with sound. [thear](https://github.com/polyterative/thear) is a small Python daemon that listens to Claude Code and plays its activity through Ableton Live.
 
-## How It Works
+## How it works
 
-Claude Code exposes a `hooks` system that fires events on tool calls, file writes, and completions. thear listens on those hooks and maps events to OSC messages:
+Claude Code has a `hooks` system that fires on events like tool calls, file writes and completions. thear listens to those hooks and sends an <span class="caps">OSC</span> message for each event:
 
 ```python
 # tool_call → trigger a short percussive hit
@@ -19,14 +19,14 @@ Claude Code exposes a `hooks` system that fires events on tool calls, file write
 # completion → release a long reverb tail
 ```
 
-Ableton receives these via a Max for Live device and routes them to whatever sounds you've set up.
+A Max for Live device in Ableton receives those messages and sends them to whatever sounds you've set up.
 
-## Why
+## What it sounds like
 
-Partly curiosity. Partly because working for long stretches with AI tools can feel dissociative — you lose track of what's happening. Sound gives you a **peripheral awareness** without demanding visual attention.
+I expected noise. It sounds more like music than I thought it would. File writes come in clusters, so they fall into rhythms. Long reasoning steps turn into slow ambient swells. Before long you can follow a session by ear: busy stretches sound busy, and a reverb tail tells you it's finished.
 
-It's also just fun. The output is surprisingly musical. File writes cluster rhythmically. Long reasoning steps produce slow ambient swells.
+That's what I was after. Sound gives you **peripheral awareness**: you know what's going on without having to stare at it. I could look away from the screen and still know where the session was. And it's fun to leave running.
 
-The code is on GitHub. It needs Ableton + Max for Live, but the OSC output is generic enough to route anywhere.
+The code is on GitHub. My setup needs Ableton and Max for Live, but the OSC output is generic, so you can send it to anything that listens.
 
-thear isn't the only tooling I've built around local AI workflows. If this kind of thing interests you, [Three Small Tools for Living with Local AI](/blog/local-ai-toolkit-tagger-renamer-guard) covers mini-tagger, mini-renamer, and lms-guard — a set of macOS utilities built on the same philosophy of instrumenting the AI experience rather than just consuming it.
+thear is one of a few small tools I've built around working with AI. The others, mini-tagger, mini-renamer and lms-guard, are in [Three Small Tools for Living with Local AI](/blog/local-ai-toolkit-tagger-renamer-guard).

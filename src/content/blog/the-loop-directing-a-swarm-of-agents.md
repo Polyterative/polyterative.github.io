@@ -1,40 +1,58 @@
 ---
 title: "Layers and Ensembles: Engineering a Development Loop Like a Network"
-description: "How I designed the skill system I now direct — borrowing depth, width, and ensemble structure from neural network architecture, on purpose, over months of iteration."
+description: "How a sentence I kept typing to my AI agents turned into a skill system, and why it ended up shaped like a neural network: depth, width and a council of specialists."
 date: "2026-08-07"
 tags: ["AI", "Workflow", "Agents", "Architecture", "Process"]
 ---
 
-I want to be precise about something, because the easy version of this story makes it sound like a system that assembled itself. It didn't. I designed it, deliberately, over months, and the design choices came from a specific place: I looked at how neural networks get their power — **depth, width, and ensembles of specialists** instead of one generalist — and I asked whether the same shape would work for a development process directed by a human instead of trained by gradient descent. It does. Here's how I got there and why the shape is what it is.
+A few months ago, while working on Patcher's rack analysis and insights pages, I kept typing the same kind of instruction to my coding agents. Going back through those sessions, they read like this:
 
-## Where it started: asking for "layers" by hand
+> "do five layers of improvements"
+>
+> "continue refining insights page x15 more layers of expansion/refinement with subagents"
+>
+> "we need like twenty layers of checks"
 
-Before any of this was formalized into reusable skills, I was already asking for it manually, one session at a time. On Patcher's rack analysis and insights pages, my instructions read like this, verbatim, across different sessions: "do five layers of improvements," "continue refining insights page x15 more layers of expansion/refinement with subagents," "we need like twenty layers of checks." I wasn't asking for one pass at a feature. I was asking for a stack of passes, each one building on what the last one produced, each pass itself made of several sub-agents working a different facet of the same surface in parallel.
+I wasn't asking for one pass at a feature. I was asking for a stack of passes, each building on the one before, and each made of several sub-agents working on different parts of the same page at the same time.
 
-That's depth and width, named without me having a word for it yet. Depth: each layer of refinement takes the previous layer's output as its starting point and improves on it, the same way each layer in a network takes the previous layer's representation and refines it rather than starting from raw input again. Width: within one layer, I wasn't running one sub-agent that tried to hold constants, layout, accessibility, and copy in its head at once — I ran several, each scoped to one concern, in parallel, the way a layer's units each respond to a different feature of the input instead of one unit trying to encode everything.
+I didn't have a name for it then. Later I noticed it was the same shape that gives neural networks their power. This post is about how a habit turned into a system, and why I deliberately kept that shape.
 
-The result, session after session, was compounding. A single generalist pass on a feature gets you a solid first draft. Fifteen narrow, stacked passes get you something that looks like it was built by a team that actually specializes — because structurally, that's what it was.
+## Depth and width, before I had the words
 
-## Formalizing it: skills as fixed layers, agents as fixed units
+Two things were going on in those sessions.
 
-Once I noticed I was typing "do fifteen more layers of refinement with subagents" often enough that it had become a personal ritual, I did what you do with any manual step that's earned its place: I made it a reusable skill instead of a sentence I retyped every time. That's the actual origin of the skill system — not a theory I applied top-down, but a pattern I kept doing by hand until it deserved to be infrastructure.
+The first was **depth**. Each layer of refinement started from what the previous layer produced, not from the original request. That's how layers in a network work too. Each one takes the representation from the layer before and refines it, without going back to the raw input.
 
-The skills now encode fixed roles the way a network encodes fixed layers: discovery, design, architecture, implementation, QA, documentation, each one a specialist pass with a specific mandate, each one consuming the output of the one before it rather than re-deriving everything from the original request. A refactor sweep runs several independent agents over disjoint parts of a codebase in one layer, each committing one scoped fix — width, again, applied deliberately instead of one agent trying to hold an entire repository's issues in one context window.
+The second was width. Inside a single layer, I didn't give one agent the constants, the layout, accessibility and the copy all at once. I ran several agents in parallel, each looking at one concern. In a network, each unit in a layer responds to a different feature of the input. Nobody expects one unit to encode everything.
 
-## The council: ensembles instead of one generalist verdict
+The results showed up session after session. One general-purpose pass gets you a decent first draft. Fifteen narrow passes stacked on each other get you something that looks like it was built by a team of specialists, because in a way it was.
 
-The second borrowed idea is more specific and it addresses a real failure mode: a single reviewer, however capable, has blind spots that are consistent — it tends to miss the same category of problem every time, because it's one perspective applied repeatedly. Ensemble methods exist because independently-reasoning specialists, each looking through a narrow and different lens, catch things a single generalist model misses, and their disagreement is itself informative rather than noise to be smoothed over.
+## From a sentence to a skill
 
-That's why quality review in my loop runs as a small council, not one pass. A voice-and-identity reviewer checks tone and register against my own stated conventions, line by line, nothing vaguer than "line 4 violates rule X." A skeptic checks structural claims and failure modes. An evidence reviewer checks what's actually substantiated versus asserted. A strategy reviewer checks whether the work still serves the actual goal. Each one is deliberately narrow — the same way an ensemble's individual members are deliberately not trying to be each other — and only after they've each independently scored the work does a synthesis step reconcile their verdicts into one decision: ship, revise, or hold.
+At some point I realised that "do fifteen more layers of refinement with subagents" had become a ritual. When I keep doing something by hand and it keeps working, I turn it into a tool. So I turned it into reusable skills.
 
-I used exactly this council structure on the first draft of this article an hour ago. The voice reviewer caught two banned phrasing patterns I'd let slip in. That's the mechanism working as designed, not a coincidence — a single self-review pass is exactly the kind of consistent blind spot ensembles exist to catch.
+That's where the skill system actually came from. I didn't start with a theory and apply it. I kept doing something by hand until it was obviously worth automating.
 
-## Why I organized it like a small company, and why that's the same idea
+Each skill is a fixed role, the way a network has fixed layers: discovery, design, architecture, implementation, QA and documentation. Each one has a specific job and takes the previous skill's output as its input, instead of working everything out again from the original request. Width shows up too. A refactor sweep sends several independent agents across separate parts of a codebase in one layer, and each one commits a single scoped fix, instead of one agent trying to hold a whole repository's problems in its head.
 
-The "mimicking a small company" framing I used casually before is really the mixture-of-experts idea again, just applied to workflow roles instead of network weights: route each concern to the specialist built for it, instead of asking one generalist to reason about product, design, architecture, and QA in the same breath. A company organizes around this because one person holding every function in their head produces worse decisions in each function than a person dedicated to just that function would. The same degradation happens inside one unstructured AI pass trying to do everything at once — it optimizes for none of its objectives well. Splitting it into fixed, specialized roles with a defined handoff between them is the fix in both cases, for the same underlying reason.
+## One reviewer wasn't enough
 
-## What I actually did versus what happened
+Next I ran into a problem with review. A single reviewer, however capable, has blind spots, and they're always the same ones. It misses the same kind of problem every time, because it's one point of view applied over and over.
 
-None of this is automatic and none of it happened by itself. I wrote each skill's mandate. I decided which concerns get their own layer and which get merged. I decided the council needs four independent lenses and not two or eight — a number I arrived at by watching where extra reviewers stopped catching anything new. I still read every output and decide ship, revise, or redirect. The system doesn't design itself and it doesn't run itself; it's an architecture I hold in my head and keep tuning, the same way you'd keep tuning a network's depth and width once you've noticed where it under- or over-fits the problem.
+Machine learning deals with this using ensembles. Several independent models, each looking from a narrow and different angle, catch things a single generalist misses, and where they disagree is useful information in itself.
 
-What changed is that I no longer have to reassert the structure by hand every single time, the way I was manually typing "fifteen layers" a few months ago. The architecture is now load-bearing infrastructure instead of a habit I had to remember. That's the actual unlock — not that the software builds itself, but that the process I designed, based on a real and specific analogy to how networks get their power, now runs without me having to re-explain it in every session. I still direct every layer. *I just don't have to redraw the blueprint each time I use it.*
+So review in my loop is a small council, not one pass. A voice reviewer checks tone and wording against my own written rules, line by line. Its feedback is specific, like "line 4 breaks rule X". A skeptic looks at structural claims and ways things could fail. An evidence reviewer checks what's actually backed up and what's just asserted. A strategy reviewer asks whether the work still serves the goal. Each one is deliberately narrow. Only after all four have scored the work separately does a synthesis step combine their verdicts into one decision: ship, revise or hold.
+
+I ran the first draft of this article through that council an hour before writing this sentence. The voice reviewer caught two phrasing patterns I've banned from my writing that had slipped back in. A single self-review would very likely have missed them, because that's exactly the kind of repeated blind spot the council exists to catch.
+
+## Why it looks like a small company
+
+I used to describe this setup as "a small company of agents". It's really the same idea again, applied to job roles instead of network weights. In machine learning it's called mixture of experts. You send each problem to the specialist built for it, instead of asking one generalist to think about product, design, architecture and QA all at once.
+
+Companies are organised this way for the same reason. One person juggling every role makes worse decisions in each of them than someone focused on just one. A single unstructured AI pass that tries to do everything has the same problem: it does none of it well. In both cases the fix is the same. Split the work into fixed roles with clear handoffs between them.
+
+## What I still do
+
+None of this runs itself. I wrote each skill's brief. I decided which concerns get their own layer and which get merged. I settled on four reviewers, not two or eight, by watching where adding more stopped finding anything new. I still read every output and decide whether to ship it, revise it or send it in a different direction. It's a structure I keep in my head and keep adjusting, the way you'd keep tuning a network's depth and width once you see where it underfits or overfits.
+
+The real change is that I don't have to type "fifteen layers" anymore. The structure is built into the system now, so I don't have to remember it every session. It doesn't build software by itself, and I still direct every layer. *I just don't have to draw the plan again every time I use it.*

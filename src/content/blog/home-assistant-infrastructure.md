@@ -1,64 +1,56 @@
 ---
 title: "Home Assistant as Infrastructure, Not a Hobby"
-description: "A dedicated server, a UPS, AliExpress switches, and a lot of YAML. Building home automation that you can actually rely on."
+description: "A dedicated server, a UPS, cheap AliExpress switches and a lot of YAML. How I rebuilt my home automation from scratch so I could actually rely on it."
 date: "2026-03-28"
 tags: ["Home Assistant", "Self-Hosting", "TrueNAS", "Homelab", "Smart Home", "Networking"]
 ---
 
-Most smart home setups are fragile. Cloud-dependent devices, apps that stop working when a subscription lapses, automations that silently break when a firmware update changes something. The promise is convenience; the reality is babysitting.
+Smart homes have a habit of needing constant attention. Devices depend on someone else's cloud, apps stop working when a subscription runs out, and a firmware update quietly breaks an automation that ran fine for months. It's supposed to be convenient, and most of the time you're fixing things.
 
-I wanted something different — something built like infrastructure. Reliable, local, mine.
+When I moved into a new condo I had a chance to start over. I didn't want to bring my old configuration with me. I wanted to build it the way you'd build infrastructure at work: local, reliable, and mine.
 
-## The server
+## Starting with the server
 
-Home Assistant runs on a dedicated machine I built specifically for this. It's not a Raspberry Pi and it's not a cloud VM — it's a proper home server with real storage, sitting in a rack in the utility area.
+Home Assistant runs on a machine I built just for this. It isn't a Raspberry Pi or a cloud VM. It's a real home server with proper storage, in a rack in the utility area.
 
-The storage layer runs TrueNAS, which also handles all the hard drives I'd been accumulating over the years. Moving everything into the NAS solved a problem I didn't expect to care about: my Mac doesn't have much local storage, and it turns out that having a few terabytes of fast, redundant, always-on network storage changes how you use a computer. Everything is just there. No juggling external drives.
+The storage side runs TrueNAS, and it finally gave a home to all the hard drives I'd been collecting for years. That solved a problem I hadn't realised I cared about. My Mac doesn't have much internal storage, and having a few terabytes of fast, redundant network storage that's always on changes how you use a computer. Everything is just there, and I don't have to keep track of external drives anymore.
 
-The server has a UPS. This matters more than it sounds. Home Assistant with its automations, its devices, its sensors — losing power unexpectedly and corrupting the database is a real failure mode. The UPS also gives me runtime visibility on the home power situation, which feeds back into automations.
+The server is on a UPS, and that wasn't optional. If the power cuts out at the wrong moment, Home Assistant's database can get corrupted, and that's a real way for the whole thing to fail. The UPS also reports on the home's power, and some automations use that.
 
-## Services worth mentioning
+TrueNAS also runs a few services 24/7 next to Home Assistant:
 
-TrueNAS hosts several services that run 24/7 alongside Home Assistant:
+- **Network-wide ad blocking**, which covers every device including TVs and phones without setting anything up on each one
+- An offline copy of Wikipedia, which is more useful than I expected and very satisfying to have
+- A download manager that handles queued downloads in the background so my Mac doesn't have to
 
-- Ad blocking — network-level, covers every device on the network including TVs and phones, no per-device configuration needed
-- Offline Wikipedia — the full Wikipedia available locally, no internet required. Surprisingly useful and genuinely satisfying to have
-- Self-hosted download management — handles queued downloads in the background, frees the Mac from the task entirely
+## The network
 
-The AliExpress switches I mentioned aren't glamorous, but they're 2.5GbE and they were cheap. Proper ethernet throughout the apartment via the wall conduits that were already run during construction — I was lucky the previous work left me cable paths to use. The result is a wired backbone that's fast and boring in the best way.
+The apartment had conduits in the walls from when it was built, so I had cable paths to work with. I was lucky there. I ran ethernet through them and put cheap 2.5GbE switches from AliExpress in between. They're nothing special, but they were cheap, and together they make a wired backbone that's fast and never gives me trouble.
 
-## Home Assistant from scratch
+## Automations that check more than one thing
 
-Moving into the new condo was the opportunity to build the HA configuration properly rather than inheriting accumulated chaos. I started clean.
+Starting from scratch made me rethink how I write automations. Simple "when X, do Y" rules kept breaking because real life rarely matches a single condition. So now almost every automation checks two or three things before it does anything.
 
-The automation philosophy I settled on: **compound conditions everywhere**. Simple trigger → action automations break constantly because real life doesn't match simple conditions. Instead, almost everything checks at least 2–3 things before acting.
+The morning lights are a good example. They come on at 08:50, but only if the occupancy sensor agrees someone is home, and only if the light level on the balcony is below 40 lux. I use the outdoor sensor on purpose, because it isn't affected by whether the blinds are open. An indoor sensor would keep contradicting itself. If that sensor fails, the automation falls back to the sun's elevation.
 
-The morning lights, for example: they turn on at 08:50, but only if the occupancy sensor agrees someone is home, and only if the lux reading from the outdoor balcony sensor is below 40. That outdoor sensor is the lux reference specifically because it's immune to whether the blinds are open — an indoor lux sensor would contradict itself. There's also a fallback to sun elevation for days when the sensor has issues.
+The rest follow the same idea. The blinds check a weather sensor before opening, so sunny and rainy days get different behaviour. When I come home, GPS presence triggers the lights based on how bright it is outside, not on the time of day. A smart plug watches my PC's power draw, and above 40 W it unlocks several audio and peripheral automations.
 
-The blinds check weather state before opening — a template sensor that tracks whether it's bright and sunny or raining, and adjusts accordingly. The arrival automation uses GPS presence but triggers lights based on outdoor illuminance rather than time-of-day assumptions. The PC power draw (monitored via smart plug, threshold at 40W) gates several audio and peripheral automations.
+None of these is complicated on its own. Together they make the place behave sensibly in situations I never thought about when I wrote them.
 
-None of these are complicated individually. Together they produce a home that behaves correctly across a wide range of real situations without me thinking about it.
+## What works and what doesn't
 
-## Devices and protocols — what works
+I deliberately mixed devices: Meross for lighting, IKEA motion and door sensors, Shelly 2PM units for the blinds, and smart plugs for power monitoring. All of it is local and all of it is in Home Assistant. None of it needs a manufacturer's cloud.
 
-The device mix is deliberately varied: Meross for lighting, IKEA motion and door sensors, Shelly 2PM units for the blinds, smart plugs for power monitoring. Everything local, everything in Home Assistant, nothing dependent on manufacturer clouds.
+Zigbee has been great. The SLZB-06 coordinators pair reliably, have good range and have never caused me any drama.
 
-Protocol-wise: **Zigbee works great.** The SLZB-06 coordinators I'm using for Zigbee are solid — reliable pairing, good range, no drama.
+*Thread and Matter are another story.* Thread is up, and the SLZB units are working as border routers. But commissioning Matter devices still isn't reliable. In March I spent time on IPv6 and DHCPv6 configuration, and that got parts of it working, but I wouldn't call it solved. I'll write about it once I have something solid to say.
 
-*Thread and Matter is another story.* I got Thread up and have the SLZB units running as border routers, which is promising. But Matter device commissioning is still not behaving reliably. The IPv6 and DHCPv6 configuration I spent some time on in March got parts of it working but it's not something I'd call solved yet. I'll write more about that separately when I have something conclusive to say.
+There's one more weak spot, and it's on my side. I love using my Mac, but it doesn't get along perfectly with the server. `SMB` works, but it isn't seamless, and some workflows need an extra step that they wouldn't need on other platforms. It's a small complaint about a setup that otherwise works really well.
 
-## The Mac trade-off
+## What I ended up with
 
-I love my Mac. The experience of working on it daily is excellent. The one place where the server setup and the Mac don't quite meet gracefully is filesystem compatibility — `SMB` works but it's not as seamless as I'd like, and some workflows that feel natural on other platforms require an extra step. It's a minor complaint against a setup that otherwise works very well, but worth naming honestly.
+The switches were cheap, the server was a deliberate investment, and the UPS was a must. What I got for that is a home that reacts to presence, light, weather and what my devices are doing, all locally, with no subscriptions and no cloud.
 
-## Worth it
+When something breaks I can debug it, and when I want something new I can add it. All the configuration lives in `YAML` under version control. That turned out to matter more than anything else. I know exactly what the system does and why, so I'm not just trusting it and hoping. It feels like something I run myself, not a service I rent.
 
-The total spend on switches was modest — AliExpress, as mentioned. The server hardware was a deliberate investment. The UPS was not optional.
-
-What I have now is a home that adapts to presence, light, weather, and device state — automatically, locally, without subscriptions or clouds. When something breaks, I can debug it. When I want to add something new, I can add it. The configuration lives in version-controlled `YAML`.
-
-That last part matters more than I expected. Knowing exactly what the system does, and why, is different from having a system that mostly does things you've come to vaguely trust. One feels like infrastructure. The other feels like a service you rent.
-
-I prefer infrastructure.
-
-The apartment this infrastructure lives in was planned entirely in Figma before a single piece of furniture moved. That process — and the spatial design principles it produced — is [here](/blog/planning-apartment-in-figma). The acoustic side of the studio corner in the same space is [here](/blog/acoustic-treatment-square-room).
+The apartment around all of this was planned in Figma before any furniture moved, and that's in [this post](/blog/planning-apartment-in-figma). The studio corner and its acoustics are [here](/blog/acoustic-treatment-square-room).
