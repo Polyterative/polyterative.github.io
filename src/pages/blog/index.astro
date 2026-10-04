@@ -4,6 +4,7 @@ import PostRow from '../../components/PostRow.astro';
 import Icon from '../../components/Icon.astro';
 import { isoDots, pad } from '../../lib/datum';
 import { getCollection } from 'astro:content';
+import { tagIndex } from '../../lib/posts';
 
 const allPosts = (await getCollection('blog', ({ data }) => !data.draft))
   .sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime());
@@ -21,6 +22,7 @@ const years = Object.keys(byYear).sort((a, b) => Number(b) - Number(a));
 // Post number in the archive (oldest = 001).
 const postNumber = (id: string) => pad(allPosts.length - allPosts.findIndex((p) => p.id === id), 3);
 const latest = allPosts[0];
+const tags = tagIndex(allPosts);
 ---
 
 <BaseLayout
@@ -48,6 +50,15 @@ const latest = allPosts[0];
         <p class="page-head__lead">Notes on engineering, tooling, sound, and making things.</p>
       </div>
     </header>
+
+    {tags.length > 0 && (
+      <nav class="tagnav" aria-label="Browse by tag">
+        <span class="lbl">Tags</span>
+        <ul class="taglist">
+          {tags.map(t => <li><a href={`/blog/tags/${t.slug}`}>{t.label} <span class="tagnav__n">{t.posts.length}</span></a></li>)}
+        </ul>
+      </nav>
+    )}
 
     {allPosts.length > 0 ? (
       <div class="posts-by-year">
@@ -83,6 +94,9 @@ const latest = allPosts[0];
   .rss-link { display: inline-flex; align-items: center; gap: var(--space-2); color: var(--ink); align-self: flex-start; border-bottom: 1px solid var(--rule-strong); }
   .rss-link:hover { color: var(--signal-text); border-color: currentColor; }
   .rss-link :global(.icon) { color: var(--ink-3); }
+
+  .tagnav { display: flex; flex-direction: column; gap: var(--space-2); padding-block: var(--space-5); border-bottom: 1px solid var(--rule); }
+  .tagnav__n { color: var(--ink-3); opacity: 0.7; }
 
   .year-group h2.sec__idx { font-weight: 400; letter-spacing: 0; }
   .posts-list { gap: 0; }

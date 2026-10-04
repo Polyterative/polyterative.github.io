@@ -4,6 +4,8 @@ import Icon from '../../components/Icon.astro';
 import PostCover from '../../components/PostCover.astro';
 import { getCollection, render } from 'astro:content';
 import { isoDots, pad } from '../../lib/datum';
+import PostRow from '../../components/PostRow.astro';
+import { relatedPosts, tagSlug } from '../../lib/posts';
 
 export async function getStaticPaths() {
   const posts = (await getCollection('blog', ({ data }) => !data.draft))
@@ -13,6 +15,7 @@ export async function getStaticPaths() {
     params: { slug: post.id },
     props: {
       post,
+      related: relatedPosts(posts, post),
       prev: posts[index + 1] ?? null,
       next: posts[index - 1] ?? null,
       // Post number in the archive, oldest = 1.
@@ -21,7 +24,7 @@ export async function getStaticPaths() {
   }));
 }
 
-const { post, prev, next, number } = Astro.props;
+const { post, prev, next, number, related } = Astro.props;
 const postNo = pad(number, 3);
 const serial = `PLY-W-${postNo}`;
 const { Content } = await render(post);
@@ -39,6 +42,11 @@ const articleSchema = {
   headline: post.data.title,
   description: post.data.description ?? '',
   datePublished: post.data.date,
+  dateModified: post.data.updated ?? post.data.date,
+  image: `https://polyterative.github.io/og/${post.id}.png`,
+  mainEntityOfPage: `https://polyterative.github.io/blog/${post.id}`,
+  wordCount,
+  inLanguage: 'en',
   author: {
     '@type': 'Person',
     name: 'Vlady Yakovenko',
@@ -53,6 +61,16 @@ const articleSchema = {
   title={`${post.data.title} — Vlady Yakovenko`}
   description={post.data.description}
   serial={serial}
+  type="article"
+  image={`/og/${post.id}.png`}
+  imageAlt={post.data.title}
+  publishedTime={post.data.date}
+  tags={post.data.tags}
+  breadcrumbs={[
+    { name: 'Home', path: '/' },
+    { name: 'Writing', path: '/blog' },
+    { name: post.data.title, path: `/blog/${post.id}` },
+  ]}
 >
   <script slot="head" type="application/ld+json" set:html={JSON.stringify(articleSchema)} />
   <article class="post">
@@ -77,7 +95,7 @@ const articleSchema = {
           )}
           {post.data.tags.length > 0 && (
             <ul class="taglist">
-              {post.data.tags.map(t => <li>{t}</li>)}
+              {post.data.tags.map(t => <li><a href={`/blog/tags/${tagSlug(t)}`}>{t}</a></li>)}
             </ul>
           )}
         </div>
@@ -93,6 +111,15 @@ const articleSchema = {
         <div class="prose">
           <Content />
         </div>
+
+        {related.length > 0 && (
+          <aside class="related" aria-labelledby="related-h">
+            <h2 class="lbl" id="related-h">Related</h2>
+            {related.map(r => (
+              <PostRow title={r.data.title} date={r.data.date} slug={r.id} compact />
+            ))}
+          </aside>
+        )}
 
         <nav class="post-nav" aria-label="Post navigation">
           <div class="post-nav__item">
@@ -134,6 +161,9 @@ const articleSchema = {
     margin-left: calc(var(--gutter) + var(--space-6));
     max-width: var(--max-w);
   }
+
+  .related { margin-bottom: var(--space-10); }
+  .related > h2 { padding-bottom: var(--space-2); }
 
   .post__cover { margin: var(--space-10) 0 0; }
 

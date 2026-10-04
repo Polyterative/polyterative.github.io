@@ -1,0 +1,69 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import PostRow from '../../../components/PostRow.astro';
+import Icon from '../../../components/Icon.astro';
+import { getCollection } from 'astro:content';
+import { byDateDesc, tagIndex } from '../../../lib/posts';
+import { pad } from '../../../lib/datum';
+
+export async function getStaticPaths() {
+  const all = (await getCollection('blog', ({ data }) => !data.draft)).sort(byDateDesc);
+  return tagIndex(all).map((t) => ({
+    params: { tag: t.slug },
+    props: { label: t.label, posts: t.posts, total: all.length, ids: all.map((p) => p.id) },
+  }));
+}
+
+const { label, posts, total, ids } = Astro.props;
+const postNumber = (id: string) => pad(total - ids.indexOf(id), 3);
+const count = `${posts.length} ${posts.length === 1 ? 'post' : 'posts'}`;
+---
+
+<BaseLayout
+  title={`${label} — Writing — Vlady Yakovenko`}
+  description={`${count} tagged ${label} by Vlady Yakovenko (polyterative).`}
+  serial="PLY-W-T"
+  breadcrumbs={[
+    { name: 'Home', path: '/' },
+    { name: 'Writing', path: '/blog' },
+    { name: label, path: `/blog/tags/${Astro.params.tag}` },
+  ]}
+>
+  <div class="container container--wide">
+    <nav class="crumb" aria-label="Breadcrumb">
+      <a class="act" href="/blog"><Icon name="arrow-left" size={13} />Writing</a>
+    </nav>
+    <header class="page-head">
+      <aside class="page-head__aside">
+        <span class="lbl">Tag</span>
+        <span class="data">{label}</span>
+        <span class="lbl">Posts</span>
+        <span class="data">{posts.length}</span>
+      </aside>
+      <div class="page-head__main">
+        <h1>{label}</h1>
+        <p class="page-head__lead">{count} tagged {label}.</p>
+      </div>
+    </header>
+
+    <div class="posts-list">
+      {posts.map((post) => (
+        <PostRow
+          title={post.data.title}
+          date={post.data.date}
+          slug={post.id}
+          description={post.data.description}
+          tags={post.data.tags}
+          cover={post.data.cover}
+          index={postNumber(post.id)}
+        />
+      ))}
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .crumb { padding-top: var(--space-6); }
+  .posts-list { padding-bottom: var(--space-12); }
+  .posts-list :global(.post-row:first-child) { border-top: 1px solid var(--ink); }
+</style>

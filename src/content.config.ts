@@ -7,6 +7,8 @@ const blog = defineCollection({
     title: z.string(),
     description: z.string().optional(),
     date: z.string(),
+    /** ISO date of the last substantive edit; feeds dateModified and sitemap lastmod. */
+    updated: z.string().optional(),
     tags: z.array(z.string()).default([]),
     draft: z.boolean().default(false),
     cover: z.string().optional(),
