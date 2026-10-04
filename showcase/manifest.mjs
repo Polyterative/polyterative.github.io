@@ -39,7 +39,8 @@ export const sources = {
   },
   habitat: {
     project: 'Habitat',
-    refresh: ['Tools/snapshots.sh', '{out}'],
+    // --showcase renders hand-written demo data instead of the live Home Assistant (no real names).
+    refresh: ['Tools/snapshots.sh', '{out}', '--showcase'],
     env: sdk26(),
     dir: 'dist/snapshots',
   },
@@ -86,20 +87,20 @@ export const shots = [
 
   // Habitat: live data in the desktop widgets.
   object({ id: 'habitat-energy', app: 'habitat', file: 'energy-large-light.png', tone: 'light', cover: true,
-    title: 'Energy', caption: 'Whole-house consumption over the last 24 hours.',
-    alt: 'Habitat energy widget with a line chart of whole house, networking and fridge consumption' }),
+    title: 'Energy', caption: 'Hourly consumption across the day, with the evening peak.',
+    alt: 'Habitat energy widget charting hourly consumption for the whole house, heat pump and studio' }),
   object({ id: 'habitat-temperatures', app: 'habitat', file: 'chart-large-dark.png', tone: 'dark',
-    title: 'Temperatures', caption: 'Room by room, last six hours.',
-    alt: 'Habitat temperature chart widget in dark mode with five room series' }),
+    title: 'Temperatures', caption: 'Every room in its own colour, last six hours.',
+    alt: 'Habitat temperature chart in dark mode with colour-coded lines for five rooms' }),
   object({ id: 'habitat-power', app: 'habitat', file: 'power-large-light.png', tone: 'light',
-    title: 'Power', caption: 'Spot the workstation spikes at a glance.',
-    alt: 'Habitat power widget with house, networking and workstation traces' }),
+    title: 'Power', caption: 'Spot the oven spike at a glance.',
+    alt: 'Habitat power widget with whole house, heat pump, studio and fridge traces and one large spike' }),
   object({ id: 'habitat-gauges', app: 'habitat', file: 'gauges-large-light.png', tone: 'light',
-    title: 'Gauges', caption: 'Humidity, commute time and outside temperature.',
-    alt: 'Habitat gauges widget with three circular readings' }),
+    title: 'Gauges', caption: 'Humidity, commute time, outside temperature and battery levels.',
+    alt: 'Habitat gauges widget with circular readings for humidity, commute, outside temperature, door battery and air filter' }),
   object({ id: 'habitat-air-quality', app: 'habitat', file: 'air-quality-large-dark.png', tone: 'dark',
-    title: 'Air quality', caption: 'VOC and PM2.5 with a warning state.',
-    alt: 'Habitat air quality widget showing a VOC warning and good PM2.5' }),
+    title: 'Air quality', caption: 'One reading needs attention; the other is good.',
+    alt: 'Habitat air quality widget with an elevated kitchen VOC reading and good PM2.5' }),
 
   // Ledge: the shelf in its states.
   object({ id: 'ledge-shelf-images', app: 'ledge', file: 'shelf-three-images-light.png', tone: 'light', key: true, shape: { inset: 0.012, radius: 0.235 }, cover: true,
