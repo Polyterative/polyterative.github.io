@@ -2,7 +2,7 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import PostRow from '../../components/PostRow.astro';
 import Icon from '../../components/Icon.astro';
-import { isoDots, pad } from '../../lib/datum';
+import { isoDots, pad, sectionIndex } from '../../lib/datum';
 import { getCollection } from 'astro:content';
 import { tagIndex } from '../../lib/posts';
 
@@ -33,7 +33,7 @@ const tags = tagIndex(allPosts);
   <div class="container container--wide">
     <header class="page-head">
       <aside class="page-head__aside">
-        <span class="plate page-head__idx">0x05</span>
+        <span class="plate page-head__idx">{sectionIndex('/blog')}</span>
         <span class="lbl">Posts</span>
         <span class="data">{allPosts.length}</span>
         {latest && (

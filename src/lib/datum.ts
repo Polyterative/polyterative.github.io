@@ -36,6 +36,7 @@ export const isoDots = (date: string | Date) => {
 /** Site sections, in nav order. The index is the section's position in the nav. */
 export const sections = [
   { href: '/apps', label: 'Apps', code: 'A' },
+  { href: '/showcase', label: 'Showcase', code: 'S' },
   { href: '/projects', label: 'Projects', code: 'P' },
   { href: '/timeline', label: 'Timeline', code: 'T' },
   { href: '/music', label: 'Music', code: 'M' },
@@ -43,8 +44,11 @@ export const sections = [
   { href: '/about', label: 'About', code: 'B' },
 ] as const;
 
+/** Hex index of a section by its href, e.g. sectionIndex('/blog') → "0x06". */
+export const sectionIndex = (href: string) => hex(sections.findIndex((s) => s.href === href) + 1);
+
 export interface SectionInfo {
-  index: string;   // "0x00" for home, "0x01".."0x06" in nav order, "—" for pages outside the nav
+  index: string;   // "0x00" for home, "0x01".. in nav order, "—" for pages outside the nav
   label: string;
   code: string;
 }

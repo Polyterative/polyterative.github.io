@@ -3,7 +3,7 @@ title: "Kinetip — Making a Pen Tablet Feel Native on macOS"
 description: "I run my Mac with a pen tablet instead of a mouse. The vendor driver kept getting in the way, so I wrote my own. Here's the input path from tablet to screen, and what keeping a realtime driver alive taught me."
 date: "2026-07-28"
 tags: ["Kinetip", "macOS", "Swift", "Pen Tablet", "Tooling", "Accessibility"]
-cover: "/blog/kinetip/app-overview.jpg"
+cover: "/showcase/kinetip-overview-cover.jpg"
 ---
 
 I run my Mac with a pen tablet instead of a mouse or trackpad. All day, for everything: code, documents, windows, browsing. Not drawing. *Work.* A pen is kinder to my hand, and once absolute positioning rewires your brain, a mouse feels clumsy.

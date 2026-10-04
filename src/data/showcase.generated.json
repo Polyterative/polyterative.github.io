@@ -1,0 +1,238 @@
+{
+  "apps": {
+    "kinetip": {
+      "name": "Kinetip",
+      "blurb": "Pen tablet driver for macOS"
+    },
+    "habitat": {
+      "name": "Habitat",
+      "blurb": "Home Assistant on the Mac desktop"
+    },
+    "ledge": {
+      "name": "Ledge",
+      "blurb": "A floating shelf for files in motion"
+    },
+    "spoke": {
+      "name": "Spoke",
+      "blurb": "A radial menu for phrases you retype"
+    }
+  },
+  "shots": [
+    {
+      "id": "kinetip-overview",
+      "app": "kinetip",
+      "title": "Overview",
+      "caption": "Health, readiness and current setup on one screen.",
+      "alt": "Kinetip overview page showing the engine is ready, a pen feel summary and the current mapping",
+      "tone": "light",
+      "width": 2000,
+      "height": 1500,
+      "src": "/showcase/kinetip-overview.jpg",
+      "webp": "/showcase/kinetip-overview.webp",
+      "cover": "/showcase/kinetip-overview-cover.jpg",
+      "coverWebp": "/showcase/kinetip-overview-cover.webp",
+      "appName": "Kinetip"
+    },
+    {
+      "id": "kinetip-gestures",
+      "app": "kinetip",
+      "title": "Gestures",
+      "caption": "Pen buttons and motions mapped to pointer, drag, pan and scroll.",
+      "alt": "Kinetip gestures page with activation modes and pen feel sliders",
+      "tone": "light",
+      "width": 2000,
+      "height": 1500,
+      "src": "/showcase/kinetip-gestures.jpg",
+      "webp": "/showcase/kinetip-gestures.webp",
+      "appName": "Kinetip"
+    },
+    {
+      "id": "kinetip-momentum",
+      "app": "kinetip",
+      "title": "Momentum",
+      "caption": "Scroll inertia drawn as a curve you can tune.",
+      "alt": "Kinetip momentum page with a decay curve preview and friction controls",
+      "tone": "light",
+      "width": 2000,
+      "height": 1500,
+      "src": "/showcase/kinetip-momentum.jpg",
+      "webp": "/showcase/kinetip-momentum.webp",
+      "appName": "Kinetip"
+    },
+    {
+      "id": "kinetip-sound",
+      "app": "kinetip",
+      "title": "Sound",
+      "caption": "Synthesized material presets for clicks and drags.",
+      "alt": "Kinetip sound page with Aluminum, Wood and Silicon material presets",
+      "tone": "light",
+      "width": 2000,
+      "height": 1500,
+      "src": "/showcase/kinetip-sound.jpg",
+      "webp": "/showcase/kinetip-sound.webp",
+      "appName": "Kinetip"
+    },
+    {
+      "id": "kinetip-insights",
+      "app": "kinetip",
+      "title": "Usage insights",
+      "caption": "Where the pen spends its time on the tablet surface.",
+      "alt": "Kinetip usage insights page with a heatmap of pen activity",
+      "tone": "light",
+      "width": 2000,
+      "height": 1500,
+      "src": "/showcase/kinetip-insights.jpg",
+      "webp": "/showcase/kinetip-insights.webp",
+      "appName": "Kinetip"
+    },
+    {
+      "id": "habitat-energy",
+      "app": "habitat",
+      "title": "Energy",
+      "caption": "Whole-house consumption over the last 24 hours.",
+      "alt": "Habitat energy widget with a line chart of whole house, networking and fridge consumption",
+      "tone": "light",
+      "width": 2000,
+      "height": 2000,
+      "src": "/showcase/habitat-energy.jpg",
+      "webp": "/showcase/habitat-energy.webp",
+      "cover": "/showcase/habitat-energy-cover.jpg",
+      "coverWebp": "/showcase/habitat-energy-cover.webp",
+      "appName": "Habitat"
+    },
+    {
+      "id": "habitat-temperatures",
+      "app": "habitat",
+      "title": "Temperatures",
+      "caption": "Room by room, last six hours.",
+      "alt": "Habitat temperature chart widget in dark mode with five room series",
+      "tone": "dark",
+      "width": 2000,
+      "height": 2000,
+      "src": "/showcase/habitat-temperatures.jpg",
+      "webp": "/showcase/habitat-temperatures.webp",
+      "appName": "Habitat"
+    },
+    {
+      "id": "habitat-power",
+      "app": "habitat",
+      "title": "Power",
+      "caption": "Spot the workstation spikes at a glance.",
+      "alt": "Habitat power widget with house, networking and workstation traces",
+      "tone": "light",
+      "width": 2000,
+      "height": 2000,
+      "src": "/showcase/habitat-power.jpg",
+      "webp": "/showcase/habitat-power.webp",
+      "appName": "Habitat"
+    },
+    {
+      "id": "habitat-gauges",
+      "app": "habitat",
+      "title": "Gauges",
+      "caption": "Humidity, commute time and outside temperature.",
+      "alt": "Habitat gauges widget with three circular readings",
+      "tone": "light",
+      "width": 2000,
+      "height": 2000,
+      "src": "/showcase/habitat-gauges.jpg",
+      "webp": "/showcase/habitat-gauges.webp",
+      "appName": "Habitat"
+    },
+    {
+      "id": "habitat-air-quality",
+      "app": "habitat",
+      "title": "Air quality",
+      "caption": "VOC and PM2.5 with a warning state.",
+      "alt": "Habitat air quality widget showing a VOC warning and good PM2.5",
+      "tone": "dark",
+      "width": 2000,
+      "height": 2000,
+      "src": "/showcase/habitat-air-quality.jpg",
+      "webp": "/showcase/habitat-air-quality.webp",
+      "appName": "Habitat"
+    },
+    {
+      "id": "ledge-shelf-images",
+      "app": "ledge",
+      "title": "The shelf",
+      "caption": "Shake while dragging and a shelf appears under the pointer.",
+      "alt": "Ledge shelf holding a stack of three images",
+      "tone": "light",
+      "width": 2000,
+      "height": 2000,
+      "src": "/showcase/ledge-shelf-images.jpg",
+      "webp": "/showcase/ledge-shelf-images.webp",
+      "cover": "/showcase/ledge-shelf-images-cover.jpg",
+      "coverWebp": "/showcase/ledge-shelf-images-cover.webp",
+      "appName": "Ledge"
+    },
+    {
+      "id": "ledge-shelf-expanded",
+      "app": "ledge",
+      "title": "Expanded",
+      "caption": "Open the stack to see every file, size and status.",
+      "alt": "Ledge shelf expanded into a grid of five files, one marked missing",
+      "tone": "light",
+      "width": 2000,
+      "height": 2000,
+      "src": "/showcase/ledge-shelf-expanded.jpg",
+      "webp": "/showcase/ledge-shelf-expanded.webp",
+      "appName": "Ledge"
+    },
+    {
+      "id": "ledge-shelf-copy",
+      "app": "ledge",
+      "title": "In flight",
+      "caption": "Progress and cancel stay on the shelf while files copy.",
+      "alt": "Ledge shelf showing a copying progress banner",
+      "tone": "light",
+      "width": 2000,
+      "height": 2000,
+      "src": "/showcase/ledge-shelf-copy.jpg",
+      "webp": "/showcase/ledge-shelf-copy.webp",
+      "appName": "Ledge"
+    },
+    {
+      "id": "ledge-watchers",
+      "app": "ledge",
+      "title": "Watched folders",
+      "caption": "Disks, shares and folders that put new files on a shelf.",
+      "alt": "Ledge settings page listing watched folders with their status",
+      "tone": "light",
+      "width": 2000,
+      "height": 2000,
+      "src": "/showcase/ledge-watchers.jpg",
+      "webp": "/showcase/ledge-watchers.webp",
+      "appName": "Ledge"
+    },
+    {
+      "id": "spoke-wheel",
+      "app": "spoke",
+      "title": "The wheel",
+      "caption": "Point at a category, release, and the phrase lands where you type.",
+      "alt": "Spoke radial menu with categories Email, Message, Reply, Schedule, Request, Thanks, Social and Snippets",
+      "tone": "dark",
+      "width": 2000,
+      "height": 2000,
+      "src": "/showcase/spoke-wheel.jpg",
+      "webp": "/showcase/spoke-wheel.webp",
+      "cover": "/showcase/spoke-wheel-cover.jpg",
+      "coverWebp": "/showcase/spoke-wheel-cover.webp",
+      "appName": "Spoke"
+    },
+    {
+      "id": "spoke-usage",
+      "app": "spoke",
+      "title": "Usage",
+      "caption": "See which phrases you actually reach for.",
+      "alt": "Spoke usage page with a wheel summary and most used templates",
+      "tone": "light",
+      "width": 2000,
+      "height": 1500,
+      "src": "/showcase/spoke-usage.jpg",
+      "webp": "/showcase/spoke-usage.webp",
+      "appName": "Spoke"
+    }
+  ]
+}

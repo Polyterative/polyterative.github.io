@@ -3,6 +3,7 @@ title: "Home Assistant as Infrastructure, Not a Hobby"
 description: "A dedicated server, a UPS, cheap AliExpress switches and a lot of YAML. How I rebuilt my home automation from scratch so I could actually rely on it."
 date: "2026-03-28"
 tags: ["Home Assistant", "Self-Hosting", "TrueNAS", "Homelab", "Smart Home", "Networking"]
+cover: "/showcase/habitat-energy-cover.jpg"
 ---
 
 Smart homes have a habit of needing constant attention. Devices depend on someone else's cloud, apps stop working when a subscription runs out, and a firmware update quietly breaks an automation that ran fine for months. It's supposed to be convenient, and most of the time you're fixing things.

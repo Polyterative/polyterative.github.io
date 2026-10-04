@@ -3,7 +3,7 @@ import Img from '../../components/Img.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Icon from '../../components/Icon.astro';
 import { apps, featuredApps, moreApps } from '../../data/apps';
-import { roman, greek, parseStatus, pillClass } from '../../lib/datum';
+import { roman, greek, parseStatus, pillClass, sectionIndex } from '../../lib/datum';
 
 const position = (slug: string) => roman(apps.findIndex((a) => a.slug === slug) + 1);
 const isExternal = (href: string) => href.startsWith('http');
@@ -17,7 +17,7 @@ const isExternal = (href: string) => href.startsWith('http');
   <div class="container container--wide">
     <header class="page-head">
       <aside class="page-head__aside">
-        <span class="plate page-head__idx">0x01</span>
+        <span class="plate page-head__idx">{sectionIndex('/apps')}</span>
         <span class="lbl">Registry</span>
         <span class="data">{apps.length} applications</span>
         <span class="lbl">Flagships</span>

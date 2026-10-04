@@ -1,4 +1,5 @@
 ---
+import { sectionIndex } from '../lib/datum';
 import Img from '../components/Img.astro';
 import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
@@ -111,7 +112,7 @@ for (const item of items) {
     <header class="timeline-header">
       <div class="page-head timeline-header__copy">
         <aside class="page-head__aside">
-          <span class="plate page-head__idx">0x03</span>
+          <span class="plate page-head__idx">{sectionIndex('/timeline')}</span>
           <span class="lbl">Span</span>
           <span class="data">{minYear}–{maxYear}</span>
           <span class="lbl">Entries</span>

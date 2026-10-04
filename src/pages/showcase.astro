@@ -1,0 +1,152 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Img from '../components/Img.astro';
+import { greek, letter, sectionIndex } from '../lib/datum';
+import data from '../data/showcase.generated.json';
+
+type Shot = (typeof data.shots)[number];
+const groups = Object.entries(data.apps)
+  .map(([key, app]) => ({ key, ...app, shots: data.shots.filter((s) => s.app === key) }))
+  .filter((g) => g.shots.length > 0);
+const total = data.shots.length;
+let fig = 0;
+const figure = (_: Shot) => greek(++fig);
+---
+
+<BaseLayout
+  title="Showcase — Vlady Yakovenko"
+  description="Selected screens from the macOS apps and tools Vlady Yakovenko (polyterative) designs and builds: widgets, menus, settings, rendered straight from the real interface."
+  serial="PLY-S"
+  image={data.shots[0]?.cover ?? '/og/default.png'}
+>
+  <div class="container container--wide">
+    <header class="page-head">
+      <aside class="page-head__aside">
+        <span class="plate page-head__idx">{sectionIndex('/showcase')}</span>
+        <span class="lbl">Screens</span>
+        <span class="data">{total}</span>
+        <span class="lbl">Apps</span>
+        <span class="data">{groups.length}</span>
+      </aside>
+      <div class="page-head__main">
+        <h1>Showcase</h1>
+        <p class="page-head__lead">Selected screens from the apps I build. Rendered from the real interface by the apps' own test suites, not mocked in a design tool.</p>
+        <nav class="jump" aria-label="Jump to app">
+          {groups.map((g) => <a class="act" href={`#${g.key}`}>{g.name}</a>)}
+        </nav>
+      </div>
+    </header>
+
+    {groups.map((g, gi) => (
+      <section class="sec group" id={g.key} aria-labelledby={`${g.key}-h`}>
+        <header class="sec__head">
+          <h2 class="plate sec__idx" id={`${g.key}-h`}>{letter(gi + 1)}</h2>
+          <span class="sec__title">{g.name}</span>
+          <span class="lbl">{g.blurb}</span>
+        </header>
+        <div class="sec__body">
+          <ul class="wall">
+            {g.shots.map((s) => (
+              <li class:list={['shot', { 'shot--tall': s.height >= s.width }]}>
+                <button
+                  type="button"
+                  class="shot__open"
+                  data-full={s.webp}
+                  data-alt={s.alt}
+                  data-title={`${g.name} — ${s.title}`}
+                  data-caption={s.caption}
+                  aria-label={`Open larger: ${g.name}, ${s.title}`}
+                >
+                  <Img src={s.src} alt={s.alt} sizes="(min-width: 900px) 33vw, 100vw" />
+                </button>
+                <p class="figcap"><span class="lbl">Fig. <span class="nocase">{figure(s)}</span></span><span><strong>{s.title}.</strong> {s.caption}</span></p>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+    ))}
+  </div>
+
+  <dialog class="lightbox" id="lightbox" aria-label="Screen preview">
+    <form method="dialog"><button class="lightbox__close act" aria-label="Close">Close</button></form>
+    <img class="lightbox__img" alt="" />
+    <p class="lightbox__cap"><span class="lbl lightbox__title"></span><span class="lightbox__text"></span></p>
+    <div class="lightbox__nav">
+      <button type="button" class="act" data-step="-1">Previous</button>
+      <button type="button" class="act" data-step="1">Next</button>
+    </div>
+  </dialog>
+</BaseLayout>
+
+<script>
+  const dlg = document.getElementById('lightbox') as HTMLDialogElement | null;
+  const openers = [...document.querySelectorAll<HTMLButtonElement>('.shot__open')];
+  if (dlg) {
+    const img = dlg.querySelector<HTMLImageElement>('.lightbox__img')!;
+    const title = dlg.querySelector<HTMLElement>('.lightbox__title')!;
+    const text = dlg.querySelector<HTMLElement>('.lightbox__text')!;
+    let index = 0;
+    const show = (i: number) => {
+      index = (i + openers.length) % openers.length;
+      const d = openers[index].dataset;
+      img.src = d.full ?? '';
+      img.alt = d.alt ?? '';
+      title.textContent = d.title ?? '';
+      text.textContent = d.caption ?? '';
+    };
+    openers.forEach((b, i) => b.addEventListener('click', () => { show(i); dlg.showModal(); }));
+    dlg.querySelectorAll<HTMLButtonElement>('[data-step]').forEach((b) =>
+      b.addEventListener('click', () => show(index + Number(b.dataset.step))));
+    dlg.addEventListener('click', (e) => { if (e.target === dlg) dlg.close(); });
+    dlg.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight') show(index + 1);
+      if (e.key === 'ArrowLeft') show(index - 1);
+    });
+  }
+</script>
+
+<style>
+  .jump { display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-5); }
+  .group { scroll-margin-top: var(--space-8); }
+
+  .wall {
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr));
+    gap: var(--space-8) var(--space-6);
+    align-items: start;
+  }
+  .shot { display: flex; flex-direction: column; min-width: 0; }
+  .shot__open {
+    display: block;
+    width: 100%;
+    padding: 0;
+    border: 1px solid var(--rule);
+    background: none;
+    cursor: zoom-in;
+    overflow: hidden;
+  }
+  .shot__open:hover { border-color: var(--ink); }
+  .shot__open:focus-visible { outline: 2px solid var(--signal); outline-offset: 3px; }
+  .shot__open :global(img) { width: 100%; height: auto; }
+  .figcap strong { color: var(--ink); font-weight: 500; }
+
+  .lightbox {
+    max-width: min(96vw, 1500px);
+    max-height: 96vh;
+    width: 100%;
+    padding: var(--space-4);
+    border: 1px solid var(--ink);
+    background: var(--bg);
+    color: var(--ink);
+    margin: auto;
+  }
+  .lightbox::backdrop { background: rgb(0 0 0 / 0.78); }
+  .lightbox__img { width: 100%; height: auto; max-height: 78vh; object-fit: contain; }
+  .lightbox__close { position: absolute; top: var(--space-3); right: var(--space-3); z-index: 1; background: var(--bg); cursor: pointer; }
+  .lightbox form { display: contents; }
+  .lightbox__cap { display: flex; gap: var(--space-3); align-items: baseline; padding-top: var(--space-3); font-family: var(--f-mono); font-size: var(--fs-meta); color: var(--ink-2); }
+  .lightbox__nav { display: flex; justify-content: space-between; padding-top: var(--space-2); }
+  .lightbox__nav .act { background: none; border: 0; border-bottom: 1px solid var(--rule-strong); cursor: pointer; }
+</style>

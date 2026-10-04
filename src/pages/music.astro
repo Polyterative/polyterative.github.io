@@ -3,7 +3,7 @@ import Img from '../components/Img.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Icon from '../components/Icon.astro';
 import { releases } from '../data/releases';
-import { isoDots, roman, greek } from '../lib/datum';
+import { isoDots, roman, greek, sectionIndex } from '../lib/datum';
 
 // Chronological order (oldest first) gives every release a stable position number.
 const chrono = [...releases].sort((a, b) => a.date.localeCompare(b.date));
@@ -60,7 +60,7 @@ const years = Array.from({ length: y1 - y0 + 1 }, (_, i) => y0 + i);
 
     <header class="page-head music-head">
       <aside class="page-head__aside">
-        <span class="plate page-head__idx">0x04</span>
+        <span class="plate page-head__idx">{sectionIndex('/music')}</span>
         <span class="lbl">Alias</span>
         <span class="data">Polyterative</span>
         <span class="lbl">Releases</span>

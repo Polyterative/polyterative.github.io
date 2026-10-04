@@ -2,7 +2,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import ProjectCard from '../components/ProjectCard.astro';
 import Icon from '../components/Icon.astro';
-import { letter, lroman } from '../lib/datum';
+import { letter, lroman, sectionIndex } from '../lib/datum';
 
 const sectionIcons: Record<string, string> = {
   code: 'code',
@@ -208,7 +208,7 @@ const entryCount = archiveSections.reduce((n, s) => n + s.projects.length, 0);
   <div class="container container--wide">
     <header class="page-head">
       <aside class="page-head__aside">
-        <span class="plate page-head__idx">0x02</span>
+        <span class="plate page-head__idx">{sectionIndex('/projects')}</span>
         <span class="lbl">Entries</span>
         <span class="data">{entryCount}</span>
         <span class="lbl">Sections</span>
