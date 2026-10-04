@@ -1,4 +1,5 @@
 ---
+import Img from './Img.astro';
 import Icon from './Icon.astro';
 
 export interface Props {
@@ -29,7 +30,7 @@ const titleIsExternal = titleHref?.startsWith('http');
   </header>
   <div class="project__cover crop">
     {image
-      ? <img class="project__img" src={image} alt={`${name} preview`} loading="lazy" decoding="async" />
+      ? <Img class="project__img" src={image} alt={`${name} preview`} loading="lazy" />
       : (
         <div class="gencover project__gen" role="img" aria-label={`${name}: no screenshot`}>
           <Icon name={icon} size={32} />
@@ -86,7 +87,7 @@ const titleIsExternal = titleHref?.startsWith('http');
   }
   .project--featured .project__cover { aspect-ratio: 21 / 9; }
 
-  .project__img {
+  .project :global(.project__img) {
     width: 100%;
     height: 100%;
     object-fit: cover;

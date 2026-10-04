@@ -1,4 +1,5 @@
 ---
+import Img from '../../components/Img.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Icon from '../../components/Icon.astro';
 import { apps, featuredApps, moreApps } from '../../data/apps';
@@ -43,7 +44,7 @@ const isExternal = (href: string) => href.startsWith('http');
           <article class="showcase">
             <div class="showcase__media">
               <a class="showcase__frame crop" href={`/apps/${app.slug}`} aria-label={`${app.name} — view application page`}>
-                <img src={app.hero} alt={app.heroAlt} loading={i === 0 ? 'eager' : 'lazy'} decoding="async" />
+                <Img src={app.hero} alt={app.heroAlt} loading={i === 0 ? 'eager' : 'lazy'} />
               </a>
               <p class="figcap"><span class="lbl">Fig. <span class="nocase">{greek(i + 1)}</span></span><span>{app.heroAlt}</span></p>
             </div>
@@ -153,7 +154,7 @@ const isExternal = (href: string) => href.startsWith('http');
     background: var(--hover);
   }
   .showcase__frame:hover { border-color: var(--ink); }
-  .showcase__frame img { width: 100%; }
+  .showcase__frame :global(img) { width: 100%; }
 
   .showcase__body { display: flex; flex-direction: column; gap: var(--space-3); min-width: 0; }
   .showcase__kicker {

@@ -1,6 +1,7 @@
 ---
 import PostCover from './PostCover.astro';
 import { isoDots } from '../lib/datum';
+import { tagSlug } from '../lib/posts';
 
 export interface Props {
   title: string;
@@ -38,7 +39,7 @@ const readingTime = wordCount ? Math.max(1, Math.round(wordCount / 200)) : null;
     {!compact && description && <p class="post-row__desc">{description}</p>}
     {!compact && tags.length > 0 && (
       <ul class="taglist">
-        {tags.map(t => <li>{t}</li>)}
+        {tags.map(t => <li><a href={`/blog/tags/${tagSlug(t)}`}>{t}</a></li>)}
       </ul>
     )}
   </div>

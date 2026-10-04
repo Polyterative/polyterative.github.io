@@ -1,4 +1,5 @@
 ---
+import Img from '../components/Img.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Icon from '../components/Icon.astro';
 import { apps } from '../data/apps';
@@ -270,13 +271,10 @@ const contents = sections.map((s, i) => ({ ...s, index: hex(i + 1) }));
           <span class="lbl">Fig. <span class="nocase">{greek(1)}</span></span>
           <span class="lbl">Portrait</span>
         </div>
-        <img
+        <Img
           src="/vlady.jpg"
           alt="Portrait of Vlady Yakovenko, 2023"
-          width="1200"
-          height="1200"
           loading="eager"
-          decoding="async"
         />
         <figcaption class="plate-fig__cap">
           <span class="data">Portrait, 2023</span>
@@ -862,7 +860,7 @@ const contents = sections.map((s, i) => ({ ...s, index: hex(i + 1) }));
   }
   .plate-fig .lbl { color: var(--slab-2); }
   .plate-fig__hd { display: flex; justify-content: space-between; border-bottom: 1px solid var(--slab-2); padding-bottom: var(--space-2); }
-  .plate-fig img {
+  .plate-fig :global(img) {
     width: 100%;
     height: auto;
     aspect-ratio: 1 / 1;
@@ -1074,7 +1072,7 @@ const contents = sections.map((s, i) => ({ ...s, index: hex(i + 1) }));
 
     .plate-fig { display: grid; grid-template-columns: 120px minmax(0, 1fr); grid-template-rows: auto 1fr auto auto; gap: var(--space-2) var(--space-4); }
     .plate-fig__hd { grid-column: 1 / -1; }
-    .plate-fig img { grid-row: 2 / 5; }
+    .plate-fig :global(img) { grid-row: 2 / 5; }
     .plate-fig__strip { height: 28px; }
 
     .intro { grid-template-columns: 1fr; gap: var(--space-6); padding-block: var(--space-8) var(--space-12); }

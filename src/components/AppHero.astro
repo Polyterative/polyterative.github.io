@@ -1,4 +1,5 @@
 ---
+import Img from './Img.astro';
 import Icon from './Icon.astro';
 import { apps, type AppEntry, type AppLink } from '../data/apps';
 import { roman, greek, parseStatus, pillClass } from '../lib/datum';
@@ -66,7 +67,7 @@ const isExternal = (href: string) => href.startsWith('http');
     {app.hero ? (
       <>
         <div class="showcase-hero__frame crop">
-          <img src={app.hero} alt={app.heroAlt} loading="eager" decoding="async" />
+          <Img src={app.hero} alt={app.heroAlt} loading="eager" />
           {shotBadge && <span class="inv showcase-hero__badge">{shotBadge}</span>}
         </div>
         <figcaption class="figcap"><span class="lbl">Fig. <span class="nocase">{greek(1)}</span></span><span>{app.heroAlt}</span></figcaption>
@@ -129,7 +130,7 @@ const isExternal = (href: string) => href.startsWith('http');
     border: 1px solid var(--rule);
     background: var(--hover);
   }
-  .showcase-hero__frame img { width: 100%; }
+  .showcase-hero__frame :global(img) { width: 100%; }
   .showcase-hero__badge {
     position: absolute;
     left: 0;

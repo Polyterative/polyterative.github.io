@@ -1,4 +1,5 @@
 ---
+import Img from '../components/Img.astro';
 import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Icon from '../components/Icon.astro';
@@ -199,7 +200,7 @@ for (const item of items) {
                   </div>
                   {item.image && (
                     <a class="timeline-event__image" href={item.href} {...linkAttrs} tabindex="-1" aria-hidden="true">
-                      <img src={item.image} alt={item.imageAlt ?? ''} width="180" height="180" loading="lazy" />
+                      <Img src={item.image} alt={item.imageAlt ?? ''} loading="lazy" />
                     </a>
                   )}
                 </article>
@@ -459,7 +460,7 @@ for (const item of items) {
     background: var(--hover);
   }
   .timeline-event__image:hover { border-color: var(--ink); }
-  .timeline-event__image img { width: 100%; height: 100%; object-fit: cover; }
+  .timeline-event__image :global(img) { width: 100%; height: 100%; object-fit: cover; }
 
   .timeline-empty { padding-block: var(--space-16); color: var(--ink-2); }
 

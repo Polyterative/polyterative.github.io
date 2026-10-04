@@ -1,4 +1,5 @@
 ---
+import Img from '../components/Img.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Icon from '../components/Icon.astro';
 import { releases } from '../data/releases';
@@ -78,13 +79,10 @@ const years = Array.from({ length: y1 - y0 + 1 }, (_, i) => y0 + i);
       </div>
       <figure class="music-hero">
         <div class="crop">
-          <img
+          <Img
             src="/peraspera-2024.jpg"
             alt="Vlady Yakovenko performing a modular synthesis live set at perAspera festival, Bologna 2024"
-            width="1400"
-            height="1400"
             loading="eager"
-            decoding="async"
           />
         </div>
         <figcaption class="figcap"><span class="lbl">Fig. <span class="nocase">{greek(1)}</span></span><span>Live at perAspera festival — Bologna, 2024</span></figcaption>
@@ -135,7 +133,7 @@ const years = Array.from({ length: y1 - y0 + 1 }, (_, i) => y0 + i);
           {releases.map(r => (
             <li class:list={['release', { 'release--highlight': r.highlight }]}>
               <a class="release__cover" href={r.url ?? undefined} target={r.url ? '_blank' : undefined} rel={r.url ? 'noopener' : undefined} aria-label={r.url ? `Listen to ${r.title} on Bandcamp` : undefined}>
-                <img src={r.cover} alt={`${r.title} album cover`} loading="lazy" width="600" height="600" />
+                <Img src={r.cover} alt={`${r.title} album cover`} loading="lazy" />
               </a>
               <div class="release__body">
                 <div class="release__meta">
@@ -178,7 +176,7 @@ const years = Array.from({ length: y1 - y0 + 1 }, (_, i) => y0 + i);
 <style>
   .music-head { grid-template-columns: var(--gutter) minmax(0, 1fr) minmax(0, 280px); }
   .music-hero { margin: 0; padding-top: var(--space-2); }
-  .music-hero img { width: 100%; height: auto; display: block; border: 1px solid var(--rule); }
+  .music-hero :global(img) { width: 100%; height: auto; display: block; border: 1px solid var(--rule); }
 
   /* ── Growth line ── */
   .growth-wrap { overflow-x: auto; scrollbar-width: thin; }
@@ -221,7 +219,7 @@ const years = Array.from({ length: y1 - y0 + 1 }, (_, i) => y0 + i);
     background: var(--hover);
   }
   .release__cover:hover { border-color: var(--ink); }
-  .release__cover img { width: 100%; height: 100%; object-fit: cover; }
+  .release__cover :global(img) { width: 100%; height: 100%; object-fit: cover; }
 
   .release__body { display: flex; flex-direction: column; gap: var(--space-3); min-width: 0; }
   .release__meta { display: flex; align-items: flex-end; gap: var(--space-5); }

@@ -258,6 +258,7 @@ pre {
 }
 
 img { display: block; max-width: 100%; }
+picture { display: contents; }
 
 button { font: inherit; color: inherit; }
 
@@ -319,6 +320,7 @@ button { font: inherit; color: inherit; }
   list-style: none;
 }
 .taglist li { font-family: var(--f-mono); font-size: var(--fs-meta); color: var(--ink-3); line-height: 1.5; }
+.taglist a:hover { color: var(--signal-text); text-decoration: underline; text-underline-offset: 3px; }
 .taglist li:not(:last-child)::after { content: "·"; margin-left: var(--space-2); color: var(--ink-3); }
 
 /* Inverted label: outputs, results, totals. Solid ink block, bg-coloured text.

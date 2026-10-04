@@ -1,0 +1,28 @@
+---
+import { imgMeta } from '../lib/img';
+
+export interface Props {
+  src: string;
+  alt: string;
+  loading?: 'eager' | 'lazy';
+  class?: string;
+  sizes?: string;
+  /** Overrides the intrinsic size when the CSS box is a fixed crop. */
+  width?: number;
+  height?: number;
+}
+
+const { src, alt, loading = 'lazy', class: className, sizes, width, height } = Astro.props;
+const meta = await imgMeta(src);
+const w = width ?? meta?.width;
+const h = height ?? meta?.height;
+---
+
+{meta?.webp
+  ? (
+    <picture>
+      <source srcset={meta.webp} type="image/webp" sizes={sizes} />
+      <img class={className} src={src} alt={alt} width={w} height={h} loading={loading} fetchpriority={loading === 'eager' ? 'high' : undefined} decoding="async" />
+    </picture>
+  )
+  : <img class={className} src={src} alt={alt} width={w} height={h} loading={loading} fetchpriority={loading === 'eager' ? 'high' : undefined} decoding="async" />}

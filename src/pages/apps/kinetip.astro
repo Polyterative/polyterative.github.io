@@ -1,4 +1,5 @@
 ---
+import Img from '../../components/Img.astro';
 import AppLayout from '../../layouts/AppLayout.astro';
 import AppHero from '../../components/AppHero.astro';
 import StatBar from '../../components/StatBar.astro';
@@ -97,11 +98,11 @@ const efficiencyStats = [
     <Fragment slot="visual">
       <div class="two-up">
         <figure>
-          <img src="/blog/kinetip/app-gestures.jpg" alt="Kinetip gesture settings" loading="lazy" decoding="async" />
+          <Img src="/blog/kinetip/app-gestures.jpg" alt="Kinetip gesture settings" loading="lazy" />
           <figcaption>Gestures</figcaption>
         </figure>
         <figure>
-          <img src="/blog/kinetip/app-momentum.jpg" alt="Kinetip momentum physics settings with live preview" loading="lazy" decoding="async" />
+          <Img src="/blog/kinetip/app-momentum.jpg" alt="Kinetip momentum physics settings with live preview" loading="lazy" />
           <figcaption>Momentum, live preview</figcaption>
         </figure>
       </div>
@@ -126,7 +127,7 @@ const efficiencyStats = [
     </p>
     <Fragment slot="visual">
       <figure>
-        <img src="/blog/kinetip/app-sound.jpg" alt="Kinetip sound settings with named material presets — Aluminum, Wood, and Silicon" loading="lazy" decoding="async" />
+        <Img src="/blog/kinetip/app-sound.jpg" alt="Kinetip sound settings with named material presets — Aluminum, Wood, and Silicon" loading="lazy" />
         <figcaption>Named presets, not raw parameters</figcaption>
       </figure>
     </Fragment>
@@ -157,11 +158,11 @@ const efficiencyStats = [
     <Fragment slot="visual">
       <div class="two-up">
         <figure>
-          <img src="/blog/kinetip/app-diagnostics.jpg" alt="Kinetip diagnostics view" loading="lazy" decoding="async" />
+          <Img src="/blog/kinetip/app-diagnostics.jpg" alt="Kinetip diagnostics view" loading="lazy" />
           <figcaption>Diagnostics</figcaption>
         </figure>
         <figure>
-          <img src="/blog/kinetip/app-insights.jpg" alt="Kinetip insights view" loading="lazy" decoding="async" />
+          <Img src="/blog/kinetip/app-insights.jpg" alt="Kinetip insights view" loading="lazy" />
           <figcaption>Insights, kept local</figcaption>
         </figure>
       </div>

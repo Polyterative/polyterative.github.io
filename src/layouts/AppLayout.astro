@@ -1,4 +1,5 @@
 ---
+import Img from '../components/Img.astro';
 import BaseLayout from './BaseLayout.astro';
 import Icon from '../components/Icon.astro';
 import { apps, type AppEntry } from '../data/apps';
@@ -84,7 +85,7 @@ const appSchema = {
             ? (
               <>
                 <div class="hero-shot__frame crop">
-                  <img src={app.hero} alt={app.heroAlt} loading="eager" decoding="async" />
+                  <Img src={app.hero} alt={app.heroAlt} loading="eager" />
                 </div>
                 <figcaption class="figcap"><span class="lbl">Fig. <span class="nocase">{greek(1)}</span></span><span>{app.heroAlt}</span></figcaption>
               </>
@@ -195,7 +196,7 @@ const appSchema = {
 
   .hero-shot { margin-top: var(--space-10); }
   .hero-shot__frame { border: 1px solid var(--rule); background: var(--hover); }
-  .hero-shot__frame img { width: 100%; }
+  .hero-shot__frame :global(img) { width: 100%; }
   .hero-shot__gen { min-height: clamp(200px, 30vw, 300px); border: 1px solid var(--rule); }
 
   /* ── Story (slotted page content). Sections get a numbered gutter. ── */

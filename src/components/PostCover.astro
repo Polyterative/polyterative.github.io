@@ -1,4 +1,5 @@
 ---
+import Img from './Img.astro';
 import Icon from './Icon.astro';
 
 export interface Props {
@@ -30,7 +31,7 @@ const coverLabel = tags[0] ?? 'Post';
 
 <div class:list={['pcover', `pcover--${variant}`, { 'gencover': !cover }]} role={!cover ? 'img' : undefined} aria-label={!cover ? `${title}: no cover image` : undefined}>
   {cover
-    ? <img class="pcover__img" src={cover} alt={`${title} cover`} loading={variant === 'hero' ? 'eager' : 'lazy'} decoding="async" />
+    ? <Img class="pcover__img" src={cover} alt={`${title} cover`} loading={variant === 'hero' ? 'eager' : 'lazy'} />
     : (
       <>
         <Icon name={icon} size={variant === 'hero' ? 40 : 24} />
@@ -51,7 +52,7 @@ const coverLabel = tags[0] ?? 'Post';
   .pcover--thumb { aspect-ratio: 16 / 10; }
   .pcover--hero { aspect-ratio: 21 / 9; }
 
-  .pcover__img {
+  .pcover :global(.pcover__img) {
     width: 100%;
     height: 100%;
     object-fit: cover;
