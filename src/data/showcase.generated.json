@@ -60,16 +60,16 @@
       "appName": "Kinetip"
     },
     {
-      "id": "kinetip-sound",
+      "id": "kinetip-mapping",
       "app": "kinetip",
-      "title": "Sound",
-      "caption": "Synthesized material presets for clicks and drags.",
-      "alt": "Kinetip sound page with Aluminum, Wood and Silicon material presets",
+      "title": "Mapping",
+      "caption": "Choose the active area on the tablet and see where it lands on screen.",
+      "alt": "Kinetip mapping page with a screen target, orientation controls and a draggable active area",
       "tone": "light",
       "width": 2000,
       "height": 1500,
-      "src": "/showcase/kinetip-sound.jpg",
-      "webp": "/showcase/kinetip-sound.webp",
+      "src": "/showcase/kinetip-mapping.jpg",
+      "webp": "/showcase/kinetip-mapping.webp",
       "appName": "Kinetip"
     },
     {
