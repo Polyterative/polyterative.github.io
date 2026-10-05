@@ -12,6 +12,7 @@
 //             'object'  free-floating UI (widget, shelf, menu): hairline around its own silhouette
 //   chrome    add a title bar with traffic lights (for window captures that have none)
 //   tone      ground 'light' (Paper image ground) | 'dark' (Instrument); match the capture's own appearance
+//   crop      { top, height } keep a vertical slice of a tall capture (fractions of its height)
 //   trim      trim a flat border off the capture first
 //   largest   with key: keep only the biggest object (drop floating labels beside it)
 //   shape     { inset, radius } cut the keyed object to a clean rounded rectangle
@@ -56,12 +57,18 @@ export const sources = {
     env: sdk26(),
     dir: '.snapshots',
   },
+  evocontrol: {
+    project: 'EvoControl',
+    refresh: ['Tools/snapshots.sh', '{out}'],
+    dir: '/tmp/evocontrol-snapshots',
+  },
 };
 
 export const apps = {
   kinetip: { name: 'Kinetip', blurb: 'Pen tablet driver for macOS' },
   habitat: { name: 'Habitat', blurb: 'Home Assistant on the Mac desktop' },
   ledge: { name: 'Ledge', blurb: 'A floating shelf for files in motion' },
+  evocontrol: { name: 'EvoControl', blurb: 'A menu bar mixer for the Audient EVO 8' },
   spoke: { name: 'Spoke', blurb: 'A radial menu for phrases you retype' },
 };
 
@@ -124,4 +131,21 @@ export const shots = [
   window({ id: 'spoke-usage', app: 'spoke', file: 'showcase-usage-light.png', chrome: true,
     title: 'Usage', caption: 'See which phrases you reach for most.',
     alt: 'Spoke usage page ranking Follow up, Thank you, Introduce yourself and Politely decline by use' }),
+
+  // EvoControl: the menu bar mixer and its voice processor.
+  window({ id: 'evocontrol-mixer', app: 'evocontrol', file: '07-meters-active-light.png', chrome: false, cover: true,
+    title: 'The mixer', caption: 'Levels, LUFS and spectrum for every output, from the menu bar.',
+    alt: 'EvoControl mixer panel with monitor and headphone faders, live level meters and input gain' }),
+  window({ id: 'evocontrol-mixer-dark', app: 'evocontrol', file: '07-meters-active-dark.png', tone: 'dark', chrome: false,
+    title: 'After dark', caption: 'The same panel in dark mode, meters and all.',
+    alt: 'EvoControl mixer panel in dark mode with green, amber and red level meters' }),
+  window({ id: 'evocontrol-preset', app: 'evocontrol', file: '02-diverged.png', chrome: false,
+    title: 'Presets', caption: 'Change something and Save or Revert appears next to the preset.',
+    alt: 'EvoControl panel with an unsaved change and Revert and Save buttons beside the preset selector' }),
+  window({ id: 'evocontrol-settings', app: 'evocontrol', file: '12-settings-open.png', chrome: false,
+    title: 'Settings', caption: 'Every channel group in one scrolling panel: outputs, inputs, playback, loopback.',
+    alt: 'EvoControl settings view listing outputs, inputs, playback and loopback channels' }),
+  window({ id: 'evocontrol-voice-eq', app: 'evocontrol', file: '23-voice-page.png', chrome: false, crop: { top: 0.0, height: 0.33 },
+    title: 'Voice', caption: 'Gate, EQ, leveler and compressor tuned for calls.',
+    alt: 'EvoControl voice page with input and output levels, a gate and a six-band EQ over a live spectrum' }),
 ];

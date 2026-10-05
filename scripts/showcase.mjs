@@ -83,10 +83,10 @@ for (const shot of shots) {
     continue;
   }
   const input = await readFile(file);
-  const opts = { frame: shot.frame, tone: shot.tone, chrome: shot.chrome, trim: shot.trim, key: shot.key, largest: shot.largest, shape: shot.shape, round: shot.round };
+  const opts = { frame: shot.frame, tone: shot.tone, chrome: shot.chrome, trim: shot.trim, crop: shot.crop, key: shot.key, largest: shot.largest, shape: shot.shape, round: shot.round };
 
   const m = await sharp(input).metadata();
-  const [W, H] = standardSize(m.width / m.height);
+  const [W, H] = standardSize(m.width / (m.height * (shot.crop?.height ?? 1)));
   await save(await compose(input, { ...opts, width: W, height: H }), join(OUT, shot.id));
   const entry = {
     id: shot.id, app: shot.app, title: shot.title, caption: shot.caption, alt: shot.alt,
