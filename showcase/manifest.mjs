@@ -104,13 +104,13 @@ export const shots = [
     alt: 'Habitat air quality widget with an elevated kitchen VOC reading and good PM2.5' }),
 
   // Ledge: the shelf in its states.
-  object({ id: 'ledge-shelf-images', app: 'ledge', file: 'shelf-three-images-light.png', tone: 'light', key: true, shape: { inset: 0.012, radius: 0.235 }, cover: true,
+  object({ id: 'ledge-shelf-images', app: 'ledge', file: 'shelf-three-images-light.png', tone: 'light', key: true, shape: { inset: 0.072, radius: 0.19 }, cover: true,
     title: 'The shelf', caption: 'Shake while dragging and a shelf appears under the pointer.',
     alt: 'Ledge shelf holding a stack of three images' }),
-  object({ id: 'ledge-shelf-expanded', app: 'ledge', file: 'shelf-expanded-five-light.png', tone: 'light', key: true, shape: { inset: 0.012, radius: 0.16 },
+  object({ id: 'ledge-shelf-expanded', app: 'ledge', file: 'shelf-expanded-five-light.png', tone: 'light', key: true, shape: { inset: 0.04, radius: 0.11 },
     title: 'Expanded', caption: 'Open the stack to see every file, size and status.',
     alt: 'Ledge shelf expanded into a grid of five files, one marked missing' }),
-  object({ id: 'ledge-shelf-copy', app: 'ledge', file: 'shelf-banner-progress-light.png', tone: 'light', key: true, shape: { inset: 0.012, radius: 0.235 },
+  object({ id: 'ledge-shelf-copy', app: 'ledge', file: 'shelf-banner-progress-light.png', tone: 'light', key: true, shape: { inset: 0.072, radius: 0.19 },
     title: 'In flight', caption: 'Progress and cancel stay on the shelf while files copy.',
     alt: 'Ledge shelf showing a copying progress banner' }),
   window({ id: 'ledge-watchers', app: 'ledge', file: 'settings-watchers-light.png', chrome: true,
