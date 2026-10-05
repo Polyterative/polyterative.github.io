@@ -12,6 +12,8 @@ export interface Props {
   serial?: string;
   /** Share image path or URL. Defaults to the branded site card. */
   image?: string;
+  /** Start scroll-in animations well before blocks reach the viewport (long pages). */
+  revealEarly?: boolean;
   imageAlt?: string;
   /** "article" for blog posts adds article:* tags. */
   type?: 'website' | 'article';
@@ -28,6 +30,7 @@ const {
   isHome = false,
   serial,
   image = '/og/default.png',
+  revealEarly = false,
   imageAlt,
   type = 'website',
   publishedTime,
@@ -214,7 +217,7 @@ const personSchema = {
     </div>
   </header>
 
-  <main class="site-main" id="main-content" tabindex="-1">
+  <main class="site-main" id="main-content" tabindex="-1" data-reveal-early={revealEarly ? "" : undefined}>
     <slot />
   </main>
 
@@ -250,7 +253,7 @@ const personSchema = {
       document.documentElement.classList.add('js');
       var io = new IntersectionObserver(function (entries) {
         entries.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('is-in'); io.unobserve(e.target); } });
-      }, { rootMargin: '0px 0px -8% 0px' });
+      }, { rootMargin: document.querySelector('[data-reveal-early]') ? '0px 0px 80% 0px' : '0px 0px -8% 0px' });
       // First screen: trace in the visible blocks child by child, in reading order.
       // Home skips this — its cover boot sequence queues the above-the-fold content itself.
       var first = document.querySelector('.site-main .container');
