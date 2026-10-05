@@ -1,8 +1,9 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Img from '../components/Img.astro';
+import StoryBlock from '../components/StoryBlock.astro';
 import PullQuote from '../components/PullQuote.astro';
-import { greek, letter, pad, sectionIndex } from '../lib/datum';
+import { greek, pad, sectionIndex } from '../lib/datum';
 import data from '../data/showcase.generated.json';
 import { intro, chapters } from '../../showcase/story.mjs';
 
@@ -16,11 +17,17 @@ const shot = (id: string) => {
 };
 const appName = (key: string) => (data.apps as Record<string, { name: string }>)[key].name;
 
-const groups = Object.entries(data.apps)
-  .map(([key, app]) => ({ key, ...app, shots: data.shots.filter((s) => s.app === key) }))
-  .filter((g) => g.shots.length > 0);
 let fig = 0;
-const nextFig = () => greek(++fig);
+const chapterList = chapters.map((c: any) => {
+  const ids = new Set<string>();
+  const blocks = c.blocks.map((b: any) => {
+    if (b.shot) ids.add(b.shot);
+    if (b.light) { ids.add(b.light); ids.add(b.dark); }
+    if (b.detail) ids.add(b.detail);
+    return b.type === 'note' ? b : { ...b, fig: greek(++fig) };
+  });
+  return { ...c, blocks, count: ids.size };
+});
 const total = data.shots.length;
 ---
 
@@ -48,7 +55,7 @@ const total = data.shots.length;
       </div>
     </header>
 
-    {chapters.map((c, ci) => (
+    {chapterList.map((c: any, ci: number) => (
       <section class="chapter" id={c.app} aria-labelledby={`${c.app}-h`}>
         <header class="chapter__head">
           <span class="plate chapter__num">{pad(ci + 1)}</span>
@@ -66,112 +73,24 @@ const total = data.shots.length;
           </div>
         </header>
 
-        {c.blocks.map((b) => {
-          if (b.type === 'hero') {
-            const s = shot(b.shot);
-            return (
-              <figure class="hero">
-                <button type="button" class="shot__open" data-full={s.webp} data-alt={s.alt} data-title={`${appName(c.app)} — ${s.title}`} data-caption={s.caption} aria-label={`Open larger: ${appName(c.app)}, ${s.title}`}>
-                  <Img src={s.cover ?? s.src} alt={s.alt} sizes="(min-width: 1200px) 1100px, 100vw" loading={ci === 0 ? 'eager' : 'lazy'} />
-                </button>
-                <figcaption class="figcap"><span class="lbl">Fig. <span class="nocase">{nextFig()}</span></span><span>{s.caption}</span></figcaption>
-              </figure>
-              <PullQuote>{c.decision}</PullQuote>
-            );
-          }
-          if (b.type === 'scene') {
-            const s = shot(b.shot);
-            return (
-              <article class="scene">
-                <div class="scene__text">
-                  <span class="lbl">Fig. <span class="nocase">{nextFig()}</span></span>
-                  <h3>{b.title}</h3>
-                  <p>{b.text}</p>
-                </div>
-                <button type="button" class="shot__open scene__img" data-full={s.webp} data-alt={s.alt} data-title={`${appName(c.app)} — ${s.title}`} data-caption={s.caption} aria-label={`Open larger: ${appName(c.app)}, ${s.title}`}>
-                  <Img src={s.src} alt={s.alt} sizes="(min-width: 900px) 60vw, 100vw" />
-                </button>
-              </article>
-            );
-          }
-          if (b.type === 'detail') {
-            const d = detailById.get(b.detail);
-            if (!d) throw new Error(`showcase story references unknown detail "${b.detail}"`);
-            return (
-              <article class="scene detail">
-                <div class="scene__text">
-                  <span class="lbl">Fig. <span class="nocase">{nextFig()}</span></span>
-                  <h3>{b.title}</h3>
-                  <p>{b.text}</p>
-                  <ol class="marks">
-                    {b.marks.map((m: { text: string }, i: number) => <li><span class="pin pin--static">{i + 1}</span><span>{m.text}</span></li>)}
-                  </ol>
-                </div>
-                <div class="detail__fig">
-                  <button type="button" class="shot__open scene__img" data-full={d.webp} data-alt={d.alt} data-title={`${appName(c.app)} — ${d.title}`} data-caption={b.text} aria-label={`Open larger: ${d.title}`}>
-                    <Img src={d.src} alt={d.alt} sizes="(min-width: 900px) 60vw, 100vw" />
-                  </button>
-                  {b.marks.map((m: { x: number; y: number }, i: number) => (
-                    <span class="pin" style={`left:${d.box.x + m.x * d.box.w}%;top:${d.box.y + m.y * d.box.h}%`} aria-hidden="true">{i + 1}</span>
-                  ))}
-                </div>
-              </article>
-            );
-          }
-          if (b.type === 'note') {
-            return <p class="note">{b.text}</p>;
-          }
-          if (b.type === 'pair') {
-            const l = shot(b.light), d = shot(b.dark);
-            return (
-              <article class="pair">
-                <div class="scene__text pair__text">
-                  <span class="lbl">Fig. <span class="nocase">{nextFig()}</span></span>
-                  <h3>{b.title}</h3>
-                  <p>{b.text}</p>
-                </div>
-                <div class="pair__shots">
-                  {[[l, 'Light'], [d, 'Dark']].map(([s, label]) => (
-                    <figure>
-                      <button type="button" class="shot__open" data-full={(s as Shot).webp} data-alt={(s as Shot).alt} data-title={`${appName(c.app)} — ${(s as Shot).title}`} data-caption={(s as Shot).caption} aria-label={`Open larger: ${label}`}>
-                        <Img src={(s as Shot).src} alt={(s as Shot).alt} sizes="(min-width: 900px) 30vw, 50vw" />
-                      </button>
-                      <figcaption class="lbl">{label as string}</figcaption>
-                    </figure>
-                  ))}
-                </div>
-              </article>
-            );
-          }
-          return null;
-        })}
+        {(() => { const h = c.blocks.find((b) => b.type === 'hero'); return h ? (() => { const s = shot(h.shot); return (
+          <figure class="hero">
+            <button type="button" class="shot__open" data-full={s.webp} data-alt={s.alt} data-title={`${appName(c.app)} — ${s.title}`} data-caption={s.caption} aria-label={`Open larger: ${appName(c.app)}, ${s.title}`}>
+              <Img src={s.cover ?? s.src} alt={s.alt} sizes="(min-width: 1200px) 1100px, 100vw" />
+            </button>
+          </figure>
+        ); })() : null; })()}
+        <PullQuote>{c.decision}</PullQuote>
+
+        <details class="more" data-chapter={c.app}>
+          <summary class="more__toggle act">
+            <span class="more__open">Show all {c.count} screens</span>
+            <span class="more__close">Collapse</span>
+          </summary>
+          {c.blocks.filter((b) => b.type !== 'hero').map((b) => <StoryBlock b={b} app={c.app} fig={b.fig} />)}
+        </details>
       </section>
     ))}
-
-    <section class="sec group" id="all" aria-labelledby="all-h">
-      <header class="sec__head">
-        <h2 class="plate sec__idx" id="all-h">{letter(1)}</h2>
-        <span class="sec__title">All screens</span>
-        <span class="lbl">{total} captures, by app</span>
-      </header>
-      <div class="sec__body">
-        {groups.map((g) => (
-          <div class="index-group">
-            <h3 class="lbl">{g.name}</h3>
-            <ul class="wall">
-              {g.shots.map((s) => (
-                <li class="shot">
-                  <button type="button" class="shot__open" data-full={s.webp} data-alt={s.alt} data-title={`${g.name} — ${s.title}`} data-caption={s.caption} aria-label={`Open larger: ${g.name}, ${s.title}`}>
-                    <Img src={s.src} alt={s.alt} sizes="(min-width: 900px) 20vw, 50vw" />
-                  </button>
-                  <p class="figcap"><span><strong>{s.title}.</strong> {s.caption}</span></p>
-                </li>
-              ))}
-            </ul>
-          </div>
-        ))}
-      </div>
-    </section>
   </div>
 
   <dialog class="lightbox" id="lightbox" aria-label="Screen preview">
@@ -186,6 +105,13 @@ const total = data.shots.length;
 </BaseLayout>
 
 <script>
+  const openFromHash = () => {
+    const el = location.hash ? document.getElementById(location.hash.slice(1)) : null;
+    el?.querySelector<HTMLDetailsElement>('details.more')?.setAttribute('open', '');
+  };
+  openFromHash();
+  window.addEventListener('hashchange', openFromHash);
+
   const dlg = document.getElementById('lightbox') as HTMLDialogElement | null;
   const openers = [...document.querySelectorAll<HTMLButtonElement>('.shot__open')];
   if (dlg) {
@@ -228,8 +154,6 @@ const total = data.shots.length;
   .facts { display: flex; flex-wrap: wrap; gap: var(--space-3) var(--space-8); }
   .facts div { display: flex; flex-direction: column; gap: var(--space-1); border-top: 1px solid var(--rule-strong); padding-top: var(--space-2); }
   .facts dd { margin: 0; }
-  .note { margin-top: clamp(var(--space-12), 8vw, 6rem); max-width: 52ch; font-size: var(--fs-lead); line-height: 1.4; letter-spacing: -0.01em; }
-  @media (min-width: 900px) { .note { margin-left: calc(var(--gutter) + var(--space-8)); } }
   @media (min-width: 900px) {
     .chapter__head { grid-template-columns: var(--gutter) 1fr; align-items: end; }
     .chapter__num { grid-row: 1 / span 2; }
@@ -239,37 +163,14 @@ const total = data.shots.length;
   .hero { margin: 0; }
   .hero .shot__open { width: 100%; }
 
-  .scene { display: grid; grid-template-columns: 1fr; gap: var(--space-4); margin-top: clamp(var(--space-12), 8vw, 6rem); }
-  .scene__text { display: flex; flex-direction: column; gap: var(--space-2); }
-  .scene__text h3 { font-size: 1.5rem; letter-spacing: -0.02em; line-height: 1.15; }
-  .scene__text p { color: var(--ink-2); max-width: 36ch; }
-  .scene__img { width: 100%; max-width: 760px; }
-  @media (min-width: 900px) {
-    .scene { grid-template-columns: var(--gutter) 1fr; gap: var(--space-8); align-items: start; }
-    .scene__text { position: sticky; top: var(--space-16); }
-  }
-
-  .detail__fig { position: relative; width: 100%; max-width: 760px; }
-  .pin {
-    position: absolute; transform: translate(-50%, -50%);
-    display: grid; place-items: center; width: 22px; height: 22px; border-radius: 50%;
-    background: var(--signal); color: var(--on-signal); border: 1px solid var(--ink);
-    font: 500 var(--fs-micro)/1 var(--f-mono); pointer-events: none;
-  }
-  .pin--static { position: static; transform: none; flex: none; }
-  .marks { list-style: none; display: flex; flex-direction: column; gap: var(--space-3); margin-top: var(--space-3); padding: 0; }
-  .marks li { display: flex; gap: var(--space-3); align-items: flex-start; font-size: var(--fs-meta); color: var(--ink-2); }
-
-  .pair { display: grid; grid-template-columns: 1fr; gap: var(--space-4); margin-top: clamp(var(--space-12), 8vw, 6rem); }
-  .pair__shots { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4); }
-  .pair__shots figure { margin: 0; display: flex; flex-direction: column; gap: var(--space-2); }
-  .pair__shots .shot__open { width: 100%; }
-  @media (min-width: 900px) {
-    .pair { grid-template-columns: var(--gutter) 1fr; gap: var(--space-8); align-items: start; }
-    .pair__text { position: sticky; top: var(--space-16); }
-  }
-
-  .index-group { display: flex; flex-direction: column; gap: var(--space-4); }
+  .more { margin-top: var(--space-8); }
+  .more__toggle { display: flex; justify-content: space-between; align-items: center; padding: var(--space-4) 0; border-top: 1px solid var(--rule-strong); border-bottom: 1px solid var(--rule-strong); cursor: pointer; list-style: none; }
+  .more__toggle::-webkit-details-marker { display: none; }
+  .more__toggle::after { content: '+'; font-family: var(--f-plate); font-size: 20px; }
+  .more[open] > .more__toggle::after { content: '−'; }
+  .more__close { display: none; }
+  .more[open] .more__open { display: none; }
+  .more[open] .more__close { display: inline; }
 
   .wall {
     list-style: none;

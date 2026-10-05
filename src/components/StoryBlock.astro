@@ -1,0 +1,126 @@
+---
+import Img from './Img.astro';
+import data from '../data/showcase.generated.json';
+
+type Shot = (typeof data.shots)[number];
+export interface Props { b: any; app: string; fig?: string }
+const { b, app, fig = '' } = Astro.props;
+
+const byId = new Map<string, Shot>(data.shots.map((s) => [s.id, s]));
+const detailById = new Map((data.details ?? []).map((d) => [d.id, d]));
+const shot = (id: string) => {
+  const s = byId.get(id);
+  if (!s) throw new Error(`showcase story references unknown shot "${id}"`);
+  return s;
+};
+const appName = (data.apps as Record<string, { name: string }>)[app].name;
+const c = { app };
+const nextFig = () => fig;
+---
+
+{(() => {
+          if (b.type === 'scene') {
+            const s = shot(b.shot);
+            return (
+              <article class="scene">
+                <div class="scene__text">
+                  <span class="lbl">Fig. <span class="nocase">{nextFig()}</span></span>
+                  <h3>{b.title}</h3>
+                  <p>{b.text}</p>
+                </div>
+                <button type="button" class="shot__open scene__img" data-full={s.webp} data-alt={s.alt} data-title={`${appName} — ${s.title}`} data-caption={s.caption} aria-label={`Open larger: ${appName}, ${s.title}`}>
+                  <Img src={s.src} alt={s.alt} sizes="(min-width: 900px) 60vw, 100vw" />
+                </button>
+              </article>
+            );
+          }
+          if (b.type === 'detail') {
+            const d = detailById.get(b.detail);
+            if (!d) throw new Error(`showcase story references unknown detail "${b.detail}"`);
+            return (
+              <article class="scene detail">
+                <div class="scene__text">
+                  <span class="lbl">Fig. <span class="nocase">{nextFig()}</span></span>
+                  <h3>{b.title}</h3>
+                  <p>{b.text}</p>
+                  <ol class="marks">
+                    {b.marks.map((m: { text: string }, i: number) => <li><span class="pin pin--static">{i + 1}</span><span>{m.text}</span></li>)}
+                  </ol>
+                </div>
+                <div class="detail__fig">
+                  <button type="button" class="shot__open scene__img" data-full={d.webp} data-alt={d.alt} data-title={`${appName} — ${d.title}`} data-caption={b.text} aria-label={`Open larger: ${d.title}`}>
+                    <Img src={d.src} alt={d.alt} sizes="(min-width: 900px) 60vw, 100vw" />
+                  </button>
+                  {b.marks.map((m: { x: number; y: number }, i: number) => (
+                    <span class="pin" style={`left:${d.box.x + m.x * d.box.w}%;top:${d.box.y + m.y * d.box.h}%`} aria-hidden="true">{i + 1}</span>
+                  ))}
+                </div>
+              </article>
+            );
+          }
+          if (b.type === 'note') {
+            return <p class="note">{b.text}</p>;
+          }
+          if (b.type === 'pair') {
+            const l = shot(b.light), d = shot(b.dark);
+            return (
+              <article class="pair">
+                <div class="scene__text pair__text">
+                  <span class="lbl">Fig. <span class="nocase">{nextFig()}</span></span>
+                  <h3>{b.title}</h3>
+                  <p>{b.text}</p>
+                </div>
+                <div class="pair__shots">
+                  {[[l, 'Light'], [d, 'Dark']].map(([s, label]) => (
+                    <figure>
+                      <button type="button" class="shot__open" data-full={(s as Shot).webp} data-alt={(s as Shot).alt} data-title={`${appName} — ${(s as Shot).title}`} data-caption={(s as Shot).caption} aria-label={`Open larger: ${label}`}>
+                        <Img src={(s as Shot).src} alt={(s as Shot).alt} sizes="(min-width: 900px) 30vw, 50vw" />
+                      </button>
+                      <figcaption class="lbl">{label as string}</figcaption>
+                    </figure>
+                  ))}
+                </div>
+              </article>
+            );
+          }
+  return null;
+})()}
+
+<style>
+  .shot__open { display: block; width: 100%; padding: 0; border: 1px solid var(--rule); background: none; cursor: zoom-in; overflow: hidden; }
+  .shot__open:hover { border-color: var(--ink); }
+  .shot__open:focus-visible { outline: 2px solid var(--signal); outline-offset: 3px; }
+  .shot__open :global(img) { width: 100%; height: auto; }
+  .note { margin-top: clamp(var(--space-12), 8vw, 6rem); max-width: 52ch; font-size: var(--fs-lead); line-height: 1.4; letter-spacing: -0.01em; }
+  @media (min-width: 900px) { .note { margin-left: calc(var(--gutter) + var(--space-8)); } }
+  .scene { display: grid; grid-template-columns: 1fr; gap: var(--space-4); margin-top: clamp(var(--space-12), 8vw, 6rem); }
+  .scene__text { display: flex; flex-direction: column; gap: var(--space-2); }
+  .scene__text h3 { font-size: 1.5rem; letter-spacing: -0.02em; line-height: 1.15; }
+  .scene__text p { color: var(--ink-2); max-width: 36ch; }
+  .scene__img { width: 100%; max-width: 760px; }
+  @media (min-width: 900px) {
+    .scene { grid-template-columns: var(--gutter) 1fr; gap: var(--space-8); align-items: start; }
+    .scene__text { position: sticky; top: var(--space-16); }
+  }
+
+  .detail__fig { position: relative; width: 100%; max-width: 760px; }
+  .pin {
+    position: absolute; transform: translate(-50%, -50%);
+    display: grid; place-items: center; width: 22px; height: 22px; border-radius: 50%;
+    background: var(--signal); color: var(--on-signal); border: 1px solid var(--ink);
+    font: 500 var(--fs-micro)/1 var(--f-mono); pointer-events: none;
+  }
+  .pin--static { position: static; transform: none; flex: none; }
+  .marks { list-style: none; display: flex; flex-direction: column; gap: var(--space-3); margin-top: var(--space-3); padding: 0; }
+  .marks li { display: flex; gap: var(--space-3); align-items: flex-start; font-size: var(--fs-meta); color: var(--ink-2); }
+
+  .pair { display: grid; grid-template-columns: 1fr; gap: var(--space-4); margin-top: clamp(var(--space-12), 8vw, 6rem); }
+  .pair__shots { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4); }
+  .pair__shots figure { margin: 0; display: flex; flex-direction: column; gap: var(--space-2); }
+  .pair__shots .shot__open { width: 100%; }
+  @media (min-width: 900px) {
+    .pair { grid-template-columns: var(--gutter) 1fr; gap: var(--space-8); align-items: start; }
+    .pair__text { position: sticky; top: var(--space-16); }
+  }
+
+</style>
