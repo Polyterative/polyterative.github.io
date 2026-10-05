@@ -1,21 +1,31 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Img from '../components/Img.astro';
-import { greek, letter, sectionIndex } from '../lib/datum';
+import PullQuote from '../components/PullQuote.astro';
+import { greek, letter, pad, sectionIndex } from '../lib/datum';
 import data from '../data/showcase.generated.json';
+import { intro, chapters } from '../../showcase/story.mjs';
 
 type Shot = (typeof data.shots)[number];
+const byId = new Map<string, Shot>(data.shots.map((s) => [s.id, s]));
+const shot = (id: string) => {
+  const s = byId.get(id);
+  if (!s) throw new Error(`showcase story references unknown shot "${id}"`);
+  return s;
+};
+const appName = (key: string) => (data.apps as Record<string, { name: string }>)[key].name;
+
 const groups = Object.entries(data.apps)
   .map(([key, app]) => ({ key, ...app, shots: data.shots.filter((s) => s.app === key) }))
   .filter((g) => g.shots.length > 0);
-const total = data.shots.length;
 let fig = 0;
-const figure = (_: Shot) => greek(++fig);
+const nextFig = () => greek(++fig);
+const total = data.shots.length;
 ---
 
 <BaseLayout
   title="Showcase — Vlady Yakovenko"
-  description="Selected screens from the macOS apps and tools Vlady Yakovenko (polyterative) designs and builds: widgets, menus, settings, rendered straight from the real interface."
+  description="A design story in five macOS apps by Vlady Yakovenko (polyterative): Ledge, Spoke, Habitat, Kinetip and EvoControl, shown with screens rendered from the real interface."
   serial="PLY-S"
   image={data.shots[0]?.cover ?? '/og/default.png'}
 >
@@ -23,49 +33,110 @@ const figure = (_: Shot) => greek(++fig);
     <header class="page-head">
       <aside class="page-head__aside">
         <span class="plate page-head__idx">{sectionIndex('/showcase')}</span>
+        <span class="lbl">Chapters</span>
+        <span class="data">{chapters.length}</span>
         <span class="lbl">Screens</span>
         <span class="data">{total}</span>
-        <span class="lbl">Apps</span>
-        <span class="data">{groups.length}</span>
       </aside>
       <div class="page-head__main">
-        <h1>Showcase</h1>
-        <p class="page-head__lead">Selected screens from the apps I build. Rendered from the real interface by the apps' own test suites, not mocked in a design tool.</p>
-        <nav class="jump" aria-label="Jump to app">
-          {groups.map((g) => <a class="act" href={`#${g.key}`}>{g.name}</a>)}
+        <h1 class="story-title">{intro.headline}</h1>
+        <p class="page-head__lead">{intro.lead}</p>
+        <nav class="jump" aria-label="Chapters">
+          {chapters.map((c, i) => <a class="act" href={`#${c.app}`}><span class="nocase">{pad(i + 1)}</span> {appName(c.app)}</a>)}
         </nav>
       </div>
     </header>
 
-    {groups.map((g, gi) => (
-      <section class="sec group" id={g.key} aria-labelledby={`${g.key}-h`}>
-        <header class="sec__head">
-          <h2 class="plate sec__idx" id={`${g.key}-h`}>{letter(gi + 1)}</h2>
-          <span class="sec__title">{g.name}</span>
-          <span class="lbl">{g.blurb}</span>
+    {chapters.map((c, ci) => (
+      <section class="chapter" id={c.app} aria-labelledby={`${c.app}-h`}>
+        <header class="chapter__head">
+          <span class="plate chapter__num">{pad(ci + 1)}</span>
+          <div class="chapter__title">
+            <span class="lbl">{appName(c.app)}</span>
+            <h2 id={`${c.app}-h`}>{c.headline}</h2>
+          </div>
+          <p class="chapter__problem">{c.problem}</p>
         </header>
-        <div class="sec__body">
-          <ul class="wall">
-            {g.shots.map((s) => (
-              <li class:list={['shot', { 'shot--tall': s.height >= s.width }]}>
-                <button
-                  type="button"
-                  class="shot__open"
-                  data-full={s.webp}
-                  data-alt={s.alt}
-                  data-title={`${g.name} — ${s.title}`}
-                  data-caption={s.caption}
-                  aria-label={`Open larger: ${g.name}, ${s.title}`}
-                >
-                  <Img src={s.src} alt={s.alt} sizes="(min-width: 900px) 33vw, 100vw" />
+
+        {c.blocks.map((b) => {
+          if (b.type === 'hero') {
+            const s = shot(b.shot);
+            return (
+              <figure class="hero">
+                <button type="button" class="shot__open" data-full={s.webp} data-alt={s.alt} data-title={`${appName(c.app)} — ${s.title}`} data-caption={s.caption} aria-label={`Open larger: ${appName(c.app)}, ${s.title}`}>
+                  <Img src={s.cover ?? s.src} alt={s.alt} sizes="(min-width: 1200px) 1100px, 100vw" loading={ci === 0 ? 'eager' : 'lazy'} />
                 </button>
-                <p class="figcap"><span class="lbl">Fig. <span class="nocase">{figure(s)}</span></span><span><strong>{s.title}.</strong> {s.caption}</span></p>
-              </li>
-            ))}
-          </ul>
-        </div>
+                <figcaption class="figcap"><span class="lbl">Fig. <span class="nocase">{nextFig()}</span></span><span>{s.caption}</span></figcaption>
+              </figure>
+              <PullQuote>{c.decision}</PullQuote>
+            );
+          }
+          if (b.type === 'scene') {
+            const s = shot(b.shot);
+            return (
+              <article class="scene">
+                <div class="scene__text">
+                  <span class="lbl">Fig. <span class="nocase">{nextFig()}</span></span>
+                  <h3>{b.title}</h3>
+                  <p>{b.text}</p>
+                </div>
+                <button type="button" class="shot__open scene__img" data-full={s.webp} data-alt={s.alt} data-title={`${appName(c.app)} — ${s.title}`} data-caption={s.caption} aria-label={`Open larger: ${appName(c.app)}, ${s.title}`}>
+                  <Img src={s.src} alt={s.alt} sizes="(min-width: 900px) 60vw, 100vw" />
+                </button>
+              </article>
+            );
+          }
+          if (b.type === 'pair') {
+            const l = shot(b.light), d = shot(b.dark);
+            return (
+              <article class="pair">
+                <div class="scene__text pair__text">
+                  <span class="lbl">Fig. <span class="nocase">{nextFig()}</span></span>
+                  <h3>{b.title}</h3>
+                  <p>{b.text}</p>
+                </div>
+                <div class="pair__shots">
+                  {[[l, 'Light'], [d, 'Dark']].map(([s, label]) => (
+                    <figure>
+                      <button type="button" class="shot__open" data-full={(s as Shot).webp} data-alt={(s as Shot).alt} data-title={`${appName(c.app)} — ${(s as Shot).title}`} data-caption={(s as Shot).caption} aria-label={`Open larger: ${label}`}>
+                        <Img src={(s as Shot).src} alt={(s as Shot).alt} sizes="(min-width: 900px) 30vw, 50vw" />
+                      </button>
+                      <figcaption class="lbl">{label as string}</figcaption>
+                    </figure>
+                  ))}
+                </div>
+              </article>
+            );
+          }
+          return null;
+        })}
       </section>
     ))}
+
+    <section class="sec group" id="all" aria-labelledby="all-h">
+      <header class="sec__head">
+        <h2 class="plate sec__idx" id="all-h">{letter(1)}</h2>
+        <span class="sec__title">All screens</span>
+        <span class="lbl">{total} captures, by app</span>
+      </header>
+      <div class="sec__body">
+        {groups.map((g) => (
+          <div class="index-group">
+            <h3 class="lbl">{g.name}</h3>
+            <ul class="wall">
+              {g.shots.map((s) => (
+                <li class="shot">
+                  <button type="button" class="shot__open" data-full={s.webp} data-alt={s.alt} data-title={`${g.name} — ${s.title}`} data-caption={s.caption} aria-label={`Open larger: ${g.name}, ${s.title}`}>
+                    <Img src={s.src} alt={s.alt} sizes="(min-width: 900px) 20vw, 50vw" />
+                  </button>
+                  <p class="figcap"><span><strong>{s.title}.</strong> {s.caption}</span></p>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
+    </section>
   </div>
 
   <dialog class="lightbox" id="lightbox" aria-label="Screen preview">
@@ -108,12 +179,50 @@ const figure = (_: Shot) => greek(++fig);
 
 <style>
   .jump { display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-5); }
-  .group { scroll-margin-top: var(--space-8); }
+  .group { scroll-margin-top: var(--space-8); margin-top: clamp(var(--space-16), 10vw, 8rem); }
+
+  .story-title { font-size: clamp(2.25rem, 6vw, 4.5rem); line-height: 1.02; letter-spacing: -0.035em; max-width: 16ch; text-wrap: balance; }
+
+  .chapter { margin-top: clamp(var(--space-16), 10vw, 8rem); padding-top: var(--space-8); border-top: 1px solid var(--ink); scroll-margin-top: var(--space-8); }
+  .chapter__head { display: grid; grid-template-columns: 1fr; gap: var(--space-4); margin-bottom: var(--space-10); }
+  .chapter__num { font-size: clamp(64px, 12vw, 160px); line-height: 0.85; color: var(--signal-text); }
+  .chapter__title { display: flex; flex-direction: column; gap: var(--space-2); }
+  .chapter__title h2 { font-size: clamp(1.75rem, 4vw, 3rem); line-height: 1.05; letter-spacing: -0.03em; max-width: 20ch; text-wrap: balance; }
+  .chapter__problem { color: var(--ink-2); font-size: var(--fs-lead); max-width: 46ch; }
+  @media (min-width: 900px) {
+    .chapter__head { grid-template-columns: var(--gutter) 1fr; align-items: end; }
+    .chapter__num { grid-row: 1 / span 2; }
+    .chapter__problem { grid-column: 2; }
+  }
+
+  .hero { margin: 0; }
+  .hero .shot__open { width: 100%; }
+
+  .scene { display: grid; grid-template-columns: 1fr; gap: var(--space-4); margin-top: clamp(var(--space-12), 8vw, 6rem); }
+  .scene__text { display: flex; flex-direction: column; gap: var(--space-2); }
+  .scene__text h3 { font-size: 1.5rem; letter-spacing: -0.02em; line-height: 1.15; }
+  .scene__text p { color: var(--ink-2); max-width: 36ch; }
+  .scene__img { width: 100%; max-width: 760px; }
+  @media (min-width: 900px) {
+    .scene { grid-template-columns: var(--gutter) 1fr; gap: var(--space-8); align-items: start; }
+    .scene__text { position: sticky; top: var(--space-16); }
+  }
+
+  .pair { display: grid; grid-template-columns: 1fr; gap: var(--space-4); margin-top: clamp(var(--space-12), 8vw, 6rem); }
+  .pair__shots { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4); }
+  .pair__shots figure { margin: 0; display: flex; flex-direction: column; gap: var(--space-2); }
+  .pair__shots .shot__open { width: 100%; }
+  @media (min-width: 900px) {
+    .pair { grid-template-columns: var(--gutter) 1fr; gap: var(--space-8); align-items: start; }
+    .pair__text { position: sticky; top: var(--space-16); }
+  }
+
+  .index-group { display: flex; flex-direction: column; gap: var(--space-4); }
 
   .wall {
     list-style: none;
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 220px), 1fr));
     gap: var(--space-8) var(--space-6);
     align-items: start;
   }
