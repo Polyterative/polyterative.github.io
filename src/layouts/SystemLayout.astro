@@ -1,0 +1,121 @@
+---
+// Standalone shell for /system, the design system "under the hood" page. It does not use the site
+// header, so the page keeps its own toolbar: a way back to the site, the spec version, the theme toggle.
+import { isoDots } from '../lib/datum';
+import { sourceUrl, version } from '../lib/spec';
+
+export interface Props { title: string; description: string }
+const { title, description } = Astro.props;
+const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
+const imageUrl = new URL('/og/default.png', Astro.site).href;
+const built = isoDots(new Date());
+---
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content={description} />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href={canonicalUrl} />
+  <meta property="og:title" content={title} />
+  <meta property="og:description" content={description} />
+  <meta property="og:url" content={canonicalUrl} />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content={imageUrl} />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="theme-color" content="#EDEDEA" id="theme-color-meta" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="preload" href="/fonts/DepartureMono-Regular.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&display=swap" />
+  <script is:inline>
+    (function () {
+      try {
+        var mode = new URLSearchParams(location.search).get('theme') || localStorage.getItem('theme') || 'auto';
+        if (mode !== 'auto' && mode !== 'light' && mode !== 'dark') mode = 'auto';
+        var resolved = mode === 'auto' ? (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : mode;
+        document.documentElement.dataset.theme = resolved;
+        document.documentElement.dataset.themeMode = mode;
+        document.getElementById('theme-color-meta').setAttribute('content', resolved === 'dark' ? '#0A0A0A' : '#EDEDEA');
+      } catch (e) {}
+    })();
+  </script>
+  <title>{title}</title>
+</head>
+<body>
+  <header class="sys-bar">
+    <div class="sys-bar__in">
+      <a class="sys-bar__back" href="/" aria-label="Back to polyterative">
+        <span aria-hidden="true">←</span><span class="sys-bar__word">polyterative</span>
+      </a>
+      <span class="sys-bar__id"><span class="lbl">Datum</span><span class="lbl sys-bar__long">Design system</span><span class="data">{version}</span></span>
+      <nav class="sys-bar__nav" aria-label="Design system toolbar">
+        <a class="act" href="/showcase">Showcase</a>
+        <a class="act" href={sourceUrl} target="_blank" rel="noopener">DESIGN.md</a>
+        <div class="dk-seg sys-seg" role="radiogroup" aria-label="Colour theme" id="theme-seg">
+          <button type="button" role="radio" aria-checked="true" data-mode="auto">Auto</button>
+          <button type="button" role="radio" aria-checked="false" data-mode="light">Paper</button>
+          <button type="button" role="radio" aria-checked="false" data-mode="dark">Instrument</button>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main-content"><slot /></main>
+
+  <footer class="sys-foot">
+    <div class="container container--wide sys-foot__in">
+      <a class="act" href="/">← Back to polyterative</a>
+      <span class="lbl">Datum {version} · Built {built}</span>
+    </div>
+  </footer>
+
+  <script is:inline>
+    (function () {
+      var seg = document.getElementById('theme-seg');
+      var el = document.documentElement, meta = document.getElementById('theme-color-meta');
+      var mq = matchMedia('(prefers-color-scheme: dark)');
+      function apply(mode) {
+        var resolved = mode === 'auto' ? (mq.matches ? 'dark' : 'light') : mode;
+        el.dataset.theme = resolved; el.dataset.themeMode = mode;
+        meta.setAttribute('content', resolved === 'dark' ? '#0A0A0A' : '#EDEDEA');
+        seg.querySelectorAll('button').forEach(function (b) { b.setAttribute('aria-checked', String(b.dataset.mode === mode)); });
+      }
+      apply(el.dataset.themeMode || 'auto');
+      mq.addEventListener('change', function () { if ((el.dataset.themeMode || 'auto') === 'auto') apply('auto'); });
+      seg.addEventListener('click', function (e) {
+        var b = e.target.closest('button'); if (!b) return;
+        try { localStorage.setItem('theme', b.dataset.mode); } catch (err) {}
+        apply(b.dataset.mode);
+      });
+    })();
+  </script>
+</body>
+</html>
+
+<style is:global>
+  @import '../styles/global.css';
+  @import '../styles/datum.css';
+</style>
+
+<style>
+  :global(body) { display: block; }
+  .sys-bar { position: sticky; top: 0; z-index: var(--z-header); background: var(--bg); border-bottom: 1px solid var(--ink); }
+  .sys-bar__in { max-width: var(--max-w-wide); margin-inline: auto; padding-inline: var(--space-5); height: 48px; display: flex; align-items: center; gap: var(--space-5); }
+  .sys-bar__back { display: inline-flex; align-items: center; gap: var(--space-2); font-weight: 600; letter-spacing: -0.02em; color: var(--ink); min-height: 40px; }
+  .sys-bar__back:hover { color: var(--signal-text); }
+  .sys-bar__id { display: inline-flex; align-items: baseline; gap: var(--space-3); padding-left: var(--space-5); border-left: 1px solid var(--rule); }
+  .sys-bar__nav { margin-left: auto; display: flex; align-items: center; gap: var(--space-5); }
+  .sys-seg button { min-width: 0; padding: 0 10px; font-size: 13px; }
+  .sys-foot { margin-top: var(--space-16); padding: var(--space-5) 0 var(--space-8); border-top: 1px solid var(--rule-strong); }
+  .sys-foot__in { display: flex; justify-content: space-between; align-items: baseline; gap: var(--space-4); flex-wrap: wrap; }
+  @media (max-width: 640px) {
+    .sys-bar__in { padding-inline: var(--space-4); gap: var(--space-3); }
+    .sys-bar__long, .sys-bar__nav .act, .sys-bar__id .data { display: none; }
+    .sys-seg button { padding: 0 8px; font-size: 12px; }
+    .sys-bar__id { padding-left: var(--space-3); }
+  }
+</style>

@@ -1,0 +1,21 @@
+---
+interface Props { label: string; min: number; max: number; step: number; value: number; unit?: string; endNote?: boolean }
+const { label, min, max, step, value, unit = '', endNote = true } = Astro.props;
+const n = Math.round((max - min) / step);
+const ticks = Array.from({ length: n + 1 }, (_, i) => ({ i, v: min + i * step }));
+// Draw every fifth tick once there are more than 40 steps.
+const dense = n > 40;
+const shown = ticks.filter((t) => !dense || t.i % 5 === 0 || t.i === n);
+const pos = (value - min) / (max - min) * 100;
+---
+<div class="dk-slider-wrap" data-slider>
+  <div class="dk-slider-head"><span class="dk-label">{label}</span><span class="dk-meta" data-readout>{value}{unit}</span></div>
+  <div class="dk-slider" role="slider" tabindex="0" aria-label={label} aria-valuemin={min} aria-valuemax={max} aria-valuenow={value}
+    data-min={min} data-max={max} data-step={step} data-unit={unit}>
+    <div class="dk-slider__ticks">
+      {shown.map((t) => <i class:list={{ 'is-long': t.i === 0 || t.i === n || t.i === n / 2, 'is-on': t.v <= value }} data-v={t.v}></i>)}
+    </div>
+    <div class="dk-slider__thumb" style={`left:${pos}%`}></div>
+  </div>
+  {endNote && <div class="dk-slider-foot"><span class="dk-meta">{min}{unit}</span><span class="dk-meta">{max}{unit}</span></div>}
+</div>

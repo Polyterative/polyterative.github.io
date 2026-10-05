@@ -1,0 +1,29 @@
+---
+import Icon from './Icon.astro';
+import { version } from '../lib/spec';
+---
+<aside class="hood" aria-label="Under the hood">
+  <div class="hood__id">
+    <span class="lbl">Under the hood</span>
+    <span class="data">Datum {version}</span>
+  </div>
+  <p class="hood__text">This site is built on a written design system. Colours, type and every component are on one page, rendered live.</p>
+  <a class="btn" href="/system">See the design system <Icon name="arrow-right" /></a>
+</aside>
+
+<style>
+  .hood {
+    display: grid;
+    grid-template-columns: var(--gutter) minmax(0, 1fr) auto;
+    align-items: center;
+    gap: var(--space-6);
+    padding-block: var(--space-5);
+    border-top: 1px solid var(--rule-strong);
+  }
+  .hood__id { display: flex; flex-direction: column; gap: 2px; }
+  .hood__text { color: var(--ink-2); font-size: 15px; max-width: 56ch; }
+  @media (max-width: 860px) {
+    .hood { grid-template-columns: 1fr; gap: var(--space-3); }
+    .hood__id { flex-direction: row; gap: var(--space-3); align-items: baseline; }
+  }
+</style>

@@ -1,0 +1,24 @@
+---
+/** One atom or molecule: heading, the spec rules, then the live specimen on Paper and Instrument side by side. */
+interface Props { id: string; index: string; title: string; wide?: boolean; single?: boolean }
+const { id, index, title, wide = false, single = false } = Astro.props;
+---
+<section class="spec" id={id} aria-labelledby={`${id}-h`}>
+  <header class="spec__head">
+    <span class="lbl">§{index}</span>
+    <h3 id={`${id}-h`}>{title}</h3>
+  </header>
+  <div class="spec__rules"><slot name="rules" /></div>
+  <div class:list={['spec__stages', { 'spec__stages--single': single, 'spec__stages--wide': wide }]}>
+    <div class="stage" data-scope="light">
+      <span class="lbl stage__tag">Paper</span>
+      <div class="stage__body"><slot /></div>
+    </div>
+    {!single && (
+      <div class="stage" data-scope="dark">
+        <span class="lbl stage__tag">Instrument</span>
+        <div class="stage__body"><slot /></div>
+      </div>
+    )}
+  </div>
+</section>

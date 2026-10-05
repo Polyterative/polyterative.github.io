@@ -12,7 +12,8 @@
   font-display: swap;
 }
 
-:root {
+:root,
+[data-scope="light"] {
   /* Material: inline SVG feTurbulence tiles (DESIGN.md §7). k = ink-coloured, w = white. */
   --tex-grain-k: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n' x='0' y='0'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0.1 0 0 0 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url%28%23n%29'/%3E%3C/svg%3E");
   --tex-grain-w: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n' x='0' y='0'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0.075 0 0 0 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url%28%23n%29'/%3E%3C/svg%3E");
@@ -40,6 +41,8 @@
   --live:        #0E7A41;
   --alert:       #D11A1A;
   --cold:        #2650D9;
+  --warning:     #6A4A00;
+  --on-warning:  #F7F7F5;
 
   --grain:        var(--tex-grain-k);
   --mottle:       var(--tex-mottle-k);
@@ -126,6 +129,8 @@
     --live:        #3DDC84;
     --alert:       #FF4545;
     --cold:        #6B93FF;
+    --warning:     #F2C94C;
+    --on-warning:  #0A0A0A;
     --grain:       var(--tex-grain-w);
     --mottle:      var(--tex-mottle-w);
     --ink-on-ink:  var(--tex-ink-k);
@@ -135,7 +140,8 @@
 }
 
 /* ── Instrument (dark) — explicit choice from the toggle ── */
-:root[data-theme="dark"] {
+:root[data-theme="dark"],
+[data-scope="dark"] {
   --bg:          #0A0A0A;
   --surface:     #141414;
   --hover:       #1C1C1B;
@@ -154,6 +160,8 @@
   --live:        #3DDC84;
   --alert:       #FF4545;
   --cold:        #6B93FF;
+  --warning:     #F2C94C;
+  --on-warning:  #0A0A0A;
   --grain:       var(--tex-grain-w);
   --mottle:      var(--tex-mottle-w);
   --ink-on-ink:  var(--tex-ink-k);

@@ -1,0 +1,6 @@
+---
+interface Props { n: string; size?: 12 | 16 | 20; class?: string }
+const { n, size = 16, class: cls = '' } = Astro.props;
+const klass = n === 'chev-r' || n === 'chev-ud' ? 'dk-chev' : `dk-icon dk-icon--${size}`;
+---
+<svg class:list={[klass, cls]} aria-hidden="true" focusable="false"><use href={`#dk-i-${n}`} /></svg>

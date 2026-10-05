@@ -1,0 +1,797 @@
+---
+import { getCollection } from 'astro:content';
+import SystemLayout from '../layouts/SystemLayout.astro';
+import Sprite from '../components/datum/Sprite.astro';
+import I from '../components/datum/I.astro';
+import Slider from '../components/datum/Slider.astro';
+import Specimen from '../components/datum/Specimen.astro';
+import { apps } from '../data/apps';
+import { releases } from '../data/releases';
+import { greek, hex, pad, roman, sections } from '../lib/datum';
+import { atoms, conformance, molecules, principles, ramp, sourceUrl, tokens, version } from '../lib/spec';
+
+const posts = (await getCollection('blog', ({ data }) => !data.draft)).length;
+
+// Atoms that have a live specimen on this page, keyed by the letter used in DESIGN.md 16.1.
+const built = new Set('abcdefghijklmnopqr'.split(''));
+const missing = atoms.filter((a) => !built.has(a.letter));
+const inSync = conformance.filter((c) => c.ok).length;
+const differs = conformance.filter((c) => !c.ok && !c.missing);
+const notInCode = conformance.filter((c) => c.missing);
+
+const stateColours = ['live', 'alert', 'cold', 'warning'];
+const swatchTokens = tokens.filter((t) => !stateColours.includes(t.name));
+const stateTokens = tokens.filter((t) => stateColours.includes(t.name));
+
+const nav = [
+  { group: 'Foundations', items: [
+    ['principles', 'Principles'], ['colour', 'Colour'], ['type', 'Type'], ['space', 'Space and marks'],
+  ] },
+  { group: 'Atoms', items: atoms.map((a) => [`atom-${a.letter}`, a.name]) },
+  { group: 'Molecules', items: [['molecules', 'Molecules']] },
+  { group: 'Rules', items: [['rules', 'Choosing and combining']] },
+  { group: 'Meta', items: [['site', 'On this site']] },
+];
+
+const typeScale = [
+  ['micro', '11px', 'Plex Mono 500, caps', 'Labels, ticks, pills', 'font: 500 11px var(--f-mono); letter-spacing:.06em; text-transform:uppercase', 'SERIAL PLY-S'],
+  ['meta', '12–13px', 'Plex Mono 400', 'Dates, captions, data, code', 'font: 400 13px var(--f-mono)', '2026.10.05 · 33 min'],
+  ['control', '14px', 'Grotesk 500', 'Buttons, tabs, nav', 'font: 500 14px var(--f-grotesk)', 'Download PDF'],
+  ['body', '16–17px', 'Grotesk 400', 'Running text, 66ch', 'font: 400 17px/1.55 var(--f-grotesk)', 'Plain, direct, first person.'],
+  ['lead', '20–22px', 'Grotesk 400', 'Intros', 'font: 400 21px/1.4 var(--f-grotesk)', 'A short statement of what this is.'],
+  ['plate', '24–64px', 'Departure Mono', 'Indices and codes, never below 20px', 'font: 400 40px var(--f-plate)', '0x03 · No. 019'],
+  ['h2', '28–32px', 'Grotesk 600', 'Subheads', 'font: 600 30px var(--f-grotesk); letter-spacing:-.02em', 'Information is the ornament'],
+  ['h1', '48–72px', 'Grotesk 600', 'Page titles', 'font: 600 56px/1 var(--f-grotesk); letter-spacing:-.035em', 'Datum'],
+  ['display', '120px+', 'Grotesk 600–700', 'Numerals and single words', 'font: 700 120px/.9 var(--f-grotesk); letter-spacing:-.05em', '19'],
+];
+
+const spacing = [4, 8, 12, 16, 24, 32, 48, 64, 96];
+
+const marks = [
+  ['Index', '§0x03 · B · III · No. 019 · Fig. α · ii'],
+  ['Serial / ID', 'PLY-2026-014'],
+  ['Version stamp', `${version} · 2026.10.05`],
+  ['Tick ruler', 'Short hairlines at regular intervals'],
+  ['Inverted label', 'Outputs, results, totals'],
+  ['Status pill', 'LIVE · PRE-RELEASE · NEEDED'],
+  ['Hairline table', 'Rows split by 1px rules, no fills'],
+  ['Redaction bar', 'Only for something truly withheld'],
+];
+---
+
+<SystemLayout
+  title="Datum — design system"
+  description="Datum, the design language behind this site: colour, type, components and rules, rendered live in Paper and Instrument and checked against the site's own code."
+>
+  <Sprite />
+  <div class="container container--wide">
+    <header class="page-head">
+      <aside class="page-head__aside">
+        <span class="plate page-head__idx">{version}</span>
+        <span class="lbl">Atoms</span>
+        <span class="data">{atoms.length}</span>
+        <span class="lbl">Molecules</span>
+        <span class="data">{molecules.length}</span>
+        <span class="lbl">Tokens</span>
+        <span class="data">{tokens.length}</span>
+      </aside>
+      <div class="page-head__main">
+        <h1 class="story-title">Datum</h1>
+        <p class="page-head__lead">The design language behind this site and the interfaces I build. Everything here is rendered live, in light and dark, from the same tokens the pages use.</p>
+        <p class="page-head__note">The spec is one file, <a href={sourceUrl} target="_blank" rel="noopener">DESIGN.md</a>. This page reads it and the site's CSS when it is built, so the counts and the colour check below are measured, not typed in.</p>
+      </div>
+    </header>
+
+    <div class="dk-shell">
+      <aside class="dk-side" aria-label="System navigation">
+        <details class="dk-side__box" open>
+          <summary class="lbl">Contents</summary>
+          <nav>
+            {nav.map((g) => (
+              <div class="dk-side__group">
+                <span class="lbl">{g.group}</span>
+                <div class="dk-side__list">
+                  {g.items.map(([id, label]) => <a href={`#${id}`} data-spy={id}>{label}</a>)}
+                </div>
+              </div>
+            ))}
+          </nav>
+        </details>
+      </aside>
+
+      <div class="dk-main">
+
+        <!-- ───────────── Foundations ───────────── -->
+        <section class="dk-sec" id="principles" aria-labelledby="principles-h">
+          <header class="dk-sec__head"><span class="lbl">A · Foundations</span><h2 id="principles-h">Principles</h2></header>
+          <p class="sec__intro">Eleven rules that decide the small questions. The two that matter most: information is the ornament, and the same control always looks and sits the same way.</p>
+          <ol class="dk-principles">
+            {principles.map((p) => <li><span class="plate">{pad(p.n)}</span><span>{p.title}</span></li>)}
+          </ol>
+        </section>
+
+        <section class="dk-sec" id="colour" aria-labelledby="colour-h">
+          <header class="dk-sec__head"><span class="lbl">B · Foundations</span><h2 id="colour-h">Colour</h2></header>
+          <p class="sec__intro">About 90% concrete, up to 5% signal, up to 3% moss. State colours appear only on live data. Each swatch pair is Paper then Instrument.</p>
+
+          <h3 class="dk-h3">Concrete ramp</h3>
+          <div class="dk-ramp">
+            {ramp.map((r) => (
+              <div class="dk-ramp__step" title={`${r.step} ${r.hex}`}>
+                <span class="dk-ramp__sw" style={`background:${r.hex}`}></span>
+                <span class="data">{r.step}</span>
+                <span class="data dk-faint">{r.hex}</span>
+              </div>
+            ))}
+          </div>
+
+          <h3 class="dk-h3">Semantic tokens</h3>
+          <table class="dk-table">
+            <thead><tr><th>Token</th><th>Paper</th><th>Instrument</th></tr></thead>
+            <tbody>
+              {swatchTokens.map((t) => (
+                <tr>
+                  <th scope="row"><code>{t.name}</code></th>
+                  <td><span class="dk-chipsw" style={`background:${t.paper}`}></span><span class="data">{t.paper}</span></td>
+                  <td><span class="dk-chipsw" style={`background:${t.instrument}`}></span><span class="data">{t.instrument}</span></td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+
+          <h3 class="dk-h3">State colours</h3>
+          <p class="sec__intro">Status, charts, telemetry. Never decoration, never a second accent. Warning is amber, not orange and not red, and always carries a word or the hollow marker.</p>
+          <div class="dk-states">
+            {stateTokens.map((t) => (
+              <div class="dk-state">
+                <span class="lbl">{t.name}</span>
+                <div class="dk-state__pair">
+                  <span style={`background:${t.paper}`} class="dk-state__sw"></span>
+                  <span style={`background:${t.instrument}`} class="dk-state__sw"></span>
+                </div>
+                <span class="data">{t.paper}</span>
+                <span class="data">{t.instrument}</span>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section class="dk-sec" id="type" aria-labelledby="type-h">
+          <header class="dk-sec__head"><span class="lbl">C · Foundations</span><h2 id="type-h">Type</h2></header>
+          <p class="sec__intro">Three fonts, two voices: a tight grotesk that states, a small mono that annotates. Departure Mono is pixel-built, so it never goes below 20px.</p>
+          <div class="dk-typescale">
+            {typeScale.map(([step, size, fam, use, css, sample]) => (
+              <div class="dk-typerow">
+                <div class="dk-typerow__meta">
+                  <span class="lbl">{step}</span>
+                  <span class="data">{size}</span>
+                </div>
+                <div class="dk-typerow__sample" style={css}>{sample}</div>
+                <div class="dk-typerow__note"><span class="data">{fam}</span><span class="dk-faint data">{use}</span></div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section class="dk-sec" id="space" aria-labelledby="space-h">
+          <header class="dk-sec__head"><span class="lbl">D · Foundations</span><h2 id="space-h">Space and marks</h2></header>
+          <p class="sec__intro">A 4px base unit on a 12-column grid. Hairlines are 1px and corners are sharp. The decoration is information: small marks that carry something true.</p>
+          <div class="dk-space">
+            {spacing.map((n) => (
+              <div class="dk-space__row"><span class="data">{n}</span><span class="dk-space__bar" style={`width:${n}px`}></span></div>
+            ))}
+          </div>
+          <table class="dk-table">
+            <thead><tr><th>Mark</th><th>Looks like</th></tr></thead>
+            <tbody>{marks.map(([m, d]) => <tr><th scope="row">{m}</th><td><span class="data">{d}</span></td></tr>)}</tbody>
+          </table>
+        </section>
+
+        <!-- ───────────── Atoms ───────────── -->
+        <div class="dk-band"><span class="lbl">E · Atoms</span><p>The smallest parts, one job each. Each is shown on Paper and Instrument; the controls work.</p></div>
+
+        <Specimen id="atom-a" index="16.1a" title="Text roles">
+          <ul slot="rules">
+            <li>Named uses of the type scale, so a screen never picks sizes freehand.</li>
+            <li>A count after a title is <code>meta</code> in <code>ink-3</code>, never in a bubble.</li>
+          </ul>
+          <div class="dk-roles">
+            <div><span class="dk-label">title.page</span><div class="dk-title-page">Recordings</div></div>
+            <div><span class="dk-label">title.group</span><div class="dk-title-group">Friday, 2 Oct <span class="dk-count">2</span></div></div>
+            <div><span class="dk-label">title.row</span><div class="dk-title-row">Design system architecture</div></div>
+            <div><span class="dk-label">label</span><div class="dk-label">Recordings <span class="dk-count">20</span></div></div>
+            <div><span class="dk-label">meta</span><div class="dk-meta">Fri 2 Oct · 14:01 · 33 min</div></div>
+            <div><span class="dk-label">body.short</span><div class="dk-body-short">Agreed on libraries, flow and next steps.</div></div>
+            <div><span class="dk-label">hint</span><div class="dk-hint">Starts with the next recording.</div></div>
+            <div><span class="dk-label">hint · warning</span><div class="dk-hint dk-hint--warning">Needs Accessibility access.</div></div>
+            <div><span class="dk-label">hint · alert</span><div class="dk-hint dk-hint--alert">That key was not accepted.</div></div>
+            <div><span class="dk-label">readout</span><div class="dk-readout">12:48</div></div>
+            <div><span class="dk-label">readout · h2, idle</span><div class="dk-readout dk-readout--h2 dk-readout--idle">00:00</div></div>
+          </div>
+        </Specimen>
+
+        <Specimen id="atom-b" index="16.1b" title="Icon">
+          <ul slot="rules">
+            <li>Outline only, 1.5px stroke. Sizes 12, 16 and 20.</li>
+            <li><code>ink-2</code>, or <code>ink-3</code> when it only decorates. A state colour only when the icon <em>is</em> that status.</li>
+            <li>Never the only label of an unfamiliar action.</li>
+          </ul>
+          <div class="dk-iconrow">
+            <div><I n="search" size={12} /><span class="dk-meta">12</span></div>
+            <div><I n="import" size={16} /><span class="dk-meta">16</span></div>
+            <div><I n="doc" size={20} /><span class="dk-meta">20</span></div>
+            <div><I n="mic" size={20} /><span class="dk-meta">20</span></div>
+            <div><I n="trash" size={16} /><span class="dk-meta">16</span></div>
+          </div>
+        </Specimen>
+
+        <Specimen id="atom-c" index="16.1c" title="Tag">
+          <ul slot="rules">
+            <li>A fixed property of a thing. 20px tall, 1px <code>rule-strong</code> box, never coloured.</li>
+            <li>If it can change while you look at it, it is a status pill.</li>
+          </ul>
+          <div class="dk-inline"><span class="dk-title-row">Live transcript</span><span class="dk-tag">Experimental</span><span class="dk-tag">Beta</span><span class="dk-tag">Local</span></div>
+        </Specimen>
+
+        <Specimen id="atom-d" index="16.1d" title="Status pill">
+          <ul slot="rules">
+            <li>Same geometry as a tag. Box and text in the state colour; concrete states stay <code>ink-2</code>.</li>
+            <li>Solid: only the one current state in signal, or warning where pills are solid.</li>
+            <li>Always a word. Colour is the second cue.</li>
+          </ul>
+          <div class="dk-inline">
+            <span class="dk-pill dk-pill--live">Live</span>
+            <span class="dk-pill dk-pill--alert">Failed</span>
+            <span class="dk-pill dk-pill--cold">Info</span>
+            <span class="dk-pill dk-pill--warning">Needed</span>
+            <span class="dk-pill dk-pill--warning">Asks first</span>
+            <span class="dk-pill">Archived</span>
+            <span class="dk-pill dk-pill--signal-solid">Pre-release</span>
+            <span class="dk-pill dk-pill--warning-solid">Needed</span>
+          </div>
+        </Specimen>
+
+        <Specimen id="atom-e" index="16.1e" title="Count">
+          <ul slot="rules">
+            <li>Number in <code>ink</code>, noun in <code>ink-2</code>. No colour and no box. 16px between counts, in a fixed order per item type.</li>
+            <li>Hide a zero unless the zero is the news. Singular for 1.</li>
+          </ul>
+          <div class="dk-counts"><span><b>4</b> decisions</span><span><b>4</b> open questions</span><span><b>2</b> next steps</span><span><b>1</b> speaker</span></div>
+        </Specimen>
+
+        <Specimen id="atom-f" index="16.1f" title="Button">
+          <ul slot="rules">
+            <li>Height 32, hit area 40, Grotesk 500 14px. One signal-filled primary per view.</li>
+            <li>States are the same for all three weights. Focus is a 2px ink outline, never system blue.</li>
+            <li>A menu button shows the current value, not the dimension.</li>
+          </ul>
+          <div class="dk-matrix">
+            <span class="dk-label">primary</span>
+            <button class="dk-btn dk-btn--primary" type="button">Start recording</button>
+            <button class="dk-btn dk-btn--primary is-hover" type="button" tabindex="-1">Hover</button>
+            <button class="dk-btn dk-btn--primary is-focus" type="button" tabindex="-1">Focus</button>
+            <button class="dk-btn dk-btn--primary" type="button" disabled>Disabled</button>
+
+            <span class="dk-label">secondary</span>
+            <button class="dk-btn dk-btn--secondary" type="button">Export</button>
+            <button class="dk-btn dk-btn--secondary is-hover" type="button" tabindex="-1">Hover</button>
+            <button class="dk-btn dk-btn--secondary is-pressed" type="button" tabindex="-1">Pressed</button>
+            <button class="dk-btn dk-btn--secondary" type="button" disabled>Disabled</button>
+
+            <span class="dk-label">plain</span>
+            <button class="dk-btn dk-btn--plain" type="button"><I n="import" />Import</button>
+            <button class="dk-btn dk-btn--plain is-hover" type="button" tabindex="-1">Hover</button>
+            <button class="dk-btn dk-btn--plain is-focus" type="button" tabindex="-1">Focus</button>
+            <button class="dk-btn dk-btn--plain" type="button" disabled>Disabled</button>
+
+            <span class="dk-label">menu</span>
+            <button class="dk-btn dk-btn--secondary" type="button">Newest first<I n="chev-ud" /></button>
+            <button class="dk-btn dk-btn--secondary" type="button"><I n="search" />All sources<I n="chev-ud" /></button>
+          </div>
+        </Specimen>
+
+        <Specimen id="atom-g" index="16.1g" title="Toggle">
+          <ul slot="rules">
+            <li>36×20, sharp. Off is an empty track with an <code>ink-3</code> thumb; on is a filled ink track.</li>
+            <li>Never signal, never <code>live</code>. 120ms linear. One toggle per setting that applies at once.</li>
+          </ul>
+          <div class="dk-inline dk-inline--lg">
+            <label class="dk-inline"><button class="dk-tog" type="button" role="switch" aria-checked="false" aria-label="Live transcript"></button><span class="dk-meta">Off</span></label>
+            <label class="dk-inline"><button class="dk-tog" type="button" role="switch" aria-checked="true" aria-label="Launch at login"></button><span class="dk-meta">On</span></label>
+            <label class="dk-inline"><button class="dk-tog" type="button" role="switch" aria-checked="false" aria-label="Disabled off" disabled></button><span class="dk-meta">Disabled</span></label>
+            <label class="dk-inline"><button class="dk-tog" type="button" role="switch" aria-checked="true" aria-label="Disabled on" disabled></button><span class="dk-meta">Disabled</span></label>
+          </div>
+        </Specimen>
+
+        <Specimen id="atom-h" index="16.1h" title="Text field" wide>
+          <ul slot="rules">
+            <li>Height 32, 1px <code>rule-strong</code>, <code>surface</code> fill. Label above, hint below, 4px gaps.</li>
+            <li>Focus turns the border ink. Error turns border and hint <code>alert</code>. Warning colours the hint only.</li>
+            <li><strong>Text area:</strong> min 96, grows to 240 then scrolls, vertical resize with a hairline handle.</li>
+            <li><strong>Secure field:</strong> value in Plex Mono 13px, reveal button inside, re-masks on blur and after 30 seconds.</li>
+          </ul>
+          <div class="dk-fields">
+            <label class="dk-field"><span class="dk-label">Search</span>
+              <span class="dk-input-wrap dk-input-wrap--icon"><I n="search" /><input class="dk-input" type="text" placeholder="Search recordings" /></span>
+              <span class="dk-hint">Matches titles and transcripts.</span></label>
+            <label class="dk-field"><span class="dk-label">Title</span>
+              <span class="dk-input-wrap"><input class="dk-input is-focus" type="text" value="Design system architecture" /></span>
+              <span class="dk-hint">Focus: the border turns ink.</span></label>
+            <label class="dk-field is-error"><span class="dk-label">Server address</span>
+              <span class="dk-input-wrap"><input class="dk-input" type="text" value="http//localhost" /></span>
+              <span class="dk-hint dk-hint--alert">That address is not valid.</span></label>
+            <label class="dk-field"><span class="dk-label">Shortcut</span>
+              <span class="dk-input-wrap"><input class="dk-input" type="text" value="⌥ Space" /></span>
+              <span class="dk-hint dk-hint--warning">Needs Accessibility access.</span></label>
+            <label class="dk-field"><span class="dk-label">Notes</span>
+              <span class="dk-input-wrap dk-area"><textarea class="dk-input dk-input--area" placeholder="Free notes"></textarea></span>
+              <span class="dk-hint">Drag the corner to resize.</span></label>
+            <div class="dk-field"><span class="dk-label">API key</span>
+              <span class="dk-input-wrap"><input class="dk-input dk-input--secure" type="password" value="sample-key-0000" aria-label="API key" data-secure /><button class="dk-reveal" type="button" aria-label="Show" data-showkey><span data-eye><I n="eye" /></span><span data-eye-off hidden><I n="eye-off" /></span></button></span>
+              <span class="dk-hint">Reveal is a view of the value, not a change to it.</span></div>
+          </div>
+        </Specimen>
+
+        <Specimen id="atom-i" index="16.1i" title="Rule">
+          <ul slot="rules">
+            <li><code>rule</code> between rows of a list, starting at the text column. <code>rule-strong</code> under a group header and at the top of a section, full width.</li>
+            <li>Nothing thicker than 1px.</li>
+          </ul>
+          <div class="dk-stack-col"><span class="dk-label">rule</span><hr class="dk-hr" /><span class="dk-label">rule-strong</span><hr class="dk-hr dk-hr--strong" /></div>
+        </Specimen>
+
+        <Specimen id="atom-j" index="16.1j" title="Disclosure chevron">
+          <ul slot="rules">
+            <li>12px, <code>ink-3</code>, at the trailing edge of a row that opens a detail view. A menu uses the up/down chevron instead.</li>
+          </ul>
+          <div class="dk-inline dk-inline--lg"><span class="dk-inline"><I n="chev-r" /><span class="dk-meta">opens a detail</span></span><span class="dk-inline"><I n="chev-ud" /><span class="dk-meta">opens a menu</span></span></div>
+        </Specimen>
+
+        <Specimen id="atom-k" index="16.1k" title="Row marker">
+          <ul slot="rules">
+            <li>8×8 hollow square, 1.5px stroke, in <code>warning</code>, at the leading edge. Hollow means "needs attention"; a filled square stays free for alert.</li>
+          </ul>
+          <div class="dk-inline"><span class="dk-marker"></span><span class="dk-title-row">Accessibility</span><span class="dk-pill dk-pill--warning">Needed</span></div>
+        </Specimen>
+
+        <Specimen id="atom-l" index="16.1l" title="Checkbox">
+          <ul slot="rules">
+            <li>16×16, 40px hit area. Checked is filled ink with a <code>bg</code> tick; mixed is a dash. Never signal or green.</li>
+            <li>A toggle is one setting applied at once. A checkbox picks members of a set of five or more.</li>
+          </ul>
+          <div class="dk-inline dk-inline--lg">
+            <label class="dk-check"><input type="checkbox" /><span class="dk-check__box"></span><span class="dk-title-row">Off</span></label>
+            <label class="dk-check"><input type="checkbox" checked /><span class="dk-check__box"></span><span class="dk-title-row">On</span></label>
+            <label class="dk-check"><input type="checkbox" data-mixed /><span class="dk-check__box"></span><span class="dk-title-row">Mixed</span></label>
+            <label class="dk-check"><input type="checkbox" disabled /><span class="dk-check__box"></span><span class="dk-title-row">Disabled</span></label>
+          </div>
+        </Specimen>
+
+        <Specimen id="atom-m" index="16.1m" title="Slider">
+          <ul slot="rules">
+            <li>The track is a tick ruler: one tick per step, ink up to the value. Thumb is an 8×20 ink block.</li>
+            <li>Arrow keys move one step, Shift+arrow ten, Home and End jump to the ends.</li>
+            <li>Six or fewer meaningful values are a menu or a segmented control instead.</li>
+          </ul>
+          <div class="dk-fields dk-fields--one">
+            <Slider label="Lower by" min={10} max={100} step={5} value={40} unit=" %" />
+            <Slider label="Gain" min={0} max={10} step={1} value={6} />
+          </div>
+        </Specimen>
+
+        <Specimen id="atom-n" index="16.1n" title="Segmented control">
+          <ul slot="rules">
+            <li>Two to four options, all visible. Selected is filled ink; one is always selected.</li>
+            <li>Five or more options, or long labels, become a menu button.</li>
+          </ul>
+          <div class="dk-fields dk-fields--one">
+            <div class="dk-field"><span class="dk-label">Kind</span>
+              <div class="dk-seg" role="radiogroup" aria-label="Kind" data-seg>
+                <button type="button" role="radio" aria-checked="true">Open</button><button type="button" role="radio" aria-checked="false">Type</button><button type="button" role="radio" aria-checked="false">Run</button>
+              </div></div>
+            <div class="dk-field"><span class="dk-label">View</span>
+              <div class="dk-seg" role="radiogroup" aria-label="View" data-seg>
+                <button type="button" role="radio" aria-checked="false">Day</button><button type="button" role="radio" aria-checked="true">Week</button><button type="button" role="radio" aria-checked="false">Month</button><button type="button" role="radio" aria-checked="false">Year</button>
+              </div></div>
+          </div>
+        </Specimen>
+
+        <Specimen id="atom-o" index="16.1o" title="Progress meter">
+          <ul slot="rules">
+            <li>The tick meter: 1px ticks on a 4px pitch. Lit ticks are ink; signal only for the one primary meter in a view.</li>
+            <li>Indeterminate is five lit ticks stepping across. With reduced motion it holds still and says <code>WORKING</code>.</li>
+          </ul>
+          <div class="dk-fields dk-fields--one">
+            <div class="dk-meter-wrap"><span class="dk-label">Model download</span>
+              <div class="dk-meter-row"><div class="dk-meter dk-meter--signal"><div class="dk-meter__lit" style="--p:42"></div></div><span class="dk-meta">42 %</span></div></div>
+            <div class="dk-meter-wrap"><span class="dk-label">Index</span>
+              <div class="dk-meter-row"><div class="dk-meter"><div class="dk-meter__lit" style="--p:78"></div></div><span class="dk-meta">78 %</span></div></div>
+            <div class="dk-meter-wrap"><span class="dk-label">Preparing</span>
+              <div class="dk-meter-row"><div class="dk-meter dk-meter--indeterminate"><div class="dk-meter__lit"></div></div><span class="dk-meta">WORKING</span></div></div>
+            <div class="dk-meter-wrap"><span class="dk-label">Upload</span>
+              <div class="dk-meter-row"><div class="dk-meter"><div class="dk-meter__lit" style="--p:31"></div></div><span class="dk-pill dk-pill--alert">Failed</span></div></div>
+          </div>
+        </Specimen>
+
+        <Specimen id="atom-p" index="16.1p" title="Chip">
+          <ul slot="rules">
+            <li>A removable item the user chose. Tag geometry, <code>ink</code> text, a 8px × with a 40px hit area.</li>
+            <li>One atom: not a tag next to a separate × button. Offer Undo where removing loses data.</li>
+          </ul>
+          <div class="dk-fields dk-fields--one">
+            <div class="dk-field"><span class="dk-label">Languages</span>
+              <div class="dk-chips" data-chips>
+                {['English', 'Italian', 'Polish', 'Ukrainian'].map((l) => (
+                  <span class="dk-chip">{l}<button class="dk-chip__x" type="button" aria-label={`Remove ${l}`}><svg viewBox="0 0 8 8"><use href="#dk-i-x" /></svg></button></span>
+                ))}
+              </div>
+              <span class="dk-hint">Remove one to try it. <button class="dk-btn dk-btn--plain" type="button" data-chips-reset style="height:24px;padding:0 4px">Reset</button></span></div>
+          </div>
+        </Specimen>
+
+        <Specimen id="atom-q" index="16.1q" title="Selected and editing row">
+          <ul slot="rules">
+            <li>Selected is a <code>signal-weak</code> ground and nothing else; multi-select adds a checkbox, so it reads without colour.</li>
+            <li>Editing opens the row in place with a 1px ink outline. One row edits at a time, Esc cancels.</li>
+            <li>A plain <code>Edit</code> button sits before the chevron on hover and focus.</li>
+          </ul>
+          <div class="dk-mol" data-rows>
+            <div class="dk-row dk-listrow" data-row tabindex="0">
+              <span class="dk-row__lead"><I n="mic" size={20} /></span>
+              <div class="dk-row__text"><span class="dk-title-row">Open Notes</span><span class="dk-meta">Command · Open</span></div>
+              <div class="dk-listrow__end"><button class="dk-btn dk-btn--plain dk-btn--edit" type="button" data-edit>Edit</button><I n="chev-r" /></div>
+            </div>
+            <div class="dk-row dk-listrow is-selected" data-row tabindex="0">
+              <span class="dk-row__lead"><I n="mic" size={20} /></span>
+              <div class="dk-row__text"><span class="dk-title-row">Start a timer</span><span class="dk-meta">Command · Run</span></div>
+              <div class="dk-listrow__end"><button class="dk-btn dk-btn--plain dk-btn--edit" type="button" data-edit>Edit</button><I n="chev-r" /></div>
+            </div>
+            <div class="dk-row dk-listrow is-editing">
+              <span class="dk-row__lead"><I n="mic" size={20} /></span>
+              <div class="dk-edit">
+                <label class="dk-field"><span class="dk-label">Name</span><span class="dk-input-wrap"><input class="dk-input" type="text" value="Search files" /></span></label>
+                <div class="dk-field"><span class="dk-label">Kind</span><div class="dk-seg" role="radiogroup" aria-label="Kind" data-seg><button type="button" role="radio" aria-checked="false">Open</button><button type="button" role="radio" aria-checked="true">Type</button><button type="button" role="radio" aria-checked="false">Run</button></div></div>
+                <div class="dk-edit__actions"><button class="dk-btn dk-btn--secondary" type="button">Cancel</button><button class="dk-btn dk-btn--primary" type="button">Save</button></div>
+              </div>
+            </div>
+          </div>
+        </Specimen>
+
+        <Specimen id="atom-r" index="16.1r" title="Category mark">
+          <ul slot="rules">
+            <li>Tells apart members of a category that has no state meaning: speakers, groups, kinds. One character in a 16px box.</li>
+            <li>Assigned in order of first appearance and kept. Never coloured. Active inverts.</li>
+          </ul>
+          <div class="dk-inline dk-inline--lg">
+            <span class="dk-inline"><span class="dk-cat">A</span><span class="dk-title-row">Speaker</span></span>
+            <span class="dk-inline"><span class="dk-cat is-active">B</span><span class="dk-title-row">Speaker</span></span>
+            <span class="dk-inline"><span class="dk-cat">C</span><span class="dk-title-row">Speaker</span></span>
+            <span class="dk-inline"><span class="dk-cat">01</span><span class="dk-title-row">Group</span></span>
+          </div>
+        </Specimen>
+
+        <!-- ───────────── Molecules ───────────── -->
+        <div class="dk-band" id="molecules"><span class="lbl">F · Molecules</span><p>A few atoms put together. Starting points, not the only allowed layouts.</p></div>
+
+        <Specimen id="mol-header" index="16.2" title="Section header and group header" wide>
+          <ul slot="rules">
+            <li>Section header: label and count left; plain and menu buttons right; <code>rule-strong</code> 8px below.</li>
+            <li>Group header: <code>title.group</code> and count, 24px above and 8px below, <code>rule-strong</code> under it.</li>
+          </ul>
+          <div class="dk-mol">
+            <div class="dk-sechead"><span class="dk-label">Recordings <span class="dk-count">20</span></span>
+              <div class="dk-sechead__tools"><button class="dk-btn dk-btn--plain" type="button"><I n="import" />Import</button><button class="dk-btn dk-btn--secondary" type="button">By day<I n="chev-ud" /></button><button class="dk-btn dk-btn--secondary" type="button">Newest first<I n="chev-ud" /></button></div></div>
+            <div class="dk-grouphead"><span class="dk-title-group">Friday, 2 Oct <span class="dk-count">2</span></span></div>
+          </div>
+        </Specimen>
+
+        <Specimen id="mol-settings" index="16.2" title="Settings row" wide>
+          <ul slot="rules">
+            <li>Icon, <code>title.row</code>, optional tag, control at the trailing edge, hint under the label. Minimum 48 high.</li>
+            <li>The text column keeps at least 240px. When a long control would leave less, it drops below the hint and the pill stays on the label line.</li>
+          </ul>
+          <div class="dk-mol">
+            <div class="dk-row dk-setting"><span class="dk-row__lead"><I n="mic" /></span>
+              <div class="dk-row__text"><span class="dk-row__title"><span class="dk-title-row">Live transcript</span><span class="dk-tag">Experimental</span></span><span class="dk-hint">Starts with the next recording.</span></div>
+              <div class="dk-row__ctl"><button class="dk-tog" type="button" role="switch" aria-checked="true" aria-label="Live transcript"></button></div></div>
+            <div class="dk-row dk-setting"><span class="dk-row__lead"><I n="doc" /></span>
+              <div class="dk-row__text"><span class="dk-row__title"><span class="dk-marker"></span><span class="dk-title-row">Accessibility</span><span class="dk-pill dk-pill--warning">Needed</span></span><span class="dk-hint dk-hint--warning">Needed to type text into other apps.</span></div>
+              <div class="dk-row__ctl"><button class="dk-btn dk-btn--secondary" type="button">Open System Settings</button></div></div>
+            <div class="dk-row dk-setting"><span class="dk-row__lead"><I n="search" /></span>
+              <div class="dk-row__text"><span class="dk-row__title"><span class="dk-title-row">Smaller after</span></span><span class="dk-hint">Recordings shrink once they are this old.</span></div>
+              <div class="dk-row__ctl"><button class="dk-btn dk-btn--secondary" type="button">14 days<I n="chev-ud" /></button></div></div>
+          </div>
+        </Specimen>
+
+        <Specimen id="mol-list" index="16.2" title="List row" wide>
+          <ul slot="rules">
+            <li>Marker, 20px icon, then text: <code>title.row</code>, <code>meta</code>, <code>body.short</code>, counts. Trailing: one <code>meta</code> value and the chevron.</li>
+            <li>4px between lines, 16px top and bottom, <code>rule</code> between rows.</li>
+          </ul>
+          <div class="dk-mol">
+            <div class="dk-row dk-listrow"><span class="dk-row__lead"><I n="doc" size={20} /></span>
+              <div class="dk-row__text"><span class="dk-title-row">Design system architecture and workflow</span><span class="dk-meta">Fri 2 Oct · 14:01</span><span class="dk-body-short">Agreed on libraries, flow and next steps for definition.</span>
+                <span class="dk-counts"><span><b>4</b> decisions</span><span><b>4</b> open questions</span><span><b>2</b> next steps</span><span><b>5</b> speakers</span></span></div>
+              <div class="dk-listrow__end"><span class="dk-meta">33 min</span><I n="chev-r" /></div></div>
+            <div class="dk-row dk-listrow"><span class="dk-row__lead"><span class="dk-marker"></span></span><span class="dk-row__lead" style="margin-left:-12px"><I n="doc" size={20} /></span>
+              <div class="dk-row__text"><span class="dk-title-row">Weekly sync</span><span class="dk-meta">Thu 1 Oct · 10:30</span><span class="dk-body-short">Needs a title before it can be filed.</span></div>
+              <div class="dk-listrow__end"><span class="dk-meta">18 min</span><I n="chev-r" /></div></div>
+          </div>
+        </Specimen>
+
+        <Specimen id="mol-filter" index="16.2" title="Filter bar and checklist" wide>
+          <ul slot="rules">
+            <li>Filter bar: a text field taking the remaining width, then menu buttons in a fixed order: what, when, grouping, sort.</li>
+            <li>Checklist: rows are 40px, with a count and Select all / Clear above.</li>
+          </ul>
+          <div class="dk-mol" style="gap:24px">
+            <div class="dk-filter">
+              <span class="dk-input-wrap dk-input-wrap--icon"><I n="search" /><input class="dk-input" type="text" placeholder="Search recordings" aria-label="Search" /></span>
+              <button class="dk-btn dk-btn--secondary" type="button">All sources<I n="chev-ud" /></button>
+              <button class="dk-btn dk-btn--secondary" type="button">Any time<I n="chev-ud" /></button>
+              <button class="dk-btn dk-btn--secondary" type="button">By day<I n="chev-ud" /></button>
+              <button class="dk-btn dk-btn--secondary" type="button">Newest first<I n="chev-ud" /></button>
+            </div>
+            <div class="dk-mol dk-checklist" data-checklist>
+              <div class="dk-sechead"><span class="dk-label">Capture while these apps have a window <span class="dk-count" data-count>2 of 4</span></span>
+                <div class="dk-sechead__tools"><button class="dk-btn dk-btn--plain" type="button" data-all>Select all</button><button class="dk-btn dk-btn--plain" type="button" data-none>Clear</button></div></div>
+              <label class="dk-check"><input type="checkbox" checked /><span class="dk-check__box"></span><span class="dk-title-row">Terminal</span></label>
+              <label class="dk-check"><input type="checkbox" checked /><span class="dk-check__box"></span><span class="dk-title-row">Notes</span></label>
+              <label class="dk-check"><input type="checkbox" /><span class="dk-check__box"></span><span class="dk-title-row">Browser</span></label>
+              <label class="dk-check"><input type="checkbox" /><span class="dk-check__box"></span><span class="dk-title-row">Editor</span></label>
+            </div>
+          </div>
+        </Specimen>
+
+        <!-- ───────────── Rules ───────────── -->
+        <section class="dk-sec" id="rules" aria-labelledby="rules-h">
+          <header class="dk-sec__head"><span class="lbl">G · Rules</span><h2 id="rules-h">Choosing and combining</h2></header>
+          <p class="sec__intro">Which control for which value, and the few rules that apply once atoms are put together (DESIGN.md 16.3).</p>
+          <table class="dk-table">
+            <thead><tr><th>The value is</th><th>Use</th></tr></thead>
+            <tbody>
+              <tr><th scope="row">On or off, effect at once</th><td>Toggle</td></tr>
+              <tr><th scope="row">Several of a set</th><td>Checkbox list</td></tr>
+              <tr><th scope="row">One of 2–4, all visible</th><td>Segmented control</td></tr>
+              <tr><th scope="row">One of 5+ named presets</th><td>Menu button showing the current value</td></tr>
+              <tr><th scope="row">A number on a range</th><td>Slider (more than six sensible values)</td></tr>
+              <tr><th scope="row">A number typed exactly</th><td>Text field with a <code>meta</code> unit after it</td></tr>
+            </tbody>
+          </table>
+          <Specimen id="rule-stack" index="16.3" title="Stacked bar" wide>
+            <ul slot="rules">
+              <li>Stepped ink opacity (100, 70, 45, 25, 12 %), largest first, at most five parts, a 1px gap between. Each part has a label and a value below.</li>
+              <li>State colours are not used: a part is a category, not a status. The values here are specimen data.</li>
+            </ul>
+            <div class="dk-mol">
+              <div class="dk-stack" role="img" aria-label="Specimen stacked bar with five parts">
+                <i style="width:38%"></i><i style="width:26%;opacity:.7"></i><i style="width:18%;opacity:.45"></i><i style="width:12%;opacity:.25"></i><i style="width:6%;opacity:.12"></i>
+              </div>
+              <div class="dk-stack-legend">
+                {[['Part A', '38', 1], ['Part B', '26', .7], ['Part C', '18', .45], ['Part D', '12', .25], ['Other', '6', .12]].map(([n, v, o]) => (
+                  <div><span class="dk-meta"><span class="sw" style={`opacity:${o}`}></span>{n}</span><span class="dk-meta" style="color:var(--ink)">{v} %</span></div>
+                ))}
+              </div>
+            </div>
+          </Specimen>
+        </section>
+
+        <!-- ───────────── Meta ───────────── -->
+        <section class="dk-sec" id="site" aria-labelledby="site-h">
+          <header class="dk-sec__head"><span class="lbl">H · Meta</span><h2 id="site-h">On this site</h2></header>
+          <p class="sec__intro">The site is the first customer of its own spec. These numbers are read from the repository when the page is built.</p>
+
+          <dl class="dk-facts">
+            <div><dt class="lbl">Atoms specified</dt><dd class="data">{atoms.length}</dd></div>
+            <div><dt class="lbl">Atoms shown here</dt><dd class="data">{atoms.length - missing.length}</dd></div>
+            <div><dt class="lbl">Colour tokens in spec</dt><dd class="data">{conformance.length}</dd></div>
+            <div><dt class="lbl">Same in the CSS</dt><dd class="data">{inSync}</dd></div>
+            <div><dt class="lbl">Differ from the CSS</dt><dd class="data">{differs.length}</dd></div>
+            <div><dt class="lbl">Not in the CSS</dt><dd class="data">{notInCode.length}</dd></div>
+          </dl>
+
+          <h3 class="dk-h3">Colour tokens against the CSS</h3>
+          <p class="sec__intro">A difference means the spec or <code>src/styles/global.css</code> is out of date. Tokens with no CSS variable are written in the spec only.</p>
+          <div class="dk-tablewrap">
+            <table class="dk-table dk-table--tight">
+              <thead><tr><th>Token</th><th>Spec Paper</th><th>CSS Paper</th><th>Spec Instrument</th><th>CSS Instrument</th><th>Status</th></tr></thead>
+              <tbody>
+                {conformance.map((c) => (
+                  <tr>
+                    <th scope="row"><code>{c.name}</code></th>
+                    <td class="data">{c.paper}</td>
+                    <td class:list={['data', { 'dk-diff': c.codePaper && c.codePaper !== c.paper }]}>{c.codePaper ?? '—'}</td>
+                    <td class="data">{c.instrument}</td>
+                    <td class:list={['data', { 'dk-diff': c.codeInstrument && c.codeInstrument !== c.instrument }]}>{c.codeInstrument ?? '—'}</td>
+                    <td>{c.ok
+                      ? <span class="dk-pill dk-pill--live">In sync</span>
+                      : c.missing ? <span class="dk-pill">Spec only</span> : <span class="dk-pill dk-pill--warning">Differs</span>}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          <h3 class="dk-h3">Counting systems, from this site's data</h3>
+          <p class="sec__intro">Each kind of counter has its own system, the same on every page: hex for sections, roman for registries, three-digit decimal for posts, Greek for figures.</p>
+          <table class="dk-table">
+            <thead><tr><th>Counts</th><th>System</th><th>Now</th></tr></thead>
+            <tbody>
+              <tr><th scope="row">Site sections</th><td>Hex</td><td><span class="data">{sections.map((_, i) => hex(i + 1)).join(' · ')}</span></td></tr>
+              <tr><th scope="row">Apps in the registry</th><td>Roman</td><td><span class="data">{apps.map((_, i) => roman(i + 1)).join(' · ')}</span></td></tr>
+              <tr><th scope="row">Releases</th><td>Roman</td><td><span class="data">{roman(releases.length)} ({releases.length})</span></td></tr>
+              <tr><th scope="row">Posts</th><td>3-digit decimal</td><td><span class="data">No. {pad(posts, 3)}</span></td></tr>
+              <tr><th scope="row">Figures</th><td>Greek</td><td><span class="data">Fig. {greek(1)} · Fig. {greek(2)} · Fig. {greek(3)}</span></td></tr>
+            </tbody>
+          </table>
+
+          <p class="sec__intro">See the system applied on real interfaces in the <a class="act" href="/showcase">Showcase</a>, or read the full spec in <a class="act" href={sourceUrl} target="_blank" rel="noopener">DESIGN.md</a>.</p>
+        </section>
+      </div>
+    </div>
+  </div>
+</SystemLayout>
+
+<script>
+  const $$ = <T extends Element = HTMLElement>(sel: string, root: ParentNode = document) => [...root.querySelectorAll<T>(sel)];
+
+  // Mixed checkbox state is a property, not an attribute.
+  $$<HTMLInputElement>('input[data-mixed]').forEach((i) => { i.indeterminate = true; });
+
+  // Toggles
+  document.addEventListener('click', (e) => {
+    const t = e.target as HTMLElement;
+    const tog = t.closest<HTMLElement>('.dk-tog');
+    if (tog && !tog.hasAttribute('disabled')) tog.setAttribute('aria-checked', String(tog.getAttribute('aria-checked') !== 'true'));
+
+    // Segmented controls
+    const seg = t.closest<HTMLElement>('[data-seg] button');
+    if (seg) {
+      seg.parentElement!.querySelectorAll('button').forEach((b) => b.setAttribute('aria-checked', String(b === seg)));
+    }
+
+    // Chips
+    const x = t.closest<HTMLElement>('.dk-chip__x');
+    if (x) x.closest('.dk-chip')!.setAttribute('hidden', '');
+    const reset = t.closest<HTMLElement>('[data-chips-reset]');
+    if (reset) reset.closest('.dk-field')!.querySelectorAll('.dk-chip').forEach((c) => c.removeAttribute('hidden'));
+
+    // Secure field reveal
+    const rev = t.closest<HTMLElement>('[data-showkey]');
+    if (rev) {
+      const input = rev.parentElement!.querySelector<HTMLInputElement>('[data-secure]')!;
+      const show = input.type === 'password';
+      setReveal(input, rev, show);
+    }
+
+    // Row select / edit
+    const row = t.closest<HTMLElement>('[data-row]');
+    if (row) {
+      const list = row.parentElement!;
+      if (t.closest('[data-edit]')) {
+        list.querySelectorAll('.is-editing').forEach((r) => r.classList.remove('is-editing'));
+        row.classList.add('is-editing', 'is-selected');
+        openEdit(row);
+      } else if (!t.closest('.dk-edit')) {
+        list.querySelectorAll('.is-selected').forEach((r) => r.classList.remove('is-selected'));
+        row.classList.add('is-selected');
+      }
+    }
+    if (t.closest('[data-cancel]')) closeEdit(t.closest<HTMLElement>('[data-row]'));
+
+    // Checklist
+    const cl = t.closest<HTMLElement>('[data-checklist]');
+    if (cl && t.closest('[data-all], [data-none]')) {
+      const on = !!t.closest('[data-all]');
+      $$<HTMLInputElement>('input', cl).forEach((i) => { i.checked = on; });
+      countList(cl);
+    }
+  });
+
+  document.addEventListener('change', (e) => {
+    const cl = (e.target as HTMLElement).closest<HTMLElement>('[data-checklist]');
+    if (cl) countList(cl);
+  });
+  function countList(cl: HTMLElement) {
+    const boxes = $$<HTMLInputElement>('input', cl);
+    const n = boxes.filter((b) => b.checked).length;
+    const c = cl.querySelector('[data-count]');
+    if (c) c.textContent = `${n} of ${boxes.length}`;
+  }
+
+  // Secure field: hide again on blur and after 30 seconds.
+  const timers = new WeakMap<HTMLInputElement, number>();
+  function setReveal(input: HTMLInputElement, btn: HTMLElement, show: boolean) {
+    input.type = show ? 'text' : 'password';
+    btn.setAttribute('aria-label', show ? 'Hide' : 'Show');
+    btn.querySelector('[data-eye]')!.toggleAttribute('hidden', show);
+    btn.querySelector('[data-eye-off]')!.toggleAttribute('hidden', !show);
+    clearTimeout(timers.get(input));
+    if (show) timers.set(input, window.setTimeout(() => setReveal(input, btn, false), 30000));
+  }
+  document.addEventListener('focusout', (e) => {
+    const input = e.target as HTMLInputElement;
+    if (input.matches?.('[data-secure]') && input.type === 'text') {
+      const btn = input.parentElement!.querySelector<HTMLElement>('[data-showkey]')!;
+      // Ignore the move of focus onto the reveal button itself.
+      requestAnimationFrame(() => { if (document.activeElement !== btn) setReveal(input, btn, false); });
+    }
+  });
+
+  // In-place editing: swap the text column for fields, restore on cancel.
+  const saved = new WeakMap<HTMLElement, string>();
+  function openEdit(row: HTMLElement) {
+    const text = row.querySelector<HTMLElement>('.dk-row__text');
+    if (!text) return;
+    const title = text.querySelector('.dk-title-row')?.textContent ?? '';
+    saved.set(row, row.innerHTML);
+    text.outerHTML = `<div class="dk-edit"><label class="dk-field"><span class="dk-label">Name</span><span class="dk-input-wrap"><input class="dk-input" type="text" value="${title.replace(/"/g, '&quot;')}" /></span></label><div class="dk-edit__actions"><button class="dk-btn dk-btn--secondary" type="button" data-cancel>Cancel</button><button class="dk-btn dk-btn--primary" type="button" data-cancel>Save</button></div></div>`;
+    row.querySelector('.dk-listrow__end')?.remove();
+    row.querySelector<HTMLInputElement>('input')?.focus();
+  }
+  function closeEdit(row: HTMLElement | null) {
+    if (!row) return;
+    const html = saved.get(row);
+    row.classList.remove('is-editing');
+    if (html) { row.innerHTML = html; saved.delete(row); }
+  }
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') $$('.is-editing').forEach((r) => closeEdit(r));
+    const row = (e.target as HTMLElement).closest?.<HTMLElement>('[data-row]');
+    if (row && (e.key === 'Enter') && (e.target as HTMLElement) === row && !row.classList.contains('is-editing')) row.querySelector<HTMLElement>('[data-edit]')?.click();
+
+    // Segmented control arrows
+    const seg = (e.target as HTMLElement).closest?.<HTMLElement>('[data-seg] button');
+    if (seg && (e.key === 'ArrowRight' || e.key === 'ArrowLeft')) {
+      const all = $$('button', seg.parentElement!);
+      const next = all[(all.indexOf(seg) + (e.key === 'ArrowRight' ? 1 : -1) + all.length) % all.length];
+      next.click(); next.focus(); e.preventDefault();
+    }
+  });
+
+  // Sliders
+  $$('[data-slider]').forEach((wrap) => {
+    const el = wrap.querySelector<HTMLElement>('.dk-slider')!;
+    const thumb = wrap.querySelector<HTMLElement>('.dk-slider__thumb')!;
+    const out = wrap.querySelector<HTMLElement>('[data-readout]')!;
+    const ticks = $$('i', wrap);
+    const { min, max, step, unit } = { min: +el.dataset.min!, max: +el.dataset.max!, step: +el.dataset.step!, unit: el.dataset.unit ?? '' };
+    let value = +el.getAttribute('aria-valuenow')!;
+    const set = (v: number) => {
+      value = Math.min(max, Math.max(min, Math.round((v - min) / step) * step + min));
+      el.setAttribute('aria-valuenow', String(value));
+      thumb.style.left = `${((value - min) / (max - min)) * 100}%`;
+      out.textContent = `${value}${unit}`;
+      ticks.forEach((t) => t.classList.toggle('is-on', +t.dataset.v! <= value));
+    };
+    const fromPointer = (ev: PointerEvent) => {
+      const r = el.getBoundingClientRect();
+      set(min + ((ev.clientX - r.left) / r.width) * (max - min));
+    };
+    el.addEventListener('pointerdown', (ev) => { el.setPointerCapture(ev.pointerId); el.focus(); fromPointer(ev); });
+    el.addEventListener('pointermove', (ev) => { if (el.hasPointerCapture(ev.pointerId)) fromPointer(ev); });
+    el.addEventListener('keydown', (ev) => {
+      const k = ev.key, big = ev.shiftKey ? 10 : 1;
+      if (k === 'ArrowRight' || k === 'ArrowUp') set(value + step * big);
+      else if (k === 'ArrowLeft' || k === 'ArrowDown') set(value - step * big);
+      else if (k === 'Home') set(min);
+      else if (k === 'End') set(max);
+      else return;
+      ev.preventDefault();
+    });
+  });
+
+  // Scroll-spy for the contents list.
+  const links = $$<HTMLAnchorElement>('[data-spy]');
+  const targets = links.map((a) => document.getElementById(a.dataset.spy!)).filter(Boolean) as HTMLElement[];
+  if ('IntersectionObserver' in window) {
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((en) => {
+        if (!en.isIntersecting) return;
+        links.forEach((a) => a.removeAttribute('aria-current'));
+        links.find((a) => a.dataset.spy === en.target.id)?.setAttribute('aria-current', 'location');
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+    targets.forEach((t) => io.observe(t));
+  }
+</script>
