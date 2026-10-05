@@ -11,6 +11,7 @@ An [Astro](https://astro.build) static site with:
 - Projects page covering open-source work and personal tools
 - Music page
 - RSS feed at `/rss.xml`
+- `/system`: the Datum design system, rendered live from `DESIGN.md` (linked from the site footer)
 
 ## Local development
 

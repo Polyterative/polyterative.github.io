@@ -2,6 +2,25 @@
 
 Astro static site: personal blog + software portfolio. `pnpm dev` / `pnpm build` (Node 22+, pnpm).
 
+## Design system (Datum): read this before touching UI
+
+Anything about colour, type, controls, spacing or components starts here, not in the page files.
+
+| What | Where |
+|---|---|
+| The spec (source of truth) | `DESIGN.md` |
+| Live catalogue: tokens, 18 atoms, molecules, rules, spec-vs-CSS check | `/system` (`pnpm dev`, then `http://localhost:4321/system`) |
+| Page source | `src/pages/system.astro`, layout `src/layouts/SystemLayout.astro` |
+| Component CSS (`dk-` prefix) | `src/styles/datum.css` |
+| Design tokens (colour, type, space) | `src/styles/global.css` |
+| Spec reader used by the page | `src/lib/spec.ts` |
+| Open spec questions | `DESIGN-TODO.md` |
+
+Rules for agents: change `DESIGN.md` first, then the CSS, then the `/system` specimen; the page's
+"On this site" section flags any token where spec and CSS disagree. `/system` is deliberately
+outside the main nav and has its own toolbar; the site links to it from the "Under the hood" strip
+in the footer (`src/components/UnderTheHood.astro`).
+
 ## Content architecture — pages are connected
 
 Content about the same project lives in **several places on purpose** (each page speaks to a
@@ -60,6 +79,11 @@ Version and status strings are duplicated deliberately — update **all**:
 - `/apps` — the showcase. Software-company gallery; flagships large, the rest as compact cards.
 - `/apps/<slug>` — product story pages: why built, problems solved, satisfying ending. Also
   the publisher-facing fact sheets.
+- `/system` — under-the-hood page, not in the main nav (reached from the footer strip). Own layout and
+  toolbar with a back link to `/`. Datum, the design system, rendered live (tokens, atoms, molecules, rules) and
+  checked against the CSS. Reads `DESIGN.md` and `src/styles/global.css` at build time, so a
+  spec change shows up here on the next build. When `DESIGN.md` gains an atom, add its specimen
+  to `src/pages/system.astro` (component CSS is in `src/styles/datum.css`, `dk-` prefix).
 - `/projects` — the plain archive. Everything, lightly annotated, links into `/apps` via
   `details`. No "selected work" section here — that job belongs to `/apps`.
 - `/` — brief intro, a few cards (titles link to app pages), featured writing.
