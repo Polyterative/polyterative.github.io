@@ -25,7 +25,7 @@ const args = process.argv.slice(2);
 const flag = (n) => args.includes(`--${n}`);
 const only = args.includes('--only') ? args[args.indexOf('--only') + 1] : null;
 
-const { sources, apps, shots: allShots } = await import(pathToFileURL(join(ROOT, 'showcase/manifest.mjs')).href);
+const { sources, apps, shots: allShots, details: allDetails = [] } = await import(pathToFileURL(join(ROOT, 'showcase/manifest.mjs')).href);
 const shots = allShots.filter((s) => !only || s.app === only || s.id === only);
 
 /** Where a shot's capture lives: refreshed cache first, then the project's own output folder. */
@@ -64,7 +64,9 @@ await mkdir(OUT, { recursive: true });
 
 const SIZES = { cover: [2100, 900] };
 // Canvas follows the capture: wide screens get 16:10, squarer windows 4:3, tall ones 1:1.
-const standardSize = (aspect) => (aspect >= 1.5 ? [2000, 1250] : aspect >= 1.1 ? [2000, 1500] : [2000, 2000]);
+const standardSize = (aspect) => (aspect >= 1.5 ? [2000, 1250] : aspect >= 1.1 ? [2000, 1500] : aspect >= 0.85 ? [2000, 2000] : [1600, 2000]);
+// Details are zoomed crops of small captures, so the canvas stays modest to avoid blowing them up.
+const detailSize = (aspect) => (aspect >= 1.5 ? [1400, 900] : aspect >= 1.1 ? [1400, 1100] : [1400, 1400]);
 const save = async (pipeline, base) => {
   await pipeline.clone().jpeg({ quality: 78, mozjpeg: true }).toFile(`${base}.jpg`);
   await pipeline.clone().webp({ quality: 84 }).toFile(`${base}.webp`);
@@ -86,7 +88,7 @@ for (const shot of shots) {
   const opts = { frame: shot.frame, tone: shot.tone, chrome: shot.chrome, trim: shot.trim, crop: shot.crop, key: shot.key, largest: shot.largest, shape: shot.shape, round: shot.round };
 
   const m = await sharp(input).metadata();
-  const [W, H] = standardSize(m.width / (m.height * (shot.crop?.height ?? 1)));
+  const [W, H] = standardSize((m.width * (shot.crop?.width ?? 1)) / (m.height * (shot.crop?.height ?? 1)));
   await save(await compose(input, { ...opts, width: W, height: H }), join(OUT, shot.id));
   const entry = {
     id: shot.id, app: shot.app, title: shot.title, caption: shot.caption, alt: shot.alt,
@@ -103,9 +105,32 @@ for (const shot of shots) {
   console.log(`✓ ${shot.id}`);
 }
 
+const detailEntries = [];
+for (const d of allDetails) {
+  const base = allShots.find((s) => s.id === d.shot);
+  const file = base && capturePath(base);
+  if (!file) { console.warn(`✗ ${d.id}: source capture for ${d.shot} not found`); continue; }
+  const input = await readFile(file);
+  const m = await sharp(input).metadata();
+  const cw = Math.round(m.width * (d.crop.width ?? 1));
+  const ch = Math.round(m.height * (d.crop.height ?? 1));
+  const [W, H] = detailSize(cw / ch);
+  const fill = 0.86;
+  await save(await compose(input, { frame: 'object', tone: base.tone ?? 'light', crop: d.crop, round: false, width: W, height: H, fill }), join(OUT, d.id));
+  // Where the crop sits on the canvas (percent), so the page can pin callouts to it.
+  const scale = Math.min((W * fill) / cw, (H * fill) / ch);
+  const [tw, th] = [cw * scale, ch * scale];
+  detailEntries.push({
+    id: d.id, app: base.app, title: d.title, alt: d.alt, tone: base.tone ?? 'light', width: W, height: H,
+    src: `/showcase/${d.id}.jpg`, webp: `/showcase/${d.id}.webp`,
+    box: { x: ((W - tw) / 2 / W) * 100, y: ((H - th) / 2 / H) * 100, w: (tw / W) * 100, h: (th / H) * 100 },
+  });
+  console.log(`✓ ${d.id} (detail)`);
+}
+
 // Keep manifest order; drop entries whose shot no longer exists.
 const ids = allShots.map((s) => s.id);
 const out = ids.filter((id) => byId.has(id)).map((id) => ({ ...byId.get(id), appName: apps[byId.get(id).app].name }));
-await writeFile(DATA, JSON.stringify({ apps, shots: out }, null, 2) + '\n');
+await writeFile(DATA, JSON.stringify({ apps, shots: out, details: detailEntries }, null, 2) + '\n');
 console.log(`\n${out.length} shots in ${DATA.replace(ROOT + '/', '')}${missing ? `, ${missing} missing` : ''}`);
 if (missing) process.exitCode = 1;

@@ -10,6 +10,7 @@
 //   blocks     what follows, in order:
 //     { type: 'hero',  shot }                          full-width opener (uses the 21:9 cover when the shot has one)
 //     { type: 'scene', shot, title, text }             sticky explainer beside one screen
+//     { type: 'detail', detail, title, text, marks }    zoomed crop with numbered pins; marks are { x, y, text } as fractions of the crop
 //     { type: 'note',  text }                          a short paragraph between screens
 //     { type: 'pair',  light, dark, title, text }      the same screen in both appearances, side by side
 
@@ -27,7 +28,7 @@ export const chapters = [
     facts: [['Opens with', 'Shake or a held key'], ['Focus', 'Never taken'], ['Watches', 'Folders, shares, disks']],
     blocks: [
       { type: 'hero', shot: 'ledge-shelf-images' },
-      { type: 'scene', shot: 'ledge-shelf-expanded', title: 'References, not copies', text: 'A shelf points at files where they are, so it can tell when one has gone. A missing file is marked on the shelf instead of silently dropped.' },
+      { type: 'scene', shot: 'ledge-shelf-expanded', title: 'References, not copies', text: 'A shelf points at files where they are. Nothing is duplicated until you copy it, and the stack opens to show every name and size.' },
       { type: 'scene', shot: 'ledge-shelf-copy', title: 'Work without leaving', text: 'Copy or move straight from the shelf. Progress and Cancel appear on the shelf itself, and the window you came from is untouched.' },
       { type: 'note', text: 'The shelf shows the stack and very little else. Actions sit behind one button; anything advanced lives in Settings.' },
       { type: 'scene', shot: 'ledge-watchers', title: 'Watching is honest', text: 'Every watched folder says what it is really doing: watching, checking a share, waiting for a disk, or missing. A disconnected share is a normal state, not an error.' },
@@ -69,7 +70,17 @@ export const chapters = [
       { type: 'hero', shot: 'kinetip-overview' },
       { type: 'scene', shot: 'kinetip-gestures', title: 'Organised by intent', text: 'Pen buttons and motions are mapped to pointer, drag, pan and scroll. The settings follow what you want to do, not the tablet’s report layout.' },
       { type: 'scene', shot: 'kinetip-momentum', title: 'Feel you can see', text: 'Scroll inertia is drawn as a decay curve, so tuning friction is a matter of watching the shape change.' },
+      { type: 'detail', detail: 'kinetip-momentum-curve', title: 'Reading the curve', text: 'The preview replays a flick with the numbers you have chosen.', marks: [
+        { x: 0.032, y: 0.397, text: 'Speed starts at the flick velocity and decays along the curve.' },
+        { x: 0.705, y: 0.448, text: 'Once speed drops below the fade threshold, the softened tail takes over.' },
+        { x: 0.835, y: 0.766, text: 'The tail settles the coast instead of cutting it off.' },
+      ] },
       { type: 'scene', shot: 'kinetip-mapping', title: 'Where the tablet lands', text: 'Choose the active area on the tablet and see where it falls on screen before you apply it.' },
+      { type: 'detail', detail: 'kinetip-mapping-area', title: 'Reading the map', text: 'Aspect ratio is kept, so a circle drawn on the tablet is a circle on screen.', marks: [
+        { x: 0.499, y: 0.208, text: 'The target display and its resolution.' },
+        { x: 0.499, y: 0.711, text: 'The mapped area: the part of the tablet that reaches the screen.' },
+        { x: 0.669, y: 0.456, text: 'Drag a handle to resize. Numeric fields below do the same from the keyboard.' },
+      ] },
       { type: 'scene', shot: 'kinetip-insights', title: 'Where the pen spends its time', text: 'A heatmap of pen activity across the tablet surface shows which part of it you actually use.' },
     ],
   },
@@ -82,6 +93,12 @@ export const chapters = [
     blocks: [
       { type: 'hero', shot: 'evocontrol-mixer' },
       { type: 'pair', light: 'evocontrol-mixer', dark: 'evocontrol-mixer-dark', title: 'Light and dark', text: 'One layout in both appearances. The meter colours stay the same, because they carry meaning.' },
+      { type: 'detail', detail: 'evocontrol-meter', title: 'Reading a meter', text: 'Two rows, one per channel, 32 segments each. The thresholds never move.', marks: [
+        { x: 0.283, y: 0.727, text: 'Green: below -18 dBFS.' },
+        { x: 0.54, y: 0.727, text: 'Amber from -18 dBFS.' },
+        { x: 0.78, y: 0.727, text: 'Red from -6 dBFS.' },
+        { x: 0.92, y: 0.727, text: 'The clip cell at 0 dBFS.' },
+      ] },
       { type: 'scene', shot: 'evocontrol-preset', title: 'Know when you have drifted', text: 'When the panel differs from the saved preset, Save and Revert appear beside it. Save writes back; Revert returns to the preset.' },
       { type: 'scene', shot: 'evocontrol-settings', title: 'Every channel group', text: 'Outputs, inputs, playback and loopback sit in one scrolling panel, with meter visibility chosen per group.' },
       { type: 'scene', shot: 'evocontrol-voice-eq', title: 'A voice chain for calls', text: 'Gate, EQ, leveler, compressor and de-esser, each with a live curve or meter so you can see what it is doing.' },

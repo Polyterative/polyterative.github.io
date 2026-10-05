@@ -176,7 +176,7 @@
       "app": "ledge",
       "title": "Expanded",
       "caption": "Open the stack to see every file, size and status.",
-      "alt": "Ledge shelf expanded into a grid of five files, one marked missing",
+      "alt": "Ledge shelf expanded into a grid of five items with their names and sizes",
       "tone": "light",
       "width": 2000,
       "height": 2000,
@@ -245,7 +245,7 @@
       "caption": "Levels, LUFS and spectrum for every output, from the menu bar.",
       "alt": "EvoControl mixer panel with monitor and headphone faders, live level meters and input gain",
       "tone": "light",
-      "width": 2000,
+      "width": 1600,
       "height": 2000,
       "src": "/showcase/evocontrol-mixer.jpg",
       "webp": "/showcase/evocontrol-mixer.webp",
@@ -260,7 +260,7 @@
       "caption": "The same panel in dark mode, meters and all.",
       "alt": "EvoControl mixer panel in dark mode with green, amber and red level meters",
       "tone": "dark",
-      "width": 2000,
+      "width": 1600,
       "height": 2000,
       "src": "/showcase/evocontrol-mixer-dark.jpg",
       "webp": "/showcase/evocontrol-mixer-dark.webp",
@@ -273,7 +273,7 @@
       "caption": "Change something and Save or Revert appears next to the preset.",
       "alt": "EvoControl panel with an unsaved change and Revert and Save buttons beside the preset selector",
       "tone": "light",
-      "width": 2000,
+      "width": 1600,
       "height": 2000,
       "src": "/showcase/evocontrol-preset.jpg",
       "webp": "/showcase/evocontrol-preset.webp",
@@ -286,7 +286,7 @@
       "caption": "Every channel group in one scrolling panel: outputs, inputs, playback, loopback.",
       "alt": "EvoControl settings view listing outputs, inputs, playback and loopback channels",
       "tone": "light",
-      "width": 2000,
+      "width": 1600,
       "height": 2000,
       "src": "/showcase/evocontrol-settings.jpg",
       "webp": "/showcase/evocontrol-settings.webp",
@@ -299,11 +299,64 @@
       "caption": "Gate, EQ, leveler and compressor tuned for calls.",
       "alt": "EvoControl voice page with input and output levels, a gate and a six-band EQ over a live spectrum",
       "tone": "light",
-      "width": 2000,
+      "width": 1600,
       "height": 2000,
       "src": "/showcase/evocontrol-voice-eq.jpg",
       "webp": "/showcase/evocontrol-voice-eq.webp",
       "appName": "EvoControl"
+    }
+  ],
+  "details": [
+    {
+      "id": "kinetip-momentum-curve",
+      "app": "kinetip",
+      "title": "The release curve",
+      "alt": "Kinetip release preview: a speed-against-time curve that decays to a softened tail",
+      "tone": "light",
+      "width": 1400,
+      "height": 900,
+      "src": "/showcase/kinetip-momentum-curve.jpg",
+      "webp": "/showcase/kinetip-momentum-curve.webp",
+      "box": {
+        "x": 7.000000000000001,
+        "y": 8.898330273625314,
+        "w": 86,
+        "h": 82.20333945274938
+      }
+    },
+    {
+      "id": "kinetip-mapping-area",
+      "app": "kinetip",
+      "title": "The active area",
+      "alt": "Kinetip mapping preview: the full tablet surface, a highlighted mapped area with resize handles and the target display above it",
+      "tone": "light",
+      "width": 1400,
+      "height": 900,
+      "src": "/showcase/kinetip-mapping-area.jpg",
+      "webp": "/showcase/kinetip-mapping-area.webp",
+      "box": {
+        "x": 7.000000000000001,
+        "y": 22.739225456770697,
+        "w": 86,
+        "h": 54.521549086458606
+      }
+    },
+    {
+      "id": "evocontrol-meter",
+      "app": "evocontrol",
+      "title": "A stereo meter",
+      "alt": "EvoControl headphone fader above a two-row segmented level meter running green, amber and red",
+      "tone": "light",
+      "width": 1400,
+      "height": 900,
+      "src": "/showcase/evocontrol-meter.jpg",
+      "webp": "/showcase/evocontrol-meter.webp",
+      "box": {
+        "x": 7.000000000000001,
+        "y": 27.146296296296295,
+        "w": 86,
+        "h": 45.70740740740741
+      }
     }
   ]
 }

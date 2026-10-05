@@ -72,6 +72,17 @@ export const apps = {
   spoke: { name: 'Spoke', blurb: 'A radial menu for phrases you retype' },
 };
 
+// A DETAIL is a zoomed crop of one shot's capture (fractions of the capture), used by story.mjs to explain one part
+// of a screen. Pins and text for it live in story.mjs; the pipeline only reports where the crop lands on its canvas.
+export const details = [
+  { id: 'kinetip-momentum-curve', shot: 'kinetip-momentum', crop: { left: 0.255, top: 0.296, width: 0.706, height: 0.482 },
+    title: 'The release curve', alt: 'Kinetip release preview: a speed-against-time curve that decays to a softened tail' },
+  { id: 'kinetip-mapping-area', shot: 'kinetip-mapping', crop: { left: 0.255, top: 0.5, width: 0.706, height: 0.32 },
+    title: 'The active area', alt: 'Kinetip mapping preview: the full tablet surface, a highlighted mapped area with resize handles and the target display above it' },
+  { id: 'evocontrol-meter', shot: 'evocontrol-mixer', crop: { left: 0, top: 0.3277, width: 1, height: 0.1343 },
+    title: 'A stereo meter', alt: 'EvoControl headphone fader above a two-row segmented level meter running green, amber and red' },
+];
+
 const window = (o) => ({ frame: 'window', tone: 'light', chrome: true, ...o });
 const object = (o) => ({ frame: 'object', ...o });
 
@@ -116,7 +127,7 @@ export const shots = [
     alt: 'Ledge shelf holding a stack of three images' }),
   object({ id: 'ledge-shelf-expanded', app: 'ledge', file: 'shelf-expanded-five-light.png', tone: 'light', key: true, shape: { inset: 0.04, radius: 0.11 },
     title: 'Expanded', caption: 'Open the stack to see every file, size and status.',
-    alt: 'Ledge shelf expanded into a grid of five files, one marked missing' }),
+    alt: 'Ledge shelf expanded into a grid of five items with their names and sizes' }),
   object({ id: 'ledge-shelf-copy', app: 'ledge', file: 'shelf-banner-progress-light.png', tone: 'light', key: true, shape: { inset: 0.072, radius: 0.19 },
     title: 'In flight', caption: 'Progress and cancel stay on the shelf while files copy.',
     alt: 'Ledge shelf showing a copying progress banner' }),

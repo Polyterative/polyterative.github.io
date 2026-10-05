@@ -110,7 +110,7 @@ async function topColor(buf, w) {
  * @param {'window'|'object'} o.frame
  * @param {'light'|'dark'} o.tone backdrop tone
  * @param {boolean} [o.chrome] add a macOS title bar with traffic lights (captures without real window chrome)
- * @param {{top:number,height:number}} [o.crop] keep a vertical slice of the capture (fractions of its height) before framing
+ * @param {{left?:number,top?:number,width?:number,height?:number}} [o.crop] keep a region of the capture (fractions of its size) before framing
  * @param {boolean} [o.trim] trim a flat background border off the capture first
  * @param {boolean} [o.round] force rounded corners on opaque captures
  * @param {number} [o.fill] max share of the canvas the subject may occupy along its limiting axis
@@ -122,7 +122,8 @@ export async function compose(input, o) {
   let img = sharp(input).ensureAlpha();
   if (o.crop) {
     const { width: cw0, height: ch0 } = await img.metadata();
-    img = sharp(await img.extract({ left: 0, top: Math.round(ch0 * o.crop.top), width: cw0, height: Math.round(ch0 * o.crop.height) }).png().toBuffer());
+    const { left = 0, top = 0, width = 1, height = 1 } = o.crop;
+    img = sharp(await img.extract({ left: Math.round(cw0 * left), top: Math.round(ch0 * top), width: Math.round(cw0 * width), height: Math.round(ch0 * height) }).png().toBuffer());
   }
   if (o.key) img = sharp(await keyBackground(await img.png().toBuffer(), { largest: o.largest }));
   else if (trim) img = sharp(await img.trim({ threshold: 12 }).png().toBuffer());
