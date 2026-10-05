@@ -5,7 +5,7 @@ PDFs, decks, app UI, covers, posters. This file is the source of truth. Medium-s
 implementations (CSS tokens in `src/styles/global.css`, PDF templates, app themes) follow it,
 not the other way round.
 
-Status: v0.4. Values marked *(provisional)* are still open (see the end of this file).
+Status: v0.5. Values marked *(provisional)* are still open (see the end of this file).
 
 ---
 
@@ -347,7 +347,8 @@ documents and the site.
   in the same place within a type of deliverable (e.g. PDF footer strip, app top-right). Move
   them never.
 - **Label above, value below.** Like silkscreen over a knob: the mono label sits above the
-  control or value, always, with the same gap.
+  control or value, always, with the same gap. (Settings rows are the one sideways case,
+  section 16.2.)
 - **Signal flows left → right, top → bottom.** Inputs and settings first, results last.
 - **Outputs are inverted.** The result of something (an output jack, a total, a final status,
   the download) gets an *inverted label*: a solid ink block with bg-coloured text. Inputs keep
@@ -379,7 +380,7 @@ carrying real information.
 | **Jack** | Ring + dot, label above | An input or output point; filled ring + inverted label for outputs |
 | **Inverted label** | Solid ink block, bg text | Outputs, results, totals |
 | **Patch line** | One curved hairline between two jacks | A real relationship between two items |
-| **Status pill** | Plex caps in a 1px box, or a solid signal block; state pills take their state colour (4.4) | `LIVE`, `PRE-RELEASE`, `ARCHIVED`, `NEEDED` |
+| **Status pill** | Plex caps in a 1px box, or a solid signal block; state pills take their state colour (4.4); full spec in 16.1 | `LIVE`, `PRE-RELEASE`, `ARCHIVED`, `NEEDED` |
 | **Hairline table** | Rows separated by 1px rules, no fills | Specs, facts, credits |
 | **Data strip** | Bars drawn from the bits of a real string | Ticket and tag objects |
 | **Redaction bar** | Solid ink bar the length of the hidden text, label `WITHHELD` | Something that genuinely is not public yet |
@@ -501,6 +502,169 @@ between cold labels and warm, direct prose is intentional.
 - Two designs for the same control, or a control that moves between screens.
 - Sci-fi cosplay: HUD decoration that crowds the content or carries no meaning.
 
+## 16. Components
+
+Built from the bottom up: **atoms** are the smallest parts with one job each; **molecules** are
+a few atoms put together. Every screen is assembled from these, and section 8 applies to all
+of them: one form per atom, no decorative variants. Sizes are px on the web and pt in apps.
+Corners are sharp (radius 0) everywhere in this section.
+
+### 16.1 Atoms
+
+#### a. Text roles
+
+Named uses of the section 5 scale, so a screen never picks sizes freehand.
+
+| Role | Style | Colour | Use |
+|---|---|---|---|
+| `title.page` | Grotesk 600, 28px, tracking −0.02em | `ink` | The one title of a window or page |
+| `title.group` | Grotesk 600, 14px | `ink-2` | A group inside a list ("Friday, 2 Oct") |
+| `title.row` | Grotesk 500, 16px, one line, truncate at the end | `ink` | The name of one item |
+| `label` | Plex Mono 500, 11px, caps, +0.06em | `ink-2` | Section labels (`RECORDINGS`), labels above values |
+| `meta` | Plex Mono 400, 12px, tabular figures | `ink-2` | Dates, times, durations, counts, units |
+| `body.short` | Grotesk 400, 14px, at most 2 lines | `ink-2` | A one-sentence summary inside a row |
+| `hint` | Grotesk 400, 12px | `ink-3` (`warning` when it warns, 4.4) | The line under a field or setting |
+| `readout` | Grotesk 600, `display` or `h1`, tabular figures | `ink`; `ink-3` while idle | A live value that is the point of the screen (a timer) |
+
+A count that follows a title or label ("RECORDINGS 20", "Friday, 2 Oct 2") is `meta` in
+`ink-3`, one space after it. It is never put in a bubble or badge.
+
+#### b. Icon
+
+- Outline icons only, 1.5px stroke. In apps, SF Symbols at `.regular` weight.
+- Three sizes: **12** (inline with `meta` or `label`), **16** (inside controls and settings
+  rows), **20** (the leading slot of a list row).
+- Colour `ink-2`, or `ink-3` when it only decorates a label. An icon takes a state colour only
+  when it *is* that status. No coloured circles behind icons and no filled glyphs for counts.
+- An icon never stands alone as the only label of an unfamiliar action; give it a word or a
+  tooltip plus shortcut.
+
+#### c. Tag
+
+A fixed property of a thing: `EXPERIMENTAL`, `BETA`, `LOCAL`, `PRE-RELEASE`.
+
+- `label` text in `ink-2`, 1px `rule-strong` box, 20px tall, 6px side padding.
+- Never coloured. A tag does not change while you look at it; if it can change, it is a
+  status pill.
+- Sits after the thing it qualifies, 8px gap, centred on its line.
+
+#### d. Status pill
+
+A state that can change: `LIVE`, `NEEDED`, `ASKS FIRST`, `FAILED`, `ARCHIVED`.
+
+- Same geometry as the tag (20px, 6px padding, `label` text), so a tag and a pill line up.
+- Box and text in the state colour (4.4). Concrete states (`ARCHIVED`, `DRAFT`) use `ink-2`
+  with a `rule-strong` box, which makes them look like tags on purpose: nothing is wrong.
+- Solid form: only the one current state of a view in signal (`on-signal` text), or warning
+  where pills are solid (`on-warning`). Never solid live, alert or cold.
+- Always a word. Colour is the second cue, never the only one.
+
+#### e. Count
+
+A number of things inside an item: "4 decisions", "5 speakers".
+
+- `meta`: the number in `ink`, the noun in `ink-2`, one space between. Optional 12px icon in
+  `ink-3`, 4px before the number.
+- Counts in a line are separated by 16px. Fixed order per item type, so the same count is
+  always in the same place (section 8).
+- No colour and no box. "4 open questions" is a count, not a warning. If something actually
+  needs attention, the item gets a status pill or a row marker as well.
+- Hide a zero count unless the zero is the news. Use the singular for 1.
+
+#### f. Button
+
+One form, three weights. Height 32, hit area at least 40, 12px side padding, label Grotesk
+500 14px in sentence case, optional 16px leading icon with an 8px gap.
+
+| Weight | Look | Use |
+|---|---|---|
+| `primary` | `signal` fill, `on-signal` label, no border | The one primary action of the view ("Start recording"). One per view |
+| `secondary` | 1px `rule-strong` outline, `ink` label, no fill | Everything else that is a button |
+| `plain` | No box, `ink-2` label, `ink` on hover | Low-weight toolbar actions ("Import") |
+
+States, the same for all three: hover fills `hover` (primary: no change in colour, a 1px ink
+outline); pressed fills `rule`; disabled uses `ink-3` text on a `rule` outline with no fill;
+keyboard focus is a 2px `ink` outline, 2px outside the box. Never system blue.
+
+**Menu button.** A `secondary` button that shows the *current value* ("Newest first", not
+"Sort") with a 12px up/down chevron in `ink-3` at the trailing end, 8px gap. Optional 16px
+leading icon for the dimension it controls.
+
+#### g. Toggle
+
+- Track 36×20, sharp, 1px `rule-strong` border. Thumb 14×14, sharp, 3px inset.
+- **Off:** empty track, thumb `ink-3` at the leading end.
+- **On:** track filled `ink`, thumb in `bg` at the trailing end.
+- Never signal, never `live`. A toggle is a setting, not the primary action and not a status.
+- 120ms linear (section 12). Hit area at least 40. Disabled: `rule` border, `rule` thumb.
+- The state is told by position and fill together, so it reads without colour.
+
+#### h. Text field
+
+- Height 32, 1px `rule-strong` border, `surface` fill, 12px side padding.
+- Input in Grotesk 400 14px `ink`; placeholder `ink-3`. Optional 16px leading icon in `ink-3`
+  (the search field is a text field with a search icon, nothing more).
+- Focus: border turns `ink`. Error: border and hint in `alert`. Warning: hint in `warning`,
+  border unchanged.
+- Label above (`label` role, 4px gap), hint below (`hint` role, 4px gap).
+
+#### i. Rule
+
+- `rule`, 1px: between rows of the same list.
+- `rule-strong`, 1px: under a group or section header, and at the top of a section.
+- Nothing thicker. A rule between rows starts at the text column, not under the leading icon;
+  a header rule runs full width.
+
+#### j. Disclosure chevron
+
+12px, `ink-3`, at the trailing edge of a row that opens something. Centred on the row. It
+means "opens a detail view" and nothing else; a menu uses the menu button's up/down chevron.
+
+#### k. Row marker
+
+As defined for warning in 4.4: an 8×8 hollow square, 1.5px stroke, at the leading edge.
+
+### 16.2 Molecules (examples)
+
+Short recipes, to show how the atoms combine. Each one is a starting point, not the only
+allowed layout.
+
+**Section header.** `label` + count on the left, then (right-aligned) `plain` and menu
+buttons. `rule-strong` under it, 8px below the text.
+
+```
+RECORDINGS 20                      ⤓ Import   [By day ⌃⌄]  [Newest first ⌃⌄]
+──────────────────────────────────────────────────────────────────────────
+```
+
+**Group header.** `title.group` + count. 24px above, 8px below, `rule-strong` under it.
+
+**Settings row.** Leading 16px icon, `title.row` label, optional tag, then the control at the
+trailing edge (toggle or menu button). The `hint` sits under the label, aligned with it.
+Minimum height 48; `rule` between rows. In a settings list the label leads on the left and
+the control trails on the right; that is the one place where section 8's "label above
+value" turns sideways, and every settings row does it the same way.
+
+```
+◻  Live transcript  [EXPERIMENTAL]                                  [■■□]
+   Starts with the next recording.
+```
+
+**List row.** Optional row marker, 20px leading icon, then a text column: `title.row`,
+`meta` (date · time), `body.short`, and a line of counts. At the trailing edge: one `meta`
+value in `ink` (a duration) and the disclosure chevron. Vertical gap between lines 4px;
+16px padding top and bottom; `rule` between rows from the text column.
+
+```
+◫  Design system architecture and workflow                    33 min  ›
+   Fri 2 Oct · 14:01
+   Agreed on libraries, flow, and next steps for definition.
+   4 decisions   4 open questions   2 next steps   5 speakers
+```
+
+**Filter bar.** A text field that takes the remaining width, then menu buttons in a fixed
+order: what (source) → when (time) → how it is grouped → how it is sorted. 8px gaps.
+
 ---
 
 ## Decisions log
@@ -528,6 +692,11 @@ between cold labels and warm, direct prose is intentional.
   signal. Kept apart from signal and alert by hue (~43° vs 14° / 0°) and by inverted
   lightness per mode; because Paper warm text still converges under protanopia, a warning
   always carries a word or the hollow row marker. Pills, field hints and row markers only.
+- 2026-10-05 (v0.5): Added section 16, components: atoms first (text roles, icon, tag, status
+  pill, count, button, toggle, text field, rule, chevron, row marker) and a few molecule
+  recipes (section header, group header, settings row, list row, filter bar). Counts carry no
+  colour; toggles are ink, not signal or green; no system blue anywhere; settings rows put
+  the label beside the control.
 
 ## Open decisions
 
