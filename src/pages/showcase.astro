@@ -55,7 +55,14 @@ const total = data.shots.length;
             <span class="lbl">{appName(c.app)}</span>
             <h2 id={`${c.app}-h`}>{c.headline}</h2>
           </div>
-          <p class="chapter__problem">{c.problem}</p>
+          <div class="chapter__lede">
+            <p class="chapter__problem">{c.problem}</p>
+            {c.facts && (
+              <dl class="facts">
+                {c.facts.map(([k, v]: string[]) => <div><dt class="lbl">{k}</dt><dd class="data">{v}</dd></div>)}
+              </dl>
+            )}
+          </div>
         </header>
 
         {c.blocks.map((b) => {
@@ -85,6 +92,9 @@ const total = data.shots.length;
                 </button>
               </article>
             );
+          }
+          if (b.type === 'note') {
+            return <p class="note">{b.text}</p>;
           }
           if (b.type === 'pair') {
             const l = shot(b.light), d = shot(b.dark);
@@ -188,11 +198,17 @@ const total = data.shots.length;
   .chapter__num { font-size: clamp(64px, 12vw, 160px); line-height: 0.85; color: var(--signal-text); }
   .chapter__title { display: flex; flex-direction: column; gap: var(--space-2); }
   .chapter__title h2 { font-size: clamp(1.75rem, 4vw, 3rem); line-height: 1.05; letter-spacing: -0.03em; max-width: 20ch; text-wrap: balance; }
+  .chapter__lede { display: flex; flex-direction: column; gap: var(--space-5); }
   .chapter__problem { color: var(--ink-2); font-size: var(--fs-lead); max-width: 46ch; }
+  .facts { display: flex; flex-wrap: wrap; gap: var(--space-3) var(--space-8); }
+  .facts div { display: flex; flex-direction: column; gap: var(--space-1); border-top: 1px solid var(--rule-strong); padding-top: var(--space-2); }
+  .facts dd { margin: 0; }
+  .note { margin-top: clamp(var(--space-12), 8vw, 6rem); max-width: 52ch; font-size: var(--fs-lead); line-height: 1.4; letter-spacing: -0.01em; }
+  @media (min-width: 900px) { .note { margin-left: calc(var(--gutter) + var(--space-8)); } }
   @media (min-width: 900px) {
     .chapter__head { grid-template-columns: var(--gutter) 1fr; align-items: end; }
     .chapter__num { grid-row: 1 / span 2; }
-    .chapter__problem { grid-column: 2; }
+    .chapter__lede { grid-column: 2; }
   }
 
   .hero { margin: 0; }

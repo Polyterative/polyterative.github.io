@@ -1,81 +1,90 @@
 // The showcase as a story: one chapter per app, in reading order.
-// Copy here is DRAFT (step 1 skeleton); it is rewritten from each app's PRODUCT.md / DESIGN.md next.
+// Copy is drawn from each app's PRODUCT.md / DESIGN.md; facts are things those docs or the code state. Edit freely.
 //
 // A CHAPTER:
 //   app        key in manifest.mjs `apps`
 //   headline   the chapter's one-line thesis (big type)
 //   problem    what the app fixes, one or two sentences
 //   decision   the single design choice that defines it (pull quote)
+//   facts      [label, value] pairs shown under the problem; only things the app's docs or code state
 //   blocks     what follows, in order:
 //     { type: 'hero',  shot }                          full-width opener (uses the 21:9 cover when the shot has one)
 //     { type: 'scene', shot, title, text }             sticky explainer beside one screen
+//     { type: 'note',  text }                          a short paragraph between screens
 //     { type: 'pair',  light, dark, title, text }      the same screen in both appearances, side by side
 
 export const intro = {
   headline: 'Small tools for the edges of the Mac.',
-  lead: 'Five apps that live where the work already is: under the pointer, in the menu bar, on the desktop. Every screen below is rendered from the real interface by the app’s own test suite.',
+  lead: 'Five native apps that live where the work already is: under the pointer, in the menu bar, on the desktop. Each screen is rendered from the real interface by the app’s own test suite, filled with demo content instead of my files, rooms or messages.',
 };
 
 export const chapters = [
   {
     app: 'ledge',
     headline: 'A shelf that exists only while you need it.',
-    problem: 'Moving files between windows means arranging windows. Ledge gives dragged files somewhere to wait.',
-    decision: 'Nothing sits on screen until you shake the pointer mid-drag. Then it is right under your hand.',
+    problem: 'Moving files between folders, disks and network shares usually means arranging windows first. Ledge gives dragged files somewhere to wait.',
+    decision: 'Nothing is on screen until you shake the pointer mid-drag. Then a shelf is under your hand, and your app stays in front.',
+    facts: [['Opens with', 'Shake or a held key'], ['Focus', 'Never taken'], ['Watches', 'Folders, shares, disks']],
     blocks: [
       { type: 'hero', shot: 'ledge-shelf-images' },
-      { type: 'scene', shot: 'ledge-shelf-expanded', title: 'Open the stack', text: 'Every file, its size and its status in one grid. A missing file says so instead of failing quietly.' },
-      { type: 'scene', shot: 'ledge-shelf-copy', title: 'Stays out of the way', text: 'Copy progress and cancel live on the shelf itself, so the window you came from stays untouched.' },
-      { type: 'scene', shot: 'ledge-watchers', title: 'Shelves that fill themselves', text: 'Point it at a disk, a share or a folder and new files arrive on a shelf without a drag.' },
+      { type: 'scene', shot: 'ledge-shelf-expanded', title: 'References, not copies', text: 'A shelf points at files where they are, so it can tell when one has gone. A missing file is marked on the shelf instead of silently dropped.' },
+      { type: 'scene', shot: 'ledge-shelf-copy', title: 'Work without leaving', text: 'Copy or move straight from the shelf. Progress and Cancel appear on the shelf itself, and the window you came from is untouched.' },
+      { type: 'note', text: 'The shelf shows the stack and very little else. Actions sit behind one button; anything advanced lives in Settings.' },
+      { type: 'scene', shot: 'ledge-watchers', title: 'Watching is honest', text: 'Every watched folder says what it is really doing: watching, checking a share, waiting for a disk, or missing. A disconnected share is a normal state, not an error.' },
     ],
   },
   {
     app: 'spoke',
-    headline: 'A menu you flick, not read.',
-    problem: 'Phrases you retype every day deserve better than a snippet list.',
-    decision: 'Direction beats reading. Point at a category, release, and the phrase lands where you are typing.',
+    headline: 'A menu you aim, not browse.',
+    problem: 'People who talk to AI assistants all day retype the same prompts. The typing is the waste.',
+    decision: 'Press a key, sweep through a small decision tree, release. The text lands in whichever field already has focus.',
+    facts: [['Trigger', 'One key, release to insert'], ['Per ring', 'Up to 8 segments'], ['Routing', 'One wheel per app']],
     blocks: [
       { type: 'hero', shot: 'spoke-wheel' },
-      { type: 'scene', shot: 'spoke-usage', title: 'Learns what you reach for', text: 'Usage ranks your phrases so the ones you use most sit where your hand already goes.' },
+      { type: 'note', text: 'Different apps call for different vocabulary: refactors in an editor, casual replies in a chat client. App groups map an app to a named wheel, and the frontmost app picks its wheel at the moment you trigger. No mode switch.' },
+      { type: 'scene', shot: 'spoke-usage', title: 'See what you actually use', text: 'Usage ranks entries by how often you reach for them, so the wheel can stay small and right-sized.' },
     ],
   },
   {
     app: 'habitat',
-    headline: 'Your home as data, on the desktop.',
-    problem: 'Home Assistant answers everything, one browser tab away. Habitat takes the useful answers out of the tab.',
-    decision: 'Charts, not controls. Each widget shows a number you would otherwise go and look for.',
+    headline: 'The widget is the product.',
+    problem: 'Home Assistant knows everything about the house, but you have to open it to find out. Habitat puts the answers on the desktop.',
+    decision: 'Glance first, tap second. A widget shows the reading you would otherwise go and look for; lights and switches toggle in place.',
+    facts: [['Source', 'Home Assistant'], ['Widgets', '13 configurations'], ['Sizes', 'Small, medium, large']],
     blocks: [
       { type: 'hero', shot: 'habitat-energy' },
-      { type: 'scene', shot: 'habitat-temperatures', title: 'One colour per room', text: 'Six hours of temperature, every room readable at a glance.' },
-      { type: 'scene', shot: 'habitat-power', title: 'Spikes you can spot', text: 'Whole-house draw against the big consumers, so the oven peak is obvious.' },
-      { type: 'scene', shot: 'habitat-gauges', title: 'Everything else, in rings', text: 'Humidity, commute, outside temperature and battery levels as simple readings.' },
-      { type: 'scene', shot: 'habitat-air-quality', title: 'Quiet until it matters', text: 'Two readings, one needs attention. Only that one is loud.' },
+      { type: 'scene', shot: 'habitat-temperatures', title: 'One colour per room', text: 'Each room keeps its own colour across every chart, so a line is recognisable before you read the legend.' },
+      { type: 'scene', shot: 'habitat-power', title: 'Spikes you can spot', text: 'Whole-house draw sits above the big consumers. A short, tall spike like the oven is hard to miss.' },
+      { type: 'scene', shot: 'habitat-gauges', title: 'Bounded readings as rings', text: 'Anything with a natural 0 to 100 range, such as humidity or battery level, reads as a ring.' },
+      { type: 'scene', shot: 'habitat-air-quality', title: 'Quiet until it matters', text: 'Two readings, one flagged. Colour appears only on the reading that needs you.' },
     ],
   },
   {
     app: 'kinetip',
-    headline: 'A pen driver you can feel and see.',
-    problem: 'Tablet drivers hide their behaviour behind sliders with no feedback.',
-    decision: 'Every setting is drawn: curves, heatmaps, target areas. If it changes how the pen feels, you can see why.',
+    headline: 'Health first, then feel.',
+    problem: 'A pen tablet is something you depend on all day and configure rarely. When it misbehaves, you need to know why before you touch a slider.',
+    decision: 'The first screen says whether everything works. After that, every adjustment previews its effect before you commit, and Apply reloads the engine exactly once.',
+    facts: [['Changes', 'Apply or Revert'], ['Reload', 'Exactly once'], ['Hardware', 'Described by capability']],
     blocks: [
       { type: 'hero', shot: 'kinetip-overview' },
-      { type: 'scene', shot: 'kinetip-gestures', title: 'Gestures', text: 'Pen buttons and motions mapped to pointer, drag, pan and scroll.' },
-      { type: 'scene', shot: 'kinetip-momentum', title: 'Momentum you can tune', text: 'Scroll inertia drawn as a decay curve.' },
-      { type: 'scene', shot: 'kinetip-mapping', title: 'Where the tablet lands', text: 'Pick the active area and see where it falls on screen.' },
-      { type: 'scene', shot: 'kinetip-insights', title: 'Where the pen spends its time', text: 'A heatmap of pen activity across the tablet surface.' },
+      { type: 'scene', shot: 'kinetip-gestures', title: 'Organised by intent', text: 'Pen buttons and motions are mapped to pointer, drag, pan and scroll. The settings follow what you want to do, not the tablet’s report layout.' },
+      { type: 'scene', shot: 'kinetip-momentum', title: 'Feel you can see', text: 'Scroll inertia is drawn as a decay curve, so tuning friction is a matter of watching the shape change.' },
+      { type: 'scene', shot: 'kinetip-mapping', title: 'Where the tablet lands', text: 'Choose the active area on the tablet and see where it falls on screen before you apply it.' },
+      { type: 'scene', shot: 'kinetip-insights', title: 'Where the pen spends its time', text: 'A heatmap of pen activity across the tablet surface shows which part of it you actually use.' },
     ],
   },
   {
     app: 'evocontrol',
-    headline: 'An audio interface, from the menu bar.',
-    problem: 'Mixing an interface means a vendor app that needs its own window.',
-    decision: 'The whole mixer is a panel off the menu bar, with meters that tell you more than the knobs do.',
+    headline: 'A mixer you read at a glance.',
+    problem: 'Changing a level on the interface means opening a vendor app and giving it a window. Most changes should take seconds.',
+    decision: 'The meters are the interface. Thresholds are fixed, so a colour always means the same level: amber from -18 dBFS, red from -6.',
+    facts: [['Interface', 'Audient EVO 8'], ['Panel', '300 pt, from the menu bar'], ['Meter', '32 segments per channel']],
     blocks: [
       { type: 'hero', shot: 'evocontrol-mixer' },
-      { type: 'pair', light: 'evocontrol-mixer', dark: 'evocontrol-mixer-dark', title: 'Light and dark, same panel', text: 'The same layout in both appearances; the meters keep their colours.' },
-      { type: 'scene', shot: 'evocontrol-preset', title: 'Edits are visible', text: 'Change anything and Save or Revert appears beside the preset.' },
-      { type: 'scene', shot: 'evocontrol-settings', title: 'Every channel group', text: 'Outputs, inputs, playback and loopback in one scrolling panel.' },
-      { type: 'scene', shot: 'evocontrol-voice-eq', title: 'A voice chain for calls', text: 'Gate, EQ, leveler and compressor over a live spectrum.' },
+      { type: 'pair', light: 'evocontrol-mixer', dark: 'evocontrol-mixer-dark', title: 'Light and dark', text: 'One layout in both appearances. The meter colours stay the same, because they carry meaning.' },
+      { type: 'scene', shot: 'evocontrol-preset', title: 'Know when you have drifted', text: 'When the panel differs from the saved preset, Save and Revert appear beside it. Save writes back; Revert returns to the preset.' },
+      { type: 'scene', shot: 'evocontrol-settings', title: 'Every channel group', text: 'Outputs, inputs, playback and loopback sit in one scrolling panel, with meter visibility chosen per group.' },
+      { type: 'scene', shot: 'evocontrol-voice-eq', title: 'A voice chain for calls', text: 'Gate, EQ, leveler, compressor and de-esser, each with a live curve or meter so you can see what it is doing.' },
     ],
   },
 ];
