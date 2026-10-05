@@ -5,7 +5,11 @@ PDFs, decks, app UI, covers, posters. This file is the source of truth. Medium-s
 implementations (CSS tokens in `src/styles/global.css`, PDF templates, app themes) follow it,
 not the other way round.
 
-Status: v0.5. Values marked *(provisional)* are still open (see the end of this file).
+Live catalogue of everything below: the `/system` page (`pnpm dev`, then `/system`), built from
+this file and `src/styles/global.css`. When you add or change a component here, update its
+specimen in `src/pages/system.astro` and its CSS in `src/styles/datum.css`.
+
+Status: v0.6. Values marked *(provisional)* are still open (see the end of this file).
 
 ---
 
@@ -254,6 +258,8 @@ colour; that is why `signal-text` exists.
 - No gradients except inside procedural imagery. No tinted backgrounds behind text.
 - State colours appear only where the data is live or has a status. A chart with categories
   uses the concrete ramp plus signal for the one series that matters.
+- Categories (speakers, groups, kinds) never get their own colour. Tell them apart with a
+  letter or number mark (16.1r) or a position, never a hue.
 - Print: signal orange as a spot colour where possible (closest Pantone to be chosen); check
   every page also works in greyscale.
 
@@ -523,8 +529,8 @@ Named uses of the section 5 scale, so a screen never picks sizes freehand.
 | `label` | Plex Mono 500, 11px, caps, +0.06em | `ink-2` | Section labels (`RECORDINGS`), labels above values |
 | `meta` | Plex Mono 400, 12px, tabular figures | `ink-2` | Dates, times, durations, counts, units |
 | `body.short` | Grotesk 400, 14px, at most 2 lines | `ink-2` | A one-sentence summary inside a row |
-| `hint` | Grotesk 400, 12px | `ink-3` (`warning` when it warns, 4.4) | The line under a field or setting |
-| `readout` | Grotesk 600, `display` or `h1`, tabular figures | `ink`; `ink-3` while idle | A live value that is the point of the screen (a timer) |
+| `hint` | Grotesk 400, 12px | `ink-3` (`warning` when it warns, `alert` when it reports an error, 4.4) | The line under a field or setting |
+| `readout` | Grotesk 600, `display` or `h1`, tabular figures; `h2` (28px) in a compact rack of several readouts | `ink`; `ink-3` while idle | A live value that is the point of the screen (a timer) |
 
 A count that follows a title or label ("RECORDINGS 20", "Friday, 2 Oct 2") is `meta` in
 `ink-3`, one space after it. It is never put in a bubble or badge.
@@ -608,6 +614,17 @@ leading icon for the dimension it controls.
   border unchanged.
 - Label above (`label` role, 4px gap), hint below (`hint` role, 4px gap).
 
+**Text area.** The same field with a taller box: minimum height 96 (three lines), line height
+1.4, 8px top and bottom padding. It grows with its content up to 240, then scrolls inside the
+box. Vertical resize only, with a handle of two 1px diagonal hairlines in `ink-3` at the
+bottom-right corner. Focus, error, warning, label and hint as above.
+
+**Secure field.** The same field with the value set in Plex Mono 13px (so similar characters
+can be told apart) and a `plain` 16px icon button at the trailing end that reveals the value
+(eye outline; its tooltip says `Show` / `Hide`). The value hides again on blur and after 30
+seconds. Hit area 40, inside the field's border. Reveal is a toggle of view, not of data: it
+never changes the stored value.
+
 #### i. Rule
 
 - `rule`, 1px: between rows of the same list.
@@ -623,6 +640,105 @@ means "opens a detail view" and nothing else; a menu uses the menu button's up/d
 #### k. Row marker
 
 As defined for warning in 4.4: an 8×8 hollow square, 1.5px stroke, at the leading edge.
+
+#### l. Checkbox
+
+For choosing several items out of a set, usually a long one ("Capture while these apps have a
+window").
+
+- 16×16, sharp, 1px `rule-strong` border, `surface` fill. 40px hit area, label to the right
+  with an 8px gap in `title.row`.
+- **Checked:** filled `ink`, a 1.5px tick in `bg`. **Mixed** (a group with some children
+  checked): filled `ink`, a 1.5px dash in `bg`. Never signal, never `live`; same logic as the
+  toggle.
+- Focus: 2px `ink` outline, 2px outside. Disabled: `rule` border, `ink-3` label.
+- Which one to use: a **toggle** is one setting that takes effect at once, so one toggle per
+  settings row. A **checkbox** picks members of a set (five or more items, or a list the user
+  edits), and is applied together by the view's own action or at once, as that view says. A
+  list of checkboxes never becomes a list of toggle rows.
+- For a long list, put a `label` header with a count (`3 OF 12`) above and a `plain`
+  `Select all` / `Clear` at its trailing end. Rows are 40px high, `rule` between.
+
+#### m. Slider
+
+A value on a continuous or finely stepped range ("Lower by 10–100 %").
+
+- Track is a **tick ruler** (section 9): 1px ticks, 8px tall, one per step, `rule-strong`;
+  a longer 12px tick at each end and at the midpoint. Ticks up to the value are `ink`.
+  Above 40 steps, draw ticks at every fifth step.
+- Thumb: 8×20 sharp block, `ink`. No label inside it.
+- Above the track: the `label` at the leading edge, the current value as `meta` in `ink` at
+  the trailing edge, so the layout never shifts. Min and max as `meta` in `ink-3` under the
+  ends.
+- 120ms linear, no easing past the value. Arrow keys move one step, Shift+arrow ten, Home and
+  End jump to the ends. Hit area 40 tall.
+- Six or fewer meaningful values are a **menu button** or a **segmented control**, not a slider.
+
+#### n. Segmented control
+
+One of two to four kinds, all visible at once (an owner command's kind).
+
+- Height 32, one 1px `rule-strong` outer box, 1px `rule` dividers, equal-width segments of at
+  least 64, label Grotesk 500 14px, sentence case, `ink-2`.
+- **Selected:** segment filled `ink`, label `bg`. Exactly one is always selected; there is no
+  empty state.
+- Hover on an unselected segment fills `hover`. Focus: 2px `ink` outline around the whole
+  control; arrow keys move the selection.
+- Five or more options, or long labels, make it a **menu button**.
+
+#### o. Progress meter
+
+The tick meter from section 9 as the form of progress, with an optional `meta` readout.
+
+- Ticks 1px wide and 12px tall on a 4px pitch, fixed count that fills the available width.
+  **Determinate:** lit ticks `ink`, unlit `rule-strong`. The readout (`42 %`, or `1.2 of 3.4 GB`)
+  sits at the trailing end in `meta`, tabular figures, fixed width.
+- **Indeterminate:** a run of five lit ticks stepping across at 120ms per step, wrapping at the
+  end. With reduced motion, every tick is `rule-strong` except the first five in `ink`, and the
+  readout says `WORKING`. The word is always there; motion is the second cue.
+- Colour: ink only. Signal only for the one meter that is the view's current or primary task.
+  A view with three meters has at most one signal meter. Failed: the lit ticks stay, the
+  readout becomes a `FAILED` status pill in `alert`.
+- Label above in `label`, as for any value (section 8).
+
+#### p. Chip
+
+A removable item the user chose ("Polish", "Swedish").
+
+- Tag geometry: 20px tall, 1px `rule-strong` box, `label` text in `ink`, 6px side padding. At
+  the trailing end an 8px × (1.5px stroke, `ink-3`) with 4px before it, and a 40px hit area
+  that extends past the box.
+- Hover on the ×: stroke `ink`. Focus: 2px `ink` outline. Removing is immediate and offers
+  Undo for a few seconds where data would be lost.
+- A tag is fixed and uncoloured; a chip is the user's own and removable. A chip never changes
+  state while you look at it. A group of chips wraps with 8px gaps in both directions.
+- It is one atom: do not draw a tag next to a separate × button.
+
+#### q. Selected and editing row
+
+How a list row that can be picked and edited in place shows it.
+
+- **Selected:** the row's ground is `signal-weak` and nothing else changes. At most one row is
+  selected, or several in a multi-select; text stays `ink` and `ink-2`. Selection is shown by
+  ground and, for multi-select, by a checkbox at the leading edge, so it reads without colour.
+- **Editing:** the selected row opens in place. Its text column is replaced by the fields,
+  stacked with 12px gaps, and the row gets a 1px `ink` outline. Two buttons at the bottom
+  trailing edge: `secondary` `Cancel`, then `primary` `Save` if it is the view's primary
+  action, otherwise `secondary`. Only one row edits at a time. `Esc` cancels.
+- Row action: a row that is selected and edited has a `plain` `Edit` button at its trailing
+  edge, shown on hover and keyboard focus, always in the same place before the chevron. A tap
+  on the row selects; `Edit` or `Enter` opens it.
+- Never tint the row `alert` or `warning`. A row that needs attention keeps its marker (4.4).
+
+#### r. Category mark
+
+Tells apart members of a category that has no state meaning: speakers, groups, kinds.
+
+- 16×16 sharp box, 1px `rule-strong`, one character in `label` style, `ink`: `A`, `B`, `C`.
+  Past 26 members, or when the members already have numbers, use the number (`01`, `02`).
+- Assigned in order of first appearance and kept for the life of the item, so `B` is the same
+  speaker everywhere. Sits where a leading icon would, 8px before the name.
+- Never coloured and never filled. A selected or active member inverts: `ink` fill, `bg` letter.
 
 ### 16.2 Molecules (examples)
 
@@ -665,6 +781,44 @@ value in `ink` (a duration) and the disclosure chevron. Vertical gap between lin
 **Filter bar.** A text field that takes the remaining width, then menu buttons in a fixed
 order: what (source) → when (time) → how it is grouped → how it is sorted. 8px gaps.
 
+### 16.3 Rules for combining atoms
+
+**Choosing the control for a value.**
+
+| The value is | Use |
+|---|---|
+| On or off, effect at once | Toggle |
+| Several of a set | Checkbox list |
+| One of 2–4, all visible | Segmented control |
+| One of 5+ named presets ("Smaller after 14 days") | Menu button showing the current value |
+| A number on a range, more than six sensible values | Slider |
+| A number typed exactly | Text field with `meta` unit after it |
+
+Presets stay a menu button: there is no stepper atom.
+
+**A long control in a settings row.** The row keeps the label and hint in one column with at
+least 240px of width. When the trailing control (plus any status pill beside it) would leave
+less than that, the control drops below the hint, left-aligned to the text column with an 8px
+gap, and the status pill stays at the trailing edge of the label line. The same rule applies
+to every settings row in a window, so rows on the same screen wrap at the same width.
+
+**Meters and signal.** Meters, bars and tick ruler values draw in `ink`. Signal marks only the
+current or primary one in a view (section 3, rule 5). Three meters on a model card are three
+ink meters; at most one of them is signal.
+
+**State cues in controls.** A control may change its look to say its action changed, if the
+word changes too: an icon button turns `alert` while Shift is held and its tooltip and label
+change from `Delete` to `Delete without asking`. Only `alert`, only for destructive actions,
+only while the modifier is down. Never `warning`, never signal, never a colour change with the
+label unchanged.
+
+**Stacked bars.** A bar that splits into parts (storage) uses `ink` at stepped opacities:
+100, 70, 45, 25 and 12 %, largest part first, at most five parts; a sixth is merged into
+`other`. Parts are separated by a 1px `bg` gap, and every part has its label and value in
+`meta` below the bar in the same order. State colours are not used: a part is a category,
+not a status. Signal may mark the one part the view is about. No chart palette exists beyond
+the concrete ramp plus signal (4.7).
+
 ---
 
 ## Decisions log
@@ -697,6 +851,14 @@ order: what (source) → when (time) → how it is grouped → how it is sorted.
   recipes (section header, group header, settings row, list row, filter bar). Counts carry no
   colour; toggles are ink, not signal or green; no system blue anywhere; settings rows put
   the label beside the control.
+- 2026-10-05 (v0.6): Answered `DESIGN-TODO.md`. New atoms: checkbox, slider (tick ruler),
+  segmented control, progress meter (tick meter, indeterminate by a stepping run), chip,
+  selected/editing row, category mark, text area and secure field (as text-field forms).
+  Stepper is not an atom: presets are a menu button. New rules (16.3): which control for which
+  value, a long settings-row control wraps below the hint under 240px of text, meters draw in
+  ink with signal for one, an `alert` cue on a destructive icon button while Shift is held is
+  allowed with a label change, stacked bars use stepped ink opacity. `hint` may be `alert`;
+  `h2` is allowed as a compact readout; categories never use colour (4.7).
 
 ## Open decisions
 
