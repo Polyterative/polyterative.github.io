@@ -46,7 +46,8 @@ export const sources = {
   },
   ledge: {
     project: 'Ledge',
-    refresh: ['Tools/snapshots.sh', '{out}'],
+    // --showcase renders the curated scenes with hand-written file names and paths.
+    refresh: ['Tools/snapshots.sh', '{out}', '--showcase'],
     dir: 'dist/snapshots',
   },
   spoke: {
@@ -120,7 +121,7 @@ export const shots = [
   object({ id: 'spoke-wheel', app: 'spoke', file: 'radial-menu-02-root-hover.png', tone: 'dark', key: true, largest: true, cover: true,
     title: 'The wheel', caption: 'Point at a category, release, and the phrase lands where you type.',
     alt: 'Spoke radial menu with categories Email, Message, Reply, Schedule, Request, Thanks, Social and Snippets' }),
-  window({ id: 'spoke-usage', app: 'spoke', file: 'settings-usage-populated-light.png', chrome: true,
-    title: 'Usage', caption: 'See which phrases you actually reach for.',
-    alt: 'Spoke usage page with a wheel summary and most used templates' }),
+  window({ id: 'spoke-usage', app: 'spoke', file: 'showcase-usage-light.png', chrome: true,
+    title: 'Usage', caption: 'See which phrases you reach for most.',
+    alt: 'Spoke usage page ranking Follow up, Thank you, Introduce yourself and Politely decline by use' }),
 ];
