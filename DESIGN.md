@@ -5,7 +5,7 @@ PDFs, decks, app UI, covers, posters. This file is the source of truth. Medium-s
 implementations (CSS tokens in `src/styles/global.css`, PDF templates, app themes) follow it,
 not the other way round.
 
-Status: v0.3. Values marked *(provisional)* are still open (see the end of this file).
+Status: v0.4. Values marked *(provisional)* are still open (see the end of this file).
 
 ---
 
@@ -52,7 +52,8 @@ always looks and sits the same way**.
 4. **Extreme scale contrast.** Pair a very large element (numeral, word, image) with very small
    annotations. Avoid the comfortable middle where everything is 16–24px.
 5. **Monochrome first, one signal.** Design it in greys. Then add the signal colour to at most
-   one or two things per view: the current state, the primary action, the warning.
+   one or two things per view: the current state, the primary action. (A *warning* that
+   something needs attention is a state, not an accent: it uses `warning`, section 4.4.)
 6. **Hairlines over boxes.** Separate with 1px rules and spacing, not with filled cards and
    shadows. Fills are reserved for blocks that need to read as solid objects (tags, tickets,
    signal panels, output labels, redactions).
@@ -74,7 +75,7 @@ Two environments share one structure. **Paper** is the light mode (print, docume
 web). **Instrument** is the dark mode (screens, app UI, covers). The site follows the OS.
 
 The palette has four layers: a **concrete** neutral ramp that does almost all the work, one
-**signal** colour (the main accent), one **moss** colour that balances it, and three **state**
+**signal** colour (the main accent), one **moss** colour that balances it, and four **state**
 colours that only appear on live data.
 
 Proportion per view, roughly: **90% concrete · up to 5% signal · up to 3% moss**. Orange is
@@ -157,6 +158,51 @@ copy. Each has a Paper and an Instrument value.
 | `live` | Running, OK, live feed (phosphor) | `#0E7A41` | `#3DDC84` |
 | `alert` | Error, stop, critical | `#D11A1A` | `#FF4545` |
 | `cold` | Info, selection in data, link to data | `#2650D9` | `#6B93FF` |
+| `warning` | Needs attention, nothing failed (a permission still needed, an action that asks first) | `#6A4A00` | `#F2C94C` |
+| `on-warning` | Text on a warning fill | `#F7F7F5` | `#0A0A0A` |
+
+#### Warning
+
+Amber, not orange and not red. Signal says *act here*; alert says *it broke*; warning says *this
+is not finished or not automatic, look at it when you can*. It is a state colour, so it is
+not counted against signal's ~5% and is not a second accent: it only ever sits on a status,
+never on an action or a surface.
+
+The two values are built to stay apart from signal and alert:
+- **Hue.** ~42–45°, against signal at 14° and alert at 0°.
+- **Lightness, inverted per mode.** On Paper, warning is a *dark* ochre (darker than
+  `signal-text` and `alert`); on Instrument it is a *light* amber (much lighter than
+  `signal-dark` and `alert`). A filled warning pill on Paper is dark with light text, the
+  opposite polarity of a signal fill (bright, dark text).
+- **Never colour alone.** Under protanopia, any warm text colour dark enough to read on Paper
+  turns brown, so `warning`, `signal-text` and `alert` sit close together there. A warning
+  therefore always carries a word (`NEEDED`, `ASKS FIRST`) or the hollow row marker below.
+  This is a rule, not a fallback.
+
+Where it may appear:
+- **Status pill.** The same pill as every other status (section 9): Plex caps in a 1px box,
+  box and text in `warning`. Where a deliverable's pills are solid, the solid form is a
+  `warning` fill with `on-warning` text. Words, not codes: `NEEDED`, `ASKS FIRST`, `PENDING`.
+- **Field hint.** The mono hint line under a field ("Needs Accessibility access") in
+  `warning`. The field's own outline, label and value stay in concrete; no tinted field.
+- **Row marker.** An 8×8px hollow square, 1.5px stroke, at the row's leading edge, aligned
+  to the first line of the row. Hollow means "needs attention"; a filled square is kept free
+  for alert if it ever needs a marker.
+
+Where it may not:
+- Buttons, links, toggles, or the action that resolves the warning. That control is a normal
+  control; if it is the view's primary action, it is signal as usual.
+- Backgrounds, tinted rows, banners, panels, borders around whole sections. There is no
+  `warning-weak`.
+- Body copy, headings, titles, icons used as decoration, charts (a series is not a status),
+  covers.
+- Anything that failed (that is `alert`), plain information (`cold`), or something optional
+  that is simply off (that is `ink-3`).
+- The same element as signal. A row may have a signal button and a warning pill, but the
+  pill never turns orange and the button never turns amber.
+
+Volume: warning marks the exception. If more than about half the rows in a group would carry
+it, put one pill with a count on the group header (`3 NEEDED`) and leave the rows plain.
 
 ### 4.5 Semantic tokens (what code and templates use)
 
@@ -177,7 +223,8 @@ copy. Each has a Paper and an Instrument value.
 | `moss` | `#55664A` | `#8FA27A` |
 | `moss-weak` | `#DDE1D3` | `#1A2016` |
 | `on-moss` | `#F7F7F5` | `#0A0A0A` |
-| `live` / `alert` / `cold` | see 4.4 | see 4.4 |
+| `live` / `alert` / `cold` / `warning` | see 4.4 | see 4.4 |
+| `on-warning` | `#F7F7F5` | `#0A0A0A` |
 
 ### 4.6 Contrast (WCAG, against `bg`)
 
@@ -192,6 +239,8 @@ copy. Each has a Paper and an Instrument value.
 | moss | 5.3 | 7.2 |
 | on-moss text on moss fill | 5.8 | 6.9 |
 | live / alert / cold | 4.6 / 4.6 / 5.5 | 11.1 / 5.8 / 6.8 |
+| warning | 6.9 | 12.5 |
+| on-warning text on warning fill | 7.6 | 12.5 |
 
 Everything used for text clears 4.5:1. The Paper signal fill is a shape colour, not a text
 colour; that is why `signal-text` exists.
@@ -330,7 +379,7 @@ carrying real information.
 | **Jack** | Ring + dot, label above | An input or output point; filled ring + inverted label for outputs |
 | **Inverted label** | Solid ink block, bg text | Outputs, results, totals |
 | **Patch line** | One curved hairline between two jacks | A real relationship between two items |
-| **Status pill** | Plex caps in a 1px box, or a solid signal block | `LIVE`, `PRE-RELEASE`, `ARCHIVED` |
+| **Status pill** | Plex caps in a 1px box, or a solid signal block; state pills take their state colour (4.4) | `LIVE`, `PRE-RELEASE`, `ARCHIVED`, `NEEDED` |
 | **Hairline table** | Rows separated by 1px rules, no fills | Specs, facts, credits |
 | **Data strip** | Bars drawn from the bits of a real string | Ticket and tag objects |
 | **Redaction bar** | Solid ink bar the length of the hidden text, label `WITHHELD` | Something that genuinely is not public yet |
@@ -442,6 +491,7 @@ between cold labels and warm, direct prose is intentional.
 ## 15. Don'ts
 
 - Fake data, fake coordinates, fake version numbers, fake redactions.
+- Warning amber on an action, a background or a banner, or as colour with no word or marker.
 - More than one accent colour in a view. Moss is not an accent: it never marks actions or
   status, and it never outweighs signal.
 - Drop shadows, glassmorphism, soft gradients, rounded "friendly" cards.
@@ -470,6 +520,14 @@ between cold labels and warm, direct prose is intentional.
   view, always less than signal. Added the growth line mark and the planter block.
 - 2026-10-04: Counting systems per counter type (hex, letters, roman, greek); light motion
   (settle-in on load, reveal on scroll); secondary labels pushed further back in colour.
+- 2026-10-05 (v0.4): Added `warning` as a fourth state colour (`#6A4A00` Paper / `#F2C94C`
+  Instrument, `on-warning` `#F7F7F5` / `#0A0A0A`), first for Wetware ("Needed" permissions,
+  commands that "Ask first"). Not mapped to signal: signal is the primary action, and a list of
+  pending items would put orange on many rows, breaking the one-signal rule. Not mapped to a
+  lighter alert: alert means failure, and a lighter red either fails 4.5:1 as text or reads as
+  signal. Kept apart from signal and alert by hue (~43° vs 14° / 0°) and by inverted
+  lightness per mode; because Paper warm text still converges under protanopia, a warning
+  always carries a word or the hollow row marker. Pills, field hints and row markers only.
 
 ## Open decisions
 
