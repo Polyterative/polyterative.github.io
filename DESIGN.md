@@ -183,7 +183,7 @@ Where it may appear:
 - **Status pill.** The same pill as every other status (section 9): Plex caps in a 1px box,
   box and text in `warning`. Where a deliverable's pills are solid, the solid form is a
   `warning` fill with `on-warning` text. Words, not codes: `NEEDED`, `ASKS FIRST`, `PENDING`.
-- **Field hint.** The mono hint line under a field ("Needs Accessibility access") in
+- **Field hint.** The hint line under a field ("Needs Accessibility access") in
   `warning`. The field's own outline, label and value stay in concrete; no tinted field.
 - **Row marker.** An 8×8px hollow square, 1.5px stroke, at the row's leading edge, aligned
   to the first line of the row. Hollow means "needs attention"; a filled square is kept free
